@@ -1131,47 +1131,65 @@ const modalNext = document.getElementById('modalNext');
 const modalCur = document.getElementById('modalCur');
 const modalTot = document.getElementById('modalTot');
 
-const npcCards = [...document.querySelectorAll('.npc-tile, .npc-hero, .npc-boss')];
-modalTot.textContent = npcCards.length;
+// 모달 안 NPC 순회는 현재 슬라이드 안에서만 (일반/특수/교수님 카테고리 안)
+let modalCards = [];
 let modalIdx = 0;
 
-function openModalAt(idx){
-  if(npcCards.length === 0) return;
-  modalIdx = (idx % npcCards.length + npcCards.length) % npcCards.length;
-  const card = npcCards[modalIdx];
+function showCardInModal(){
+  const card = modalCards[modalIdx];
+  if(!card) return;
   const img = card.querySelector('.img-wrap img, .npc-img');
   const info = card.querySelector('.body, .info, .npc-info');
   if(img){ modalImg.src = img.src; modalImg.alt = img.alt || ''; }
   if(info){ modalInfo.innerHTML = info.innerHTML; }
   modalCur.textContent = modalIdx + 1;
+  modalTot.textContent = modalCards.length;
+  // NPC 1명뿐인 슬라이드(특수 = 조교쌤)는 화살표 숨김
+  modalPrev.style.display = modalCards.length > 1 ? 'flex' : 'none';
+  modalNext.style.display = modalCards.length > 1 ? 'flex' : 'none';
+}
+
+function openModalFor(card){
+  const slide = card.closest('.slide');
+  modalCards = [...slide.querySelectorAll('.npc-tile, .npc-hero, .npc-boss')];
+  modalIdx = Math.max(0, modalCards.indexOf(card));
+  showCardInModal();
   modal.classList.add('open');
   modal.setAttribute('aria-hidden','false');
   document.body.classList.add('modal-open');
 }
+
+function navigateModal(delta){
+  if(modalCards.length <= 1) return;
+  modalIdx = (modalIdx + delta + modalCards.length) % modalCards.length;
+  showCardInModal();
+}
+
 function closeModal(){
   modal.classList.remove('open');
   modal.setAttribute('aria-hidden','true');
   document.body.classList.remove('modal-open');
 }
-npcCards.forEach((card, idx)=>{
+
+document.querySelectorAll('.npc-tile, .npc-boss, .npc-hero').forEach(card=>{
   card.addEventListener('click', e=>{
     e.stopPropagation();
-    openModalAt(idx);
+    openModalFor(card);
   });
 });
 modal.addEventListener('click', e=>{
   if(e.target === modal) closeModal();
 });
 modalClose.addEventListener('click', e=>{ e.stopPropagation(); closeModal(); });
-modalPrev.addEventListener('click', e=>{ e.stopPropagation(); openModalAt(modalIdx - 1); });
-modalNext.addEventListener('click', e=>{ e.stopPropagation(); openModalAt(modalIdx + 1); });
+modalPrev.addEventListener('click', e=>{ e.stopPropagation(); navigateModal(-1); });
+modalNext.addEventListener('click', e=>{ e.stopPropagation(); navigateModal(1); });
 
 // ─── 키 / 클릭 핸들러 ─────────────────────────────
 document.addEventListener('keydown',e=>{
   if(modal.classList.contains('open')){
     if(e.key==='Escape'){ closeModal(); e.preventDefault(); }
-    else if(e.key==='ArrowRight'){ openModalAt(modalIdx + 1); e.preventDefault(); }
-    else if(e.key==='ArrowLeft'){ openModalAt(modalIdx - 1); e.preventDefault(); }
+    else if(e.key==='ArrowRight'){ navigateModal(1); e.preventDefault(); }
+    else if(e.key==='ArrowLeft'){ navigateModal(-1); e.preventDefault(); }
     return;
   }
   if(['ArrowRight','PageDown','Space',' '].includes(e.key)||e.code==='Space'){go(i+1);e.preventDefault();}
