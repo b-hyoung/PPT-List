@@ -1,0 +1,7 @@
+name = "smart-care-home"
+account_id = "REPLACE_ME"
+compatibility_date = "2026-07-02"
+
+[site]
+bucket = "./smart-care-home"
+entry-point = "workers-site"
