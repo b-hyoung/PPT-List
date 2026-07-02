@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>안심 스마트홈 — 기획 요약 (1p)</title>
+<style>
+:root{
+  --fg:#16233d; --muted:#5c6a82; --line:#e2e8f2;
+  --blue:#1a56db; --blue-d:#123fa6; --soft:#eaf1ff;
+  --env:#12a15f; --env-s:#e4f6ec; --safe:#e2453d; --safe-s:#fdeceb; --access:#7b3fe4; --access-s:#f0e9fd;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#eef2f8;font-family:"Pretendard","Apple SD Gothic Neo","Segoe UI",system-ui,-apple-system,sans-serif;
+  color:var(--fg);letter-spacing:-.01em;line-height:1.45;padding:24px;display:flex;justify-content:center}
+.sheet{width:210mm;min-height:297mm;background:#fff;padding:18mm 16mm 14mm;box-shadow:0 10px 40px rgba(0,0,0,.12);
+  display:flex;flex-direction:column}
+
+/* header */
+.head{border-bottom:3px solid var(--blue);padding-bottom:15px;margin-bottom:6px}
+.kick{font-size:12px;font-weight:700;letter-spacing:.18em;color:var(--blue);text-transform:uppercase}
+h1{font-size:31px;font-weight:800;letter-spacing:-.03em;margin:8px 0 6px}
+h1 b{color:var(--blue)}
+.sub{font-size:13.5px;color:var(--muted)}
+.meta{display:flex;gap:20px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--muted)}
+.meta b{color:var(--fg)}
+.ph{color:var(--blue);background:var(--soft);padding:1px 6px;border-radius:5px;font-weight:600}
+
+/* sections */
+.sec{margin-top:22px}
+.sec > h2{font-size:13px;font-weight:800;color:var(--blue-d);letter-spacing:.02em;
+  display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.sec > h2::before{content:"";width:14px;height:3px;background:var(--blue);border-radius:2px}
+.txt{font-size:12.5px;color:var(--fg)}
+.muted{color:var(--muted)}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+.box{border:1px solid var(--line);border-radius:10px;padding:14px 14px}
+.box .t{font-size:12.5px;font-weight:800;margin-bottom:4px}
+.box .d{font-size:11.5px;color:var(--muted);line-height:1.45}
+.box.env{border-top:3px solid var(--env)} .box.env .t{color:var(--env)}
+.box.safe{border-top:3px solid var(--safe)} .box.safe .t{color:var(--safe)}
+.box.access{border-top:3px solid var(--access)} .box.access .t{color:var(--access)}
+
+ul.b{list-style:none} ul.b li{position:relative;padding-left:16px;font-size:12.5px;margin-bottom:7px}
+ul.b li::before{content:"";position:absolute;left:0;top:.5em;width:6px;height:6px;border-radius:50%;background:var(--blue)}
+ul.b li b{font-weight:700}
+
+.flow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:12px;font-weight:700}
+.flow .n{background:var(--soft);color:var(--blue-d);border-radius:8px;padding:8px 13px}
+.flow .n.alert{background:var(--safe-s);color:var(--safe)}
+.flow .a{color:var(--muted)}
+
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:6px 11px;border-radius:16px;margin:5px 5px 0 0}
+.pill.b{background:var(--soft);color:var(--blue-d)}
+.pill.env{background:var(--env-s);color:var(--env)}
+.pill.safe{background:var(--safe-s);color:var(--safe)}
+.pill.access{background:var(--access-s);color:var(--access)}
+
+.foot{margin-top:auto;padding-top:11px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted)}
+
+@page{size:A4;margin:0}
+@media print{
+  body{background:#fff;padding:0}
+  .sheet{box-shadow:none;width:210mm;min-height:297mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="head">
+    <div class="kick">AIoT Smart Care Home · 캡스톤 기획 요약</div>
+    <h1>스스로 지키는 집, <b>안심 스마트홈</b></h1>
+    <div class="sub">몸이 불편한 독거노인을 위한 배리어프리 AIoT 주거 시스템 — 센서가 어르신을 살피고, 위험을 감지하면 스스로 구급차를 부릅니다.</div>
+    <div class="meta">
+      <span>과목 <b class="ph">과목명</b></span><span>팀 <b class="ph">팀명</b></span>
+      <span>발표자 <b class="ph">이름</b></span><span>날짜 <b>2026</b></span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="sec" style="margin-top:0">
+      <h2>배경 · 문제</h2>
+      <ul class="b">
+        <li><b>독거노인 200만+</b> 시대, 가정 내 <b>낙상</b>이 노인 안전사고 1위</li>
+        <li>쓰러져도 <b>발견·신고가 늦어</b> 골든타임을 놓침</li>
+        <li>문 여닫기·온도 조절 등 <b>일상 동작도 부담</b></li>
+      </ul>
+    </div>
+    <div class="sec" style="margin-top:0">
+      <h2>솔루션 개요</h2>
+      <div class="txt muted" style="margin-bottom:6px">환경·안전·편의를 아우르는 센서 네트워크가 24시간 어르신을 지킵니다.</div>
+      <div>
+        <span class="pill safe">🛡️ 지킨다 — 위험 감지·자동 신고</span>
+        <span class="pill env">🌿 돌본다 — 환경 사전 제어</span>
+        <span class="pill access">♿ 돕는다 — 배리어프리 편의</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>센서 구성 (4축 · 전부 비접촉 · 웨어러블 없음)</h2>
+    <div class="row">
+      <div class="box env"><div class="t">🌿 환경 · 공기질</div><div class="d">외부·차량 온도→실내 사전 조절 · 온습도 · 공기질(PM2.5·CO₂·VOC) · 조도</div></div>
+      <div class="box safe"><div class="t">🛡️ 안전 · 응급</div><div class="d">낙상 · mmWave 레이더 · 화재·연기·CO · 가스누출+자동차단 · 누수 · 도어/창문</div></div>
+      <div class="box" style="border-top:3px solid #0e9aa8"><div class="t" style="color:#0e9aa8">📊 건강 · 생활 이상</div><div class="d">수면 레이더(침대 밑) · 화장실 사용 패턴 · 냉장고 개폐 · 전력·수도 사용량</div></div>
+      <div class="box access"><div class="t">♿ 접근성 · 편의</div><div class="d">자동문 · 자동 조명·동선 · 음성 SOS 스피커 · 복약 알림 · 자동 커튼·플러그</div></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="sec">
+      <h2>동작 흐름</h2>
+      <div class="flow">
+        <span class="n">📡 센서 감지</span><span class="a">→</span>
+        <span class="n">🧠 엣지 AI 판단</span><span class="a">→</span>
+        <span class="n">☁️ 클라우드</span><span class="a">→</span>
+        <span class="n alert">🚑 119 자동 신고</span>
+      </div>
+      <div class="txt muted" style="margin-top:7px">위급 상황은 현장(엣지)에서 즉시 판단, 보호자에게 동시 알림.</div>
+    </div>
+    <div class="sec">
+      <h2>응급 시나리오</h2>
+      <div class="flow">
+        <span class="n alert">낙상 감지</span><span class="a">→</span>
+        <span class="n alert">무동작·호흡 확인</span><span class="a">→</span>
+        <span class="n">음성 확인</span><span class="a">→</span>
+        <span class="n alert">자동 신고</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>구현 · 시연 계획</h2>
+    <div class="flow" style="font-size:12px">
+      <span class="n">① Blender — 집·센서 3D 모델링</span><span class="a">→</span>
+      <span class="n">② Unreal Engine — 가상공간 구축</span><span class="a">→</span>
+      <span class="n">③ VR 시뮬레이션 — 시나리오 검증</span>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>기대 효과</h2>
+    <div>
+      <span class="pill b">⏱️ 골든타임 확보</span>
+      <span class="pill b">🧡 자립 생활 지원(자택 거주 연장)</span>
+      <span class="pill b">💰 의료·복지 사회비용 절감</span>
+      <span class="pill b">🔁 장애인·환자 등 취약계층 확장</span>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>안심 스마트홈 · AIoT Smart Care Home</span>
+    <span>※ 통계 수치는 통계청·소방청 자료로 [출처 확인] 후 확정</span>
+  </div>
+
+</div>
+</body>
+</html>

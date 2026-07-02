@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>독거노인 안전 스마트홈 — 기획서 발표</title>
+<style>
+:root{
+  --bg:#ffffff;
+  --bg2:#f5f8fd;
+  --fg:#16233d;
+  --muted:#5c6a82;
+  --line:#e2e8f2;
+  --blue:#1a56db;
+  --blue-d:#123fa6;
+  --blue-soft:#eaf1ff;
+  --env:#12a15f;      /* 환경 제어 */
+  --env-soft:#e4f6ec;
+  --safe:#e2453d;     /* 안전·응급 */
+  --safe-soft:#fdeceb;
+  --access:#7b3fe4;   /* 접근성·편의 */
+  --access-soft:#f0e9fd;
+  --yellow:#f5a623;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg2);
+  color:var(--fg);
+  font-family:"Pretendard","Apple SD Gothic Neo","Segoe UI",system-ui,-apple-system,sans-serif;
+  overflow:hidden;
+  letter-spacing:-.01em;
+  line-height:1.5;
+}
+#stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+
+.slide{
+  position:absolute;inset:0;
+  display:none;
+  padding:6vh 7vw 8vh;
+  flex-direction:column;
+  justify-content:safe center;
+  overflow:hidden;
+  background:var(--bg);
+}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── 공통 타이포 ── */
+.kicker{
+  font-size:clamp(12px,1.05vw,15px);
+  letter-spacing:.22em;
+  color:var(--blue);
+  text-transform:uppercase;
+  font-weight:700;
+  margin-bottom:1.6vh;
+  display:flex;align-items:center;gap:10px;
+}
+.kicker::before{content:"";width:26px;height:3px;background:var(--blue);border-radius:2px}
+h1{font-size:clamp(40px,6vw,96px);font-weight:800;line-height:1.02;letter-spacing:-.035em}
+h2{font-size:clamp(26px,3.4vw,52px);font-weight:800;line-height:1.12;letter-spacing:-.03em;margin-bottom:2.4vh}
+h2 .hl{color:var(--blue)}
+.lead{font-size:clamp(15px,1.5vw,21px);color:var(--muted);max-width:46em;margin-top:1.2vh}
+.sub{font-size:clamp(14px,1.35vw,19px);color:var(--muted)}
+
+/* ── 표지 ── */
+.cover{background:linear-gradient(160deg,#ffffff 0%,#eef3fc 60%,#e3ecfb 100%)}
+.cover .badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#fff;border:1px solid var(--line);border-radius:30px;
+  padding:8px 16px;font-size:13px;font-weight:600;color:var(--blue);
+  box-shadow:0 4px 16px rgba(26,86,219,.08);margin-bottom:3vh;width:max-content;
+}
+.cover h1{margin:.4vh 0 2vh}
+.cover .accent{width:88px;height:6px;background:linear-gradient(90deg,var(--blue),#4f8cff);border-radius:3px;margin:2.4vh 0}
+.cover .tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:1vh}
+.cover .meta{margin-top:5vh;display:flex;gap:40px;flex-wrap:wrap;color:var(--muted);font-size:15px}
+.cover .meta b{color:var(--fg);font-weight:700}
+.cover .ph{color:var(--blue);background:var(--blue-soft);padding:1px 8px;border-radius:6px;font-weight:600}
+
+.tag{background:#fff;border:1px solid var(--line);color:var(--fg);font-size:13.5px;font-weight:600;
+  padding:7px 14px;border-radius:24px;display:inline-flex;align-items:center;gap:7px}
+.tag.blue{background:var(--blue-soft);border-color:transparent;color:var(--blue-d)}
+
+/* ── 그리드/카드 ── */
+.grid{display:grid;gap:22px;margin-top:1vh}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.card{
+  background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:26px;
+  box-shadow:0 6px 22px rgba(22,35,61,.05);
+}
+.card h3{font-size:clamp(17px,1.5vw,22px);font-weight:800;margin-bottom:8px}
+.card p{font-size:clamp(13.5px,1.15vw,16px);color:var(--muted)}
+.card .ico{font-size:30px;margin-bottom:12px;line-height:1}
+.card.top{border-top:4px solid var(--blue)}
+
+/* 통계 */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:1vh}
+.stat{background:var(--blue-soft);border-radius:18px;padding:26px}
+.stat .num{font-size:clamp(34px,4.4vw,60px);font-weight:800;color:var(--blue-d);line-height:1;letter-spacing:-.03em}
+.stat .lbl{font-size:14.5px;color:var(--muted);margin-top:10px}
+.src{font-size:12px;color:#93a0b5;margin-top:2.4vh}
+
+/* 센서 축 색상 */
+.axis-env .ico,.axis-env h3{color:var(--env)} .axis-env{border-top:4px solid var(--env)}
+.axis-safe .ico,.axis-safe h3{color:var(--safe)} .axis-safe{border-top:4px solid var(--safe)}
+.axis-access .ico,.axis-access h3{color:var(--access)} .axis-access{border-top:4px solid var(--access)}
+.chip{display:inline-block;font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:20px;margin:6px 6px 0 0}
+.chip.env{background:var(--env-soft);color:var(--env)}
+.chip.safe{background:var(--safe-soft);color:var(--safe)}
+.chip.access{background:var(--access-soft);color:var(--access)}
+
+/* 팀 담당 · 모델링 리스트 */
+.mem{border-top:4px solid var(--mc);padding:20px 22px}
+.mem h3{color:var(--mc)}
+.mem .role{font-size:clamp(13.5px,1.2vw,16.5px);font-weight:700;color:var(--fg);margin:2px 0 4px}
+.mlist{list-style:none;margin-top:12px}
+.mlist li{position:relative;padding-left:17px;font-size:clamp(12px,1.02vw,14.5px);color:var(--fg);margin-bottom:8px;line-height:1.42}
+.mlist li::before{content:"";position:absolute;left:0;top:.48em;width:8px;height:8px;border-radius:2.5px;background:var(--mc)}
+.mlist li span{color:var(--muted);font-size:.9em}
+
+/* 리스트 */
+.bullets{list-style:none;margin-top:1vh}
+.bullets li{position:relative;padding-left:30px;margin-bottom:16px;font-size:clamp(14px,1.3vw,18px);color:var(--fg)}
+.bullets li::before{content:"";position:absolute;left:0;top:.55em;width:12px;height:12px;border-radius:50%;
+  background:var(--blue-soft);border:3px solid var(--blue)}
+.bullets li b{font-weight:700}
+.bullets li span{color:var(--muted);font-size:.92em}
+
+/* ── 흐름도(플로우) ── */
+.flow{display:flex;align-items:stretch;gap:0;margin-top:2vh;flex-wrap:wrap}
+.flow .node{
+  flex:1;min-width:150px;background:var(--bg);border:1px solid var(--line);border-radius:16px;
+  padding:20px 18px;text-align:center;box-shadow:0 6px 20px rgba(22,35,61,.05)
+}
+.flow .node .ico{font-size:30px}
+.flow .node h4{font-size:clamp(14px,1.25vw,17px);font-weight:800;margin:8px 0 4px}
+.flow .node p{font-size:12.5px;color:var(--muted)}
+.flow .arrow{display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:26px;padding:0 6px;font-weight:700}
+.flow .node.alert{border-color:var(--safe);background:var(--safe-soft)}
+.flow .node.alert h4{color:var(--safe)}
+
+/* 시나리오 타임 스텝 */
+.steps{display:flex;flex-direction:column;gap:0;margin-top:1vh}
+.step{display:flex;gap:20px;padding:14px 0}
+.step .n{flex:none;width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px}
+.step.danger .n{background:var(--safe)}
+.step .tx h4{font-size:clamp(15px,1.4vw,20px);font-weight:800}
+.step .tx p{font-size:clamp(13px,1.15vw,16px);color:var(--muted)}
+
+/* 로드맵 */
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:3vh;position:relative}
+.timeline::before{content:"";position:absolute;top:19px;left:6%;right:6%;height:3px;background:var(--line)}
+.phase{text-align:center;position:relative;padding:0 10px}
+.phase .dot{width:40px;height:40px;border-radius:50%;background:#fff;border:3px solid var(--blue);
+  color:var(--blue);font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;position:relative;z-index:1}
+.phase.done .dot{background:var(--blue);color:#fff}
+.phase h4{font-size:clamp(14px,1.3vw,18px);font-weight:800}
+.phase .when{font-size:12.5px;color:var(--blue);font-weight:700;margin:4px 0 8px}
+.phase p{font-size:12.5px;color:var(--muted)}
+
+/* 파이프라인(구현) 배지 */
+.pipe{display:flex;align-items:center;gap:12px;margin-top:1.4vh;flex-wrap:wrap}
+.pipe .p{background:var(--blue-soft);color:var(--blue-d);font-weight:700;border-radius:12px;padding:12px 18px;font-size:15px}
+.pipe .sep{color:var(--muted)}
+.stage-tag{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-weight:700;
+  border-radius:12px;padding:8px 16px;font-size:15px;margin-bottom:2vh;width:max-content}
+
+/* 두 컬럼 레이아웃 */
+.cols{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:center}
+.visual{background:var(--bg2);border:1px solid var(--line);border-radius:20px;padding:30px;
+  display:flex;align-items:center;justify-content:center;min-height:44vh}
+
+/* 마무리 */
+.close{background:linear-gradient(160deg,#0f2a6b 0%,#123fa6 55%,#1a56db 100%);color:#eaf1ff}
+.close .kicker{color:#8fb4ff}.close .kicker::before{background:#8fb4ff}
+.close h2{color:#fff}
+.close .card{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18)}
+.close .card h3{color:#fff}.close .card p{color:#c7d6f5}
+.close .refs{margin-top:3vh;font-size:14px;color:#a9c1ee}
+.close .refs b{color:#fff}
+
+/* ── 진행 UI ── */
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--blue);width:0;z-index:40;transition:width .35s ease}
+.counter{position:fixed;bottom:22px;right:28px;font-size:13px;color:var(--muted);font-weight:600;z-index:40;letter-spacing:.05em}
+.counter b{color:var(--blue)}
+.brand{position:fixed;bottom:22px;left:28px;font-size:12.5px;color:#93a0b5;font-weight:600;z-index:40;letter-spacing:.03em}
+.slide-nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:40}
+.slide-nav button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#fff;
+  color:var(--blue);font-size:18px;cursor:pointer;box-shadow:0 4px 14px rgba(22,35,61,.1);transition:.15s}
+.slide-nav button:hover:not(:disabled){background:var(--blue);color:#fff}
+.slide-nav button:disabled{opacity:.35;cursor:default}
+.hint{position:fixed;top:18px;right:28px;font-size:12px;color:#a4b0c4;z-index:40}
+
+/* ── 응급 시나리오 · 관제 모니터 ── */
+.monitor{background:#0f1626;border-radius:16px;overflow:hidden;box-shadow:0 18px 44px rgba(15,22,38,.35);display:flex;flex-direction:column;height:100%}
+.mbar{display:flex;align-items:center;gap:7px;background:#1b2438;padding:10px 14px;font-size:12.5px;color:#8fa0c0;font-weight:600}
+.mdot{width:10px;height:10px;border-radius:50%}
+.mdot.r{background:#ff5f57}.mdot.y{background:#febc2e}.mdot.g{background:#28c840}
+.mbar .mlive{margin-left:auto;color:#ff6b64;font-weight:800;font-size:11px;letter-spacing:.08em}
+.mbody{position:relative;flex:1;padding:13px 15px;display:flex;flex-direction:column;gap:9px;min-height:0}
+.mstat{position:relative;height:36px;flex:none}
+.mstat .badge{position:absolute;inset:0;display:flex;align-items:center;gap:8px;border-radius:9px;padding:0 12px;font-size:13.5px;font-weight:800}
+.badge.ok{background:rgba(40,200,120,.12);color:#41d98d;animation:okb 14s infinite}
+.badge.danger{background:rgba(226,69,61,.16);color:#ff6b64;animation:dgb 14s infinite}
+@keyframes okb{0%,67%{opacity:1}70%,100%{opacity:0}}
+@keyframes dgb{0%,67%{opacity:0}70%,100%{opacity:1}}
+.mtiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:none}
+.tile{background:#182238;border-radius:10px;padding:8px 11px;font-size:10.5px;color:#8fa0c0}
+.tile b{display:block;font-size:14px;color:#e8eefc;margin-top:3px}
+.mlog{flex:1;background:#0b1120;border-radius:12px;padding:11px 13px;font-size:clamp(11px,.95vw,13px);color:#b9c6e2;display:flex;flex-direction:column;gap:8px;overflow:hidden;min-height:0}
+.ev{opacity:0;line-height:1.4}
+.ev b{color:#e8eefc}
+.ev.warn{color:#ffd28a}
+.ev.crit{color:#ff8d87;font-weight:700}
+.e0{animation:ev0 14s infinite}.e1{animation:ev1 14s infinite}.e2{animation:ev2 14s infinite}
+.e3{animation:ev3 14s infinite}.e4{animation:ev4 14s infinite}.e5{animation:ev5 14s infinite}
+@keyframes ev0{0%,2%{opacity:0;transform:translateY(5px)}5%,97%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes ev1{0%,29%{opacity:0;transform:translateY(5px)}32%,97%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes ev2{0%,42%{opacity:0;transform:translateY(5px)}45%,97%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes ev3{0%,55%{opacity:0;transform:translateY(5px)}58%,97%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes ev4{0%,67%{opacity:0;transform:translateY(5px)}70%,97%{opacity:1;transform:none}100%{opacity:0}}
+@keyframes ev5{0%,72%{opacity:0;transform:translateY(5px)}75%,97%{opacity:1;transform:none}100%{opacity:0}}
+.alertpop{position:absolute;left:14px;right:14px;bottom:14px;background:linear-gradient(135deg,#e2453d,#b3271f);color:#fff;border-radius:14px;padding:13px 16px;font-weight:800;font-size:14.5px;box-shadow:0 14px 34px rgba(226,69,61,.45);opacity:0;animation:apop 14s infinite}
+.alertpop span{display:block;font-size:11.5px;font-weight:600;opacity:.92;margin-top:4px}
+@keyframes apop{0%,68%{opacity:0;transform:translateY(14px) scale(.96)}72%,97%{opacity:1;transform:none}100%{opacity:0}}
+
+/* ── 인쇄(PDF 제출용) ── */
+@media print{
+  .ev,.badge.danger,.alertpop{animation:none!important;opacity:1!important}
+  .badge.ok{animation:none!important;opacity:0!important}
+  @page{size:1280px 720px;margin:0}
+  html,body{overflow:visible;background:#fff;height:auto}
+  .progress,.counter,.brand,.slide-nav,.hint{display:none!important}
+  #stage{position:static;display:block}
+  .slide{display:flex!important;position:relative;inset:auto;width:1280px;height:720px;
+    page-break-after:always;break-after:page;box-shadow:none;animation:none!important;opacity:1!important}
+}
+@media (max-width:820px){
+  .g3,.g4,.stats,.timeline{grid-template-columns:1fr 1fr}
+  .cols{grid-template-columns:1fr}
+  .flow{flex-direction:column}.flow .arrow{transform:rotate(90deg);padding:4px 0}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="bar"></div>
+<div class="hint">← → 방향키 또는 화면 좌·우 클릭</div>
+
+<div id="stage">
+
+  <!-- 1. 표지 -->
+  <section class="slide active cover">
+    <div class="badge">🏠 AIoT SMART CARE HOME · 캡스톤 기획서</div>
+    <div class="kicker">몸이 불편한 독거노인을 위한</div>
+    <h1>스스로 지키는 집,<br><span style="color:var(--blue)">안심 스마트홈</span></h1>
+    <div class="accent"></div>
+    <p class="lead">센서가 어르신의 움직임과 환경을 살피고, 위험을 감지하면 <b>스스로 구급차를 부르는</b> 배리어프리 AIoT 주거 시스템</p>
+    <div class="tags">
+      <span class="tag blue">🩺 낙상·응급 감지</span>
+      <span class="tag blue">📡 mmWave 레이더</span>
+      <span class="tag blue">🌡️ 환경 자동 제어</span>
+      <span class="tag blue">🎮 Unreal · VR 시뮬레이션</span>
+    </div>
+    <div class="meta">
+      <div>과목 <b><span class="ph">과목명 입력</span></b></div>
+      <div>팀 <b><span class="ph">팀명 입력</span></b></div>
+      <div>발표자 <b><span class="ph">이름 입력</span></b></div>
+      <div>날짜 <b>2026</b></div>
+    </div>
+  </section>
+
+  <!-- 2. 문제 · 솔루션 -->
+  <section class="slide">
+    <div class="kicker">Overview · 기획 개요</div>
+    <h2>무엇을, 누구를 위해 짓는가 — <span class="hl">스스로 지키는 집</span></h2>
+    <div class="stats">
+      <div class="stat"><div class="num">200만+</div><div class="lbl">국내 65세 이상 1인 가구 — 독거노인 지속 증가</div></div>
+      <div class="stat"><div class="num">낙상 1위</div><div class="lbl">노인 안전사고 원인 중 가정 내 낙상이 최다</div></div>
+      <div class="stat"><div class="num">골든타임</div><div class="lbl">쓰러져도 발견·신고가 늦어 생명 위협</div></div>
+    </div>
+    <div class="grid g3" style="margin-top:2.6vh">
+      <div class="card top"><div class="ico">🎯</div><h3>기획 의도</h3><p>발견이 늦어 생명을 잃는 가정 내 사고 — <b>집이 스스로 감지하고 119까지 부르는 주거</b>로 해결</p></div>
+      <div class="card top"><div class="ico">👵</div><h3>타겟층 · 선정 이유</h3><p><b>몸이 불편한 독거노인</b> — 1인 노인가구 200만+, 낙상 1위·돌봄 공백이 가장 큰 계층이라 기술 개입 효과가 최대</p></div>
+      <div class="card top"><div class="ico">🏠</div><h3>공간 핵심 기능</h3><p>비접촉 센서 24H 모니터링 · 낙상 → 119 자동 신고 · 자동문 등 배리어프리 자동화</p></div>
+    </div>
+    <p class="src">거동이 불편한 독거노인을 위한 비접촉(웨어러블 없는) AIoT 스마트홈 · ※ 수치는 통계청·소방청 자료로 <b>[출처 확인]</b> 후 확정</p>
+  </section>
+
+  <!-- 4.6 3D 조감 · 최종 이용 모습 -->
+  <section class="slide" style="padding:3.4vh 5vw 7.5vh">
+    <div class="kicker">3D View · 최종 이용 모습</div>
+    <h2 style="margin-bottom:.6vh">우리가 지을 집, <span class="hl">하루는 이렇게 흐릅니다</span></h2>
+    <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0">
+      <svg viewBox="-310 -146 606 425" width="100%" style="max-height:44vh" font-family="inherit">
+<polygon points="0,-68 279.7,93.5 -14.7,263.5 -294.4,102" fill="#ddefe3" stroke="#c9dfd0" stroke-width="1"/><polygon points="-242.9,72.3 36.8,233.8 -14.7,263.5 -294.4,102" fill="#4a5468"/><polygon points="-254,92.2 -228.9,106.7 -234.8,110.1 -259.8,95.6" fill="#f2d374"/><polygon points="-206.8,119.4 -181.8,133.9 -187.7,137.3 -212.7,122.8" fill="#f2d374"/><polygon points="-159.7,146.6 -134.7,161.1 -140.6,164.5 -165.6,150" fill="#f2d374"/><polygon points="-112.6,173.8 -87.6,188.3 -93.5,191.7 -118.5,177.2" fill="#f2d374"/><polygon points="-65.5,201 -40.5,215.5 -46.4,218.9 -71.4,204.4" fill="#f2d374"/><polygon points="-18.4,228.2 6.6,242.7 0.7,246.1 -24.3,231.6" fill="#f2d374"/><polygon points="-48.6,135.1 1.5,164 -41.2,188.7 -91.3,159.8" fill="#dfe5ee" stroke="#cbd5e3" stroke-width=".7"/><ellipse cx="-53.0" cy="-13.6" rx="13.799999999999999" ry="5.75" fill="rgba(22,35,61,.10)"/><polygon points="-53,-35.5 -48.9,-33.1 -53,-30.8 -57.1,-33.1" fill="#9a7b58"/><polygon points="-48.9,-13.6 -48.9,-33.1 -53,-30.8 -53,-11.2" fill="#7d6244"/><polygon points="-57.1,-13.6 -57.1,-33.1 -53,-30.8 -53,-11.2" fill="#8d7050"/><circle cx="-53.0" cy="-47.6" r="17.25" fill="#57b877"/><circle cx="-61.8" cy="-54.4" r="10.924999999999999" fill="#6ec48d"/><ellipse cx="198.7" cy="135.1" rx="12" ry="5" fill="rgba(22,35,61,.10)"/><polygon points="198.7,113.2 202.9,115.6 198.7,118 194.6,115.6" fill="#9a7b58"/><polygon points="202.9,135.2 202.9,115.6 198.7,118 198.7,137.5" fill="#7d6244"/><polygon points="194.6,135.1 194.6,115.6 198.7,118 198.7,137.5" fill="#8d7050"/><circle cx="198.7" cy="101.1" r="15" fill="#57b877"/><circle cx="189.9" cy="94.3" r="9.5" fill="#6ec48d"/><polygon points="0,-56.1 159,35.7 17.7,117.3 -141.3,25.5" fill="#f9fbfe" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="159,91.8 159,35.7 17.7,117.3 17.7,173.4" fill="#e2e9f3" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="-141.3,81.6 -141.3,25.5 17.7,117.3 17.7,173.4" fill="#f1f5fb" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="-131.5,81 -131.5,36.8 -69.6,72.5 -69.6,116.7" fill="#b7d3ef" stroke="#9db8d8" stroke-width=".8"/><polygon points="-40.2,140.5 -40.2,94.6 -22.5,104.8 -22.5,150.7" fill="#d9e4f2" stroke="#9db8d8" stroke-width=".8"/><polygon points="-13.7,143.9 -13.7,109.9 8.4,122.7 8.4,156.7" fill="#b7d3ef" stroke="#9db8d8" stroke-width=".8"/><polygon points="127.1,97.2 127.1,64.9 82.9,90.4 82.9,122.7" fill="#a9c8e8" stroke="#9db8d8" stroke-width=".8"/><polygon points="0,-68.5 169.3,29.2 17.7,116.8 -151.6,19" fill="#eef2f8" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="169.3,35.7 169.3,29.2 17.7,116.8 17.7,123.3" fill="#cfd9e7" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="-151.6,25.5 -151.6,19 17.7,116.8 17.7,123.3" fill="#e2e9f3" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="-82.4,-3.2 63.3,80.9 14.7,109 -131,24.8" fill="#f0e0c8" stroke="#e0cba6" stroke-width=".7"/><polygon points="0,-117.3 159,-25.5 70.7,25.5 -88.3,-66.3" fill="#f9fbfe" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="159,29.2 159,-25.5 70.7,25.5 70.7,80.2" fill="#e2e9f3" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="-88.3,-11.6 -88.3,-66.3 70.7,25.5 70.7,80.2" fill="#f1f5fb" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="-74.1,-7.4 -74.1,-51.6 55.5,23.2 55.5,67.4" fill="#b7d3ef" stroke="#9db8d8" stroke-width=".8"/><polygon points="-10.2,29.7 -10.2,-14.5 -7.9,-13.3 -7.9,30.9" fill="#f1f5fb"/><polygon points="146.2,26.6 146.2,-9.1 102,16.4 102,52.1" fill="#a9c8e8" stroke="#9db8d8" stroke-width=".8"/><polygon points="0,-129.7 169.3,-32 70.7,25 -98.6,-72.8" fill="#eef2f8" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="169.3,-25.5 169.3,-32 70.7,25 70.7,31.4" fill="#cfd9e7" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="-98.6,-66.3 -98.6,-72.8 70.7,25 70.7,31.4" fill="#e2e9f3" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="75.8,83.2 75.8,65 17.7,98.6 17.7,116.8" fill="rgba(160,195,228,.5)" stroke="#9db8d8" stroke-width=".8"/><polygon points="-151.6,19 -151.6,0.8 17.7,98.6 17.7,116.8" fill="rgba(178,210,238,.5)" stroke="#9db8d8" stroke-width=".8"/><polyline points="-151.6,0.8 17.7,98.6 75.8,65" fill="none" stroke="#8fa9c6" stroke-width="1.5"/><polygon points="10.3,164.1 35.3,178.5 30.9,181.1 5.9,166.6" fill="#f9fbfe" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="35.3,210.8 35.3,178.5 30.9,181.1 30.9,213.4" fill="#e2e9f3" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="5.9,198.9 5.9,166.6 30.9,181.1 30.9,213.4" fill="#f1f5fb" stroke="#c9d4e4" stroke-width=".7" stroke-linejoin="round"/><polygon points="9.1,191.1 9.1,174.9 26.8,185.1 26.8,201.3" fill="#243049"/><circle cx="-154.6" cy="86.7" r="9" fill="#7cc794"/><circle cx="-82.4" cy="131.7" r="7" fill="#7cc794"/><ellipse cx="-195.8" cy="73.9" rx="14.399999999999999" ry="6" fill="rgba(22,35,61,.10)"/><polygon points="-195.8,52 -191.7,54.4 -195.8,56.8 -199.9,54.4" fill="#9a7b58"/><polygon points="-191.7,73.9 -191.7,54.4 -195.8,56.8 -195.8,76.3" fill="#7d6244"/><polygon points="-199.9,74 -199.9,54.4 -195.8,56.8 -195.8,76.3" fill="#8d7050"/><circle cx="-195.8" cy="39.9" r="18" fill="#57b877"/><circle cx="-204.6" cy="33.1" r="11.4" fill="#6ec48d"/><ellipse cx="67.7" cy="192.1" rx="12.600000000000001" ry="5.25" fill="rgba(22,35,61,.10)"/><polygon points="67.7,170.2 71.8,172.6 67.7,174.9 63.6,172.6" fill="#9a7b58"/><polygon points="71.8,192.1 71.8,172.6 67.7,174.9 67.7,194.5" fill="#7d6244"/><polygon points="63.6,192.1 63.6,172.6 67.7,174.9 67.7,194.5" fill="#8d7050"/><circle cx="67.7" cy="158.1" r="15.75" fill="#57b877"/><circle cx="58.9" cy="151.3" r="9.975" fill="#6ec48d"/><polygon points="-54.9,156.1 -54.9,137.1 -49.6,140.2 -49.6,159.2" fill="#5c6a82" stroke="none" rx="3"/><circle cx="-52.3" cy="133.5" r="4.2" fill="#5c6a82"/><ellipse cx="-169.3" cy="136.9" rx="38" ry="11" fill="rgba(0,0,0,.22)"/><polygon points="-185.5,97.2 -132.5,127.8 -153.1,139.7 -206.1,109.1" fill="#ffffff" stroke="#c9d4e4" stroke-width=".6"/><polygon points="-132.5,141.4 -132.5,127.8 -153.1,139.7 -153.1,153.3" fill="#dfe6ef" stroke="#c9d4e4" stroke-width=".6"/><polygon points="-206.1,122.7 -206.1,109.1 -153.1,139.7 -153.1,153.3" fill="#f2f6fb" stroke="#c9d4e4" stroke-width=".6"/><polygon points="-185.5,102.3 -131.9,133.3 -153.1,145.5 -206.7,114.6" fill="#e2453d"/><polygon points="-131.9,136.7 -131.9,133.3 -153.1,145.5 -153.1,148.9" fill="#c22e27"/><polygon points="-206.7,118 -206.7,114.6 -153.1,145.5 -153.1,148.9" fill="#e2453d"/><polygon points="-173,96.1 -146.5,111.4 -162.7,120.8 -189.2,105.5" fill="#f6f9fd" stroke="#c9d4e4" stroke-width=".6"/><polygon points="-146.5,122.3 -146.5,111.4 -162.7,120.8 -162.7,131.7" fill="#dbe3ee" stroke="#c9d4e4" stroke-width=".6"/><polygon points="-189.2,116.4 -189.2,105.5 -162.7,120.8 -162.7,131.7" fill="#cfe0f8" stroke="#c9d4e4" stroke-width=".6"/><polygon points="-166.4,100.5 -156.1,106.4 -164.9,111.5 -175.2,105.6" fill="#ff6b64"/><polygon points="-156.1,110.2 -156.1,106.4 -164.9,111.5 -164.9,115.3" fill="#b3271f"/><polygon points="-175.2,109.3 -175.2,105.6 -164.9,111.5 -164.9,115.3" fill="#e2453d"/><polygon points="-166.1,136.5 -166.1,134.5 -158.7,138.7 -158.7,140.8" fill="#d6001c"/><polygon points="-163.4,140.6 -163.4,133.8 -161.6,134.8 -161.6,141.6" fill="#d6001c"/><circle cx="-195.4" cy="128.6" r="5.5" fill="#16233d"/><circle cx="-163.0" cy="147.3" r="5.5" fill="#16233d"/><circle cx="-195.4" cy="128.6" r="2.1" fill="#9aa6c4"/><circle cx="-163.0" cy="147.3" r="2.1" fill="#9aa6c4"/><circle cx="-31.7" cy="95.6" r="4" fill="#7b3fe4"/><circle cx="-31.7" cy="95.6" r="4" fill="none" stroke="#7b3fe4" stroke-width="2"><animate attributeName="r" values="4;14" dur="1.9s" repeatCount="indefinite"/><animate attributeName="opacity" values=".85;0" dur="1.9s" repeatCount="indefinite"/></circle><circle cx="-101.0" cy="60.0" r="4" fill="#e2453d"/><circle cx="-101.0" cy="60.0" r="4" fill="none" stroke="#e2453d" stroke-width="2"><animate attributeName="r" values="4;14" dur="1.9s" repeatCount="indefinite"/><animate attributeName="opacity" values=".85;0" dur="1.9s" repeatCount="indefinite"/></circle><circle cx="41.8" cy="19.2" r="4" fill="#0e9aa8"/><circle cx="41.8" cy="19.2" r="4" fill="none" stroke="#0e9aa8" stroke-width="2"><animate attributeName="r" values="4;14" dur="1.9s" repeatCount="indefinite"/><animate attributeName="opacity" values=".85;0" dur="1.9s" repeatCount="indefinite"/></circle><circle cx="19.9" cy="173.0" r="4" fill="#12a15f"/><circle cx="19.9" cy="173.0" r="4" fill="none" stroke="#12a15f" stroke-width="2"><animate attributeName="r" values="4;14" dur="1.9s" repeatCount="indefinite"/><animate attributeName="opacity" values=".85;0" dur="1.9s" repeatCount="indefinite"/></circle><text x="-35.3" y="41.7" text-anchor="middle" font-size="10" font-weight="700" fill="#a58a5f">테라스</text><text x="-70.7" y="146.2" text-anchor="middle" font-size="10" font-weight="700" fill="#8a97ad">현관</text>
+</svg>
+    </div>
+    <div class="flow" style="margin-top:.6vh">
+      <div class="node"><div class="ico">🚗</div><h4>① 귀가 감지</h4><p>차량·외부 온도 연동 — 도착 전 실내를 미리 쾌적하게</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="ico">🚪</div><h4>② 비접촉 입장</h4><p>자동문·자동 조명으로 손대지 않고 입장</p></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="ico">🛋️</div><h4>③ 일상 케어</h4><p>비접촉 센서가 생활 패턴을 조용히 살핌</p></div>
+      <div class="arrow">→</div>
+      <div class="node alert"><div class="ico">🚨</div><h4>④ 위험 시 자동 신고</h4><p>낙상 감지 → 119·보호자 동시 알림</p></div>
+    </div>
+  </section>
+
+  <!-- 팀 작업 ① 박형석 -->
+  <section class="slide" style="padding:3.6vh 4vw 7.5vh">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:1.4vh;flex-wrap:wrap">
+      <div>
+        <div class="kicker" style="margin-bottom:.5vh">Team Work ① · 3D Modeling</div>
+        <h2 style="margin-bottom:0;font-size:clamp(24px,3vw,44px)">박형석 — <span style="color:#1a56db">119 구급차 · 길가</span></h2>
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;max-width:46%;justify-content:flex-end">
+        <span class="chip" style="background:#eaf1ff;color:#123fa6">119 구급차 모델</span>
+        <span class="chip" style="background:#eaf1ff;color:#123fa6">도로 · 차선 · 보도블럭</span>
+        <span class="chip" style="background:#eaf1ff;color:#123fa6">진입로 · 주차 공간</span>
+        <span class="chip" style="background:#eaf1ff;color:#123fa6">가로등 · 표지판</span>
+      </div>
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1.45fr 1fr;grid-template-rows:1fr 1fr;gap:12px">
+      <div style="position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:0;grid-row:1/3">
+        <div style="text-align:center;color:#a4b0c4;font-size:12px;line-height:1.7;padding:8px">
+          <span style="font-size:34px">🖼️</span><br><b style="color:#7e8ba3">박형석 작업 사진 1</b><br>
+          <code style="background:#e8edf6;color:#5c6a82;padding:2px 7px;border-radius:6px;font-size:11px">work/1-vehicle-1.png</code>
+        </div>
+        <img src="work/1-vehicle-1.png" alt="박형석 작업 1" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.j){this.dataset.j=1;this.src='work/1-vehicle-1.jpg'}else{this.style.display='none'}">
+      </div>
+      <div style="position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:0">
+        <div style="text-align:center;color:#a4b0c4;font-size:12px;line-height:1.7;padding:8px">
+          <span style="font-size:24px">🖼️</span><br><b style="color:#7e8ba3">박형석 작업 사진 2</b><br>
+          <code style="background:#e8edf6;color:#5c6a82;padding:2px 7px;border-radius:6px;font-size:11px">work/1-vehicle-2.png</code>
+        </div>
+        <img src="work/1-vehicle-2.png" alt="박형석 작업 2" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.j){this.dataset.j=1;this.src='work/1-vehicle-2.jpg'}else{this.style.display='none'}">
+      </div>
+      <div style="position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:0">
+        <div style="text-align:center;color:#a4b0c4;font-size:12px;line-height:1.7;padding:8px">
+          <span style="font-size:24px">🖼️</span><br><b style="color:#7e8ba3">박형석 작업 사진 3</b><br>
+          <code style="background:#e8edf6;color:#5c6a82;padding:2px 7px;border-radius:6px;font-size:11px">work/1-vehicle-3.png</code>
+        </div>
+        <img src="work/1-vehicle-3.png" alt="박형석 작업 3" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.j){this.dataset.j=1;this.src='work/1-vehicle-3.jpg'}else{this.style.display='none'}">
+      </div>
+    </div>
+  </section>
+
+  <!-- 팀 작업 ② 최상범 -->
+  <section class="slide" style="padding:3.6vh 4vw 7.5vh">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:1.4vh;flex-wrap:wrap">
+      <div>
+        <div class="kicker" style="margin-bottom:.5vh">Team Work ② · 3D Modeling</div>
+        <h2 style="margin-bottom:0;font-size:clamp(24px,3vw,44px)">최상범 — <span style="color:#12a15f">외부 조경</span></h2>
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;max-width:46%;justify-content:flex-end">
+        <span class="chip" style="background:#e4f6ec;color:#0d7a48">정원수 · 관목 · 잔디</span>
+        <span class="chip" style="background:#e4f6ec;color:#0d7a48">화단 · 디딤돌 · 외부 계단</span>
+        <span class="chip" style="background:#e4f6ec;color:#0d7a48">울타리 · 대문 · 사인월</span>
+        <span class="chip" style="background:#e4f6ec;color:#0d7a48">야외 조명 · 화분</span>
+      </div>
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1.45fr 1fr;grid-template-rows:1fr 1fr;gap:12px">
+      <div style="position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:0;grid-row:1/3">
+        <div style="text-align:center;color:#a4b0c4;font-size:12px;line-height:1.7;padding:8px">
+          <span style="font-size:34px">🖼️</span><br><b style="color:#7e8ba3">최상범 작업 사진 1</b><br>
+          <code style="background:#e8edf6;color:#5c6a82;padding:2px 7px;border-radius:6px;font-size:11px">work/2-garden-1.png</code>
+        </div>
+        <img src="work/2-garden-1.png" alt="최상범 작업 1" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.j){this.dataset.j=1;this.src='work/2-garden-1.jpg'}else{this.style.display='none'}">
+      </div>
+      <div style="position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:0">
+        <div style="text-align:center;color:#a4b0c4;font-size:12px;line-height:1.7;padding:8px">
+          <span style="font-size:24px">🖼️</span><br><b style="color:#7e8ba3">최상범 작업 사진 2</b><br>
+          <code style="background:#e8edf6;color:#5c6a82;padding:2px 7px;border-radius:6px;font-size:11px">work/2-garden-2.png</code>
+        </div>
+        <img src="work/2-garden-2.png" alt="최상범 작업 2" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.j){this.dataset.j=1;this.src='work/2-garden-2.jpg'}else{this.style.display='none'}">
+      </div>
+      <div style="position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:0">
+        <div style="text-align:center;color:#a4b0c4;font-size:12px;line-height:1.7;padding:8px">
+          <span style="font-size:24px">🖼️</span><br><b style="color:#7e8ba3">최상범 작업 사진 3</b><br>
+          <code style="background:#e8edf6;color:#5c6a82;padding:2px 7px;border-radius:6px;font-size:11px">work/2-garden-3.png</code>
+        </div>
+        <img src="work/2-garden-3.png" alt="최상범 작업 3" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.j){this.dataset.j=1;this.src='work/2-garden-3.jpg'}else{this.style.display='none'}">
+      </div>
+    </div>
+  </section>
+
+  <!-- 팀 작업 ③ 김민혁 -->
+  <section class="slide" style="padding:3.6vh 4vw 7.5vh">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:1.4vh;flex-wrap:wrap">
+      <div>
+        <div class="kicker" style="margin-bottom:.5vh">Team Work ③ · 3D Modeling</div>
+        <h2 style="margin-bottom:0;font-size:clamp(24px,3vw,44px)">김민혁 — <span style="color:#0e9aa8">배경 · 집 외관</span></h2>
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;max-width:46%;justify-content:flex-end">
+        <span class="chip" style="background:#e2f4f6;color:#0b7d89">2층 매스 · 평지붕 · 스타코</span>
+        <span class="chip" style="background:#e2f4f6;color:#0b7d89">로이복층유리 창호 · 난간</span>
+        <span class="chip" style="background:#e2f4f6;color:#0b7d89">현관 포치 · 외벽 월패드</span>
+        <span class="chip" style="background:#e2f4f6;color:#0b7d89">하늘 · 주변 배경</span>
+      </div>
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1.45fr 1fr;grid-template-rows:1fr 1fr;gap:12px">
+      <div style="position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:0;grid-row:1/3">
+        <div style="text-align:center;color:#a4b0c4;font-size:12px;line-height:1.7;padding:8px">
+          <span style="font-size:34px">🖼️</span><br><b style="color:#7e8ba3">김민혁 작업 사진 1</b><br>
+          <code style="background:#e8edf6;color:#5c6a82;padding:2px 7px;border-radius:6px;font-size:11px">work/3-exterior-1.png</code>
+        </div>
+        <img src="work/3-exterior-1.png" alt="김민혁 작업 1" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.j){this.dataset.j=1;this.src='work/3-exterior-1.jpg'}else{this.style.display='none'}">
+      </div>
+      <div style="position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:0">
+        <div style="text-align:center;color:#a4b0c4;font-size:12px;line-height:1.7;padding:8px">
+          <span style="font-size:24px">🖼️</span><br><b style="color:#7e8ba3">김민혁 작업 사진 2</b><br>
+          <code style="background:#e8edf6;color:#5c6a82;padding:2px 7px;border-radius:6px;font-size:11px">work/3-exterior-2.png</code>
+        </div>
+        <img src="work/3-exterior-2.png" alt="김민혁 작업 2" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.j){this.dataset.j=1;this.src='work/3-exterior-2.jpg'}else{this.style.display='none'}">
+      </div>
+      <div style="position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:0">
+        <div style="text-align:center;color:#a4b0c4;font-size:12px;line-height:1.7;padding:8px">
+          <span style="font-size:24px">🖼️</span><br><b style="color:#7e8ba3">김민혁 작업 사진 3</b><br>
+          <code style="background:#e8edf6;color:#5c6a82;padding:2px 7px;border-radius:6px;font-size:11px">work/3-exterior-3.png</code>
+        </div>
+        <img src="work/3-exterior-3.png" alt="김민혁 작업 3" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.j){this.dataset.j=1;this.src='work/3-exterior-3.jpg'}else{this.style.display='none'}">
+      </div>
+    </div>
+  </section>
+
+  <!-- 팀 작업 ④ 강해영 -->
+  <section class="slide" style="padding:3.6vh 4vw 7.5vh">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:1.4vh;flex-wrap:wrap">
+      <div>
+        <div class="kicker" style="margin-bottom:.5vh">Team Work ④ · 3D Modeling</div>
+        <h2 style="margin-bottom:0;font-size:clamp(24px,3vw,44px)">강해영 — <span style="color:#7b3fe4">집 내부</span></h2>
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;max-width:46%;justify-content:flex-end">
+        <span class="chip" style="background:#f0e9fd;color:#5f2bb8">1F 거실 · 주방 · 침실1 · 욕실</span>
+        <span class="chip" style="background:#f0e9fd;color:#5f2bb8">2F 침실2·3 · 가족실 · 테라스</span>
+        <span class="chip" style="background:#f0e9fd;color:#5f2bb8">내부 계단 · 가구 일체</span>
+        <span class="chip" style="background:#f0e9fd;color:#5f2bb8">센서 기기 소품</span>
+      </div>
+    </div>
+    <div style="flex:1;min-height:0;display:grid;grid-template-columns:1.45fr 1fr;grid-template-rows:1fr 1fr;gap:12px">
+      <div style="position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:0;grid-row:1/3">
+        <div style="text-align:center;color:#a4b0c4;font-size:12px;line-height:1.7;padding:8px">
+          <span style="font-size:34px">🖼️</span><br><b style="color:#7e8ba3">강해영 작업 사진 1</b><br>
+          <code style="background:#e8edf6;color:#5c6a82;padding:2px 7px;border-radius:6px;font-size:11px">work/4-interior-1.png</code>
+        </div>
+        <img src="work/4-interior-1.png" alt="강해영 작업 1" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.j){this.dataset.j=1;this.src='work/4-interior-1.jpg'}else{this.style.display='none'}">
+      </div>
+      <div style="position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:0">
+        <div style="text-align:center;color:#a4b0c4;font-size:12px;line-height:1.7;padding:8px">
+          <span style="font-size:24px">🖼️</span><br><b style="color:#7e8ba3">강해영 작업 사진 2</b><br>
+          <code style="background:#e8edf6;color:#5c6a82;padding:2px 7px;border-radius:6px;font-size:11px">work/4-interior-2.png</code>
+        </div>
+        <img src="work/4-interior-2.png" alt="강해영 작업 2" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.j){this.dataset.j=1;this.src='work/4-interior-2.jpg'}else{this.style.display='none'}">
+      </div>
+      <div style="position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2);display:flex;align-items:center;justify-content:center;min-height:0">
+        <div style="text-align:center;color:#a4b0c4;font-size:12px;line-height:1.7;padding:8px">
+          <span style="font-size:24px">🖼️</span><br><b style="color:#7e8ba3">강해영 작업 사진 3</b><br>
+          <code style="background:#e8edf6;color:#5c6a82;padding:2px 7px;border-radius:6px;font-size:11px">work/4-interior-3.png</code>
+        </div>
+        <img src="work/4-interior-3.png" alt="강해영 작업 3" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="if(!this.dataset.j){this.dataset.j=1;this.src='work/4-interior-3.jpg'}else{this.style.display='none'}">
+      </div>
+    </div>
+  </section>
+
+  <!-- 14. 마무리 -->
+  <section class="slide close">
+    <div class="kicker">Summary</div>
+    <h2>집이 곁을 지키면,<br>홀로여도 혼자가 아닙니다</h2>
+    <div class="grid g3" style="margin-top:2vh">
+      <div class="card"><h3>⏱️ 골든타임 확보</h3><p>즉각 감지·자동 신고로 응급 발견 지연 최소화</p></div>
+      <div class="card"><h3>🧡 자립 생활 지원</h3><p>배리어프리 환경으로 자택 거주 기간 연장</p></div>
+      <div class="card"><h3>💰 사회 비용 절감</h3><p>사고 예방·재택 돌봄 — 장애인 등 취약계층 확장 가능</p></div>
+    </div>
+    <p class="refs">
+      <b>참고자료</b> &nbsp; 통계청 인구주택총조사 · 소방청 노인 안전사고 통계 · mmWave 기반 낙상감지 연구 &nbsp;<b>[출처 확인]</b><br>
+      <b>구현 스택</b> &nbsp; Blender · Unreal Engine · VR &nbsp;|&nbsp; <b>감사합니다 — Q &amp; A</b>
+    </p>
+  </section>
+
+</div>
+
+<div class="counter"><b id="cur">1</b> / <span id="tot">14</span></div>
+<div class="brand">AIoT SMART CARE HOME</div>
+<div class="slide-nav">
+  <button id="slidePrev" aria-label="이전">‹</button>
+  <button id="slideNext" aria-label="다음">›</button>
+</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+const total=slides.length;
+document.getElementById('tot').textContent=total;
+let i=0;
+const slidePrev=document.getElementById('slidePrev');
+const slideNext=document.getElementById('slideNext');
+function go(n){
+  i=Math.max(0,Math.min(total-1,n));
+  slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('cur').textContent=i+1;
+  document.getElementById('bar').style.width=((i+1)/total*100)+'%';
+  const sync=slides[i].querySelector("svg[data-sync]");
+  if(sync&&sync.setCurrentTime)sync.setCurrentTime(0);
+  slidePrev.disabled=i===0;
+  slideNext.disabled=i===total-1;
+}
+slidePrev.addEventListener('click',e=>{e.stopPropagation();go(i-1)});
+slideNext.addEventListener('click',e=>{e.stopPropagation();go(i+1)});
+document.addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' '].includes(e.key)||e.code==='Space'){go(i+1);e.preventDefault();}
+  else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){go(i-1);e.preventDefault();}
+  else if(e.key==='Home'){go(0)}
+  else if(e.key==='End'){go(total-1)}
+});
+document.addEventListener('click',e=>{
+  if(e.target.closest('.slide-nav'))return;
+  if(e.clientX<window.innerWidth/2)go(i-1);else go(i+1);
+});
+go(0);
+</script>
+</body>
+</html>

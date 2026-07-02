@@ -3,1124 +3,142 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Hide In AI — 발표</title>
+<title>PPT List — 발표 자료 모음</title>
+<meta name="description" content="b-hyoung의 발표 슬라이드 모음. PPT를 골라서 바로 볼 수 있는 갤러리." />
 <style>
 :root{
-  --bg:#0a0a14;
-  --bg2:#11121e;
-  --fg:#eef0fa;
-  --muted:#8b8fa8;
-  --line:#23253a;
-  --cyan:#00ffd5;
-  --magenta:#ff3d8b;
-  --red:#ff4757;
-  --green:#7bed9f;
-  --yellow:#ffd166;
+  --bg:#0b1020; --bg2:#0f152a;
+  --card:#141b31; --line:#26304d;
+  --fg:#eef1fb; --muted:#9aa6c4;
+  --blue:#5b8cff; --cyan:#38e1c8;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
+html{scroll-behavior:smooth}
 body{
-  background:var(--bg);
+  min-height:100%;
+  background:
+    radial-gradient(1000px 600px at 15% -10%,rgba(91,140,255,.22),transparent 60%),
+    radial-gradient(900px 600px at 100% 0%,rgba(56,225,200,.14),transparent 55%),
+    var(--bg);
   color:var(--fg);
   font-family:"Pretendard","Apple SD Gothic Neo","Segoe UI",system-ui,-apple-system,sans-serif;
-  overflow:hidden;
   letter-spacing:-.01em;
+  -webkit-font-smoothing:antialiased;
 }
-#stage{
-  position:fixed;inset:0;
-  display:flex;align-items:center;justify-content:center;
-}
-.slide{
-  position:absolute;inset:0;
-  display:none;
-  padding:5vh 6vw;
-  flex-direction:column;
-  justify-content:safe center;
-  overflow:hidden;
-}
-.slide.active{display:flex;animation:fade .35s ease}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.wrap{max-width:1180px;margin:0 auto;padding:0 26px}
 
-.kicker{
-  font-size:clamp(12px,1.1vw,16px);
-  letter-spacing:.3em;
-  color:var(--cyan);
-  text-transform:uppercase;
-  margin-bottom:2vh;
-  font-weight:600;
-}
-h1{
-  font-size:clamp(48px,7.5vw,140px);
-  font-weight:800;
-  line-height:.95;
-  letter-spacing:-.04em;
-}
-h1 .dot{color:var(--cyan)}
-h1 .ai{
-  background:linear-gradient(90deg,var(--cyan),var(--magenta));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-h2{
-  font-size:clamp(28px,3.8vw,60px);
-  font-weight:800;
-  line-height:1.05;
-  margin-bottom:2.5vh;
-  letter-spacing:-.03em;
-}
-h2 .accent{color:var(--cyan)}
-h3{
-  font-size:clamp(20px,2vw,30px);
-  font-weight:700;
-  margin-bottom:.8em;
-}
-p,li{
-  font-size:clamp(16px,1.4vw,22px);
-  line-height:1.55;
-  color:var(--fg);
-}
-.muted{color:var(--muted)}
-.tag{
-  display:inline-block;
-  padding:.3em .7em;
-  border:1px solid var(--line);
-  border-radius:6px;
-  font-size:.85em;
-  color:var(--muted);
-  margin-right:.4em;
-}
-.tag.cy{color:var(--cyan);border-color:var(--cyan)}
+/* 헤더 */
+header{padding:9vh 0 5vh}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;
+  color:var(--cyan);letter-spacing:.16em;text-transform:uppercase;margin-bottom:20px}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+h1{font-size:clamp(40px,7vw,86px);font-weight:800;line-height:1;letter-spacing:-.045em}
+h1 .g{background:linear-gradient(90deg,var(--blue),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.tagline{margin-top:20px;font-size:clamp(15px,1.6vw,20px);color:var(--muted);max-width:40em}
+.count{margin-top:26px;font-size:14px;color:var(--muted)}
+.count b{color:var(--fg)}
 
-.title-meta{margin-top:4vh;display:flex;gap:2.5vw;flex-wrap:wrap;color:var(--muted);font-size:clamp(14px,1.2vw,18px)}
-.title-meta b{color:var(--fg);font-weight:700;margin-right:.4em}
-
-.safety{
-  margin-top:4.5vh;
-  max-width:62vw;
-  padding:1.6vw 2vw;
-  background:linear-gradient(90deg,rgba(255,71,87,.18),rgba(255,71,87,.03));
-  border-left:5px solid var(--red);
-  border-radius:8px;
-  position:relative;
-  animation:pulse 2.6s ease-in-out infinite;
-}
-@keyframes pulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(255,71,87,.0)}
-  50%{box-shadow:0 0 22px 0 rgba(255,71,87,.25)}
-}
-.safety-label{
-  font-size:clamp(11px,.95vw,14px);
-  letter-spacing:.35em;
-  color:var(--red);
-  font-weight:800;
-  margin-bottom:.6em;
-  display:flex;align-items:center;gap:.6em;
-}
-.safety-label::before{
-  content:"⚠";font-size:1.4em;letter-spacing:0;
-}
-.safety-body{
-  font-size:clamp(18px,1.7vw,28px);
-  font-weight:700;
-  color:#fff;
-  line-height:1.4;
-  letter-spacing:-.01em;
-}
-.safety-body em{
-  color:var(--red);
-  font-style:normal;
-  font-weight:800;
-}
-.safety-cite{
-  display:block;
-  margin-top:.8em;
-  color:var(--muted);
-  font-size:clamp(13px,1.1vw,16px);
-  font-weight:500;
-  letter-spacing:.05em;
-}
-
-.cols{display:grid;gap:2.5vw}
-.cols.c2{grid-template-columns:1fr 1fr}
-.cols.c3{grid-template-columns:repeat(3,1fr)}
-
+/* 그리드 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:26px;padding-bottom:8vh}
 .card{
-  background:var(--bg2);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:2.2vw;
-}
-.card h3{margin-bottom:.6em}
-.card .desc{color:var(--muted);font-size:clamp(14px,1.1vw,18px);line-height:1.55}
-
-/* NPC 카드 */
-.npc-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:1.4vw;
-}
-.npc{
-  background:var(--bg2);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:1.2vw 1.4vw 1.4vw;
-  position:relative;
-  overflow:hidden;
-  display:grid;
-  grid-template-columns:38% 1fr;
-  gap:1vw;
-  align-items:center;
-}
-.npc-img{
-  width:100%;
-  aspect-ratio:1/1.15;
-  object-fit:cover;
-  object-position:center top;
-  border-radius:10px;
-  background:linear-gradient(160deg,#060615,#0d0d22 70%,#13132a);
-  border:1px solid var(--line);
-  filter:drop-shadow(0 4px 12px rgba(0,0,0,.4));
-}
-.npc.danger{border-color:rgba(255,71,87,.5)}
-.npc.danger::before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(circle at 100% 0,rgba(255,71,87,.12),transparent 60%);
-  pointer-events:none;
-}
-.npc.bonus{border-color:rgba(0,255,213,.5)}
-.npc.bonus::before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(circle at 0 100%,rgba(0,255,213,.10),transparent 60%);
-  pointer-events:none;
-}
-.npc-info{display:flex;flex-direction:column;justify-content:center;min-width:0}
-.npc-name{
-  font-size:clamp(15px,1.35vw,22px);
-  font-weight:800;
-  margin-bottom:.2em;
-  line-height:1.15;
-}
-.npc-role{
-  font-size:clamp(10px,.75vw,12px);
-  color:var(--muted);
-  letter-spacing:.15em;
-  text-transform:uppercase;
-  margin-bottom:.5em;
-}
-.npc-score{
-  font-size:clamp(30px,3vw,52px);
-  font-weight:900;
-  line-height:1;
-  letter-spacing:-.05em;
-}
-.npc-score.minus{color:var(--red)}
-.npc-score.plus{color:var(--green)}
-.npc-score.big{color:var(--yellow)}
-.npc-meta{
-  margin-top:.5em;
-  display:flex;gap:.9em;flex-wrap:wrap;
-  font-size:clamp(10px,.78vw,12px);
-  color:var(--muted);
-}
-.npc-meta b{color:var(--fg);font-weight:700}
-.npc-warn{
-  display:inline-block;
-  margin-top:.4em;
-  padding:.2em .5em;
-  background:rgba(255,71,87,.14);
-  color:var(--red);
-  border-radius:4px;
-  font-size:clamp(9px,.72vw,11px);
-  font-weight:700;
-  letter-spacing:.05em;
-  width:fit-content;
-}
-.npc-good{
-  display:inline-block;
-  margin-top:.4em;
-  padding:.2em .5em;
-  background:rgba(123,237,159,.14);
-  color:var(--green);
-  border-radius:4px;
-  font-size:clamp(9px,.72vw,11px);
-  font-weight:700;
-  letter-spacing:.05em;
-  width:fit-content;
-}
-
-/* 흐름 */
-.flow{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:1.4vw;
-  margin-top:2vh;
-}
-.flow-step{
-  background:var(--bg2);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:1.8vw 1.6vw;
-  position:relative;
-  min-height:13vh;
-}
-.flow-step .num{
-  position:absolute;top:.8em;right:1em;
-  color:var(--cyan);font-weight:800;font-size:1.3em;opacity:.5;
-  font-family:"JetBrains Mono","Consolas",monospace;
-}
-.flow-step h4{
-  font-size:clamp(20px,1.7vw,28px);
-  font-weight:800;
-  margin-bottom:.45em;
-  letter-spacing:-.01em;
-}
-.flow-step p{
-  font-size:clamp(14px,1.15vw,18px);
-  color:var(--muted);
-  line-height:1.5;
-}
-
-/* 시스템 표 */
-.sys-list{display:grid;gap:1vw}
-.sys-row{
-  display:grid;
-  grid-template-columns:240px 1fr;
-  gap:1.5vw;
-  padding:1.2vw 0;
-  border-bottom:1px solid var(--line);
-  align-items:center;
-}
-.sys-name{
-  font-weight:800;
-  color:var(--cyan);
-  font-family:"JetBrains Mono","Consolas",monospace;
-  font-size:clamp(14px,1.2vw,18px);
-}
-.sys-desc{
-  color:var(--fg);
-  font-size:clamp(14px,1.2vw,18px);
-}
-
-/* 환경 / 팀 */
-.kv{display:grid;grid-template-columns:200px 1fr;gap:1vw 2vw;align-items:baseline}
-.kv dt{color:var(--muted);font-size:clamp(14px,1.1vw,16px);letter-spacing:.1em;text-transform:uppercase}
-.kv dd{font-size:clamp(18px,1.5vw,24px);font-weight:600}
-
-.team-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4vw}
-.team-card{
-  background:var(--bg2);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:1.6vw;
-}
-.team-role{
-  font-size:clamp(13px,1vw,15px);
-  color:var(--cyan);
-  font-weight:700;
-  letter-spacing:.15em;
-  text-transform:uppercase;
-  margin-bottom:.3em;
-}
-.team-name{
-  font-size:clamp(20px,1.8vw,28px);
-  font-weight:800;
-}
-
-/* 마무리 */
-.end-big{
-  font-size:clamp(60px,9vw,160px);
-  font-weight:900;
-  line-height:.95;
-  letter-spacing:-.05em;
-  background:linear-gradient(90deg,var(--cyan),var(--magenta));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.end-sub{
-  margin-top:2vh;
-  font-size:clamp(20px,1.8vw,28px);
-  color:var(--muted);
-}
-
-/* HUD */
-#hud{
-  position:fixed;left:0;right:0;bottom:0;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:1.4vh 2vw;
-  pointer-events:none;
-  font-size:clamp(11px,.9vw,13px);
-  color:var(--muted);
-  letter-spacing:.15em;
-  text-transform:uppercase;
-}
-#hud .left{display:flex;gap:1.2em}
-#hud b{color:var(--cyan);font-weight:700}
-#bar{
-  position:fixed;top:0;left:0;height:3px;background:var(--cyan);
-  width:0;transition:width .3s ease;z-index:10;
-  box-shadow:0 0 8px var(--cyan);
-}
-
-/* 배경 그리드 */
-body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;
-  background:
-    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px) 0 0/40px 40px,
-    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px) 0 0/40px 40px;
-  mask-image:radial-gradient(circle at 50% 40%,#000 30%,transparent 80%);
-}
-body::after{
-  content:"";position:fixed;inset:0;pointer-events:none;
-  background:radial-gradient(circle at 80% 0%,rgba(0,255,213,.08),transparent 50%),
-             radial-gradient(circle at 0% 100%,rgba(255,61,139,.08),transparent 55%);
-}
-
-/* ─── 분할 슬라이드용 카드들 ──────────────── */
-
-/* 일반(3명) — 이미지 큼직, 정보 아래 */
-.tile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2vw}
-.npc-tile{
-  background:var(--bg2);
-  border:1px solid var(--line);
-  border-radius:14px;
-  overflow:hidden;
-  position:relative;
   display:flex;flex-direction:column;
+  background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;
+  text-decoration:none;color:inherit;
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
 }
-.npc-tile.bonus{border-color:rgba(0,255,213,.4)}
-.npc-tile .img-wrap{
-  position:relative;
-  width:100%;
-  aspect-ratio:1/1;
-  max-height:33vh;
-  background:radial-gradient(circle at 50% 30%,#1a1a35,#060615 75%);
-  overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
+.card:hover{transform:translateY(-6px);border-color:var(--blue);box-shadow:0 22px 50px rgba(0,0,0,.45)}
+.thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--bg2)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s ease}
+.card:hover .thumb img{transform:scale(1.05)}
+.thumb .open{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(11,16,32,.55);opacity:0;transition:opacity .22s ease;font-weight:700;font-size:15px;
 }
-.npc-tile .img-wrap::after{
-  content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.5) 100%);
-  pointer-events:none;
-}
-.npc-tile img{
-  max-width:100%;
-  max-height:100%;
-  width:auto;height:auto;
-  object-fit:contain;
-  display:block;
-}
-.npc-tile .body{
-  padding:1vw 1.2vw 1.2vw;
-  border-top:1px solid var(--line);
-}
-.npc-tile .body .npc-name{font-size:clamp(18px,1.5vw,26px);margin-bottom:.2em}
-.npc-tile .body .npc-role{font-size:clamp(10px,.8vw,12px);margin-bottom:.4em}
-.npc-tile .body .npc-score{font-size:clamp(32px,3.2vw,52px);margin-bottom:.2em}
-.npc-tile .body .npc-meta{font-size:clamp(10px,.8vw,12px);margin-top:.4em}
+.thumb .open span{background:var(--blue);color:#fff;padding:11px 22px;border-radius:30px;box-shadow:0 8px 24px rgba(91,140,255,.5)}
+.card:hover .thumb .open{opacity:1}
+.body{padding:22px 22px 24px;display:flex;flex-direction:column;gap:12px;flex:1}
+.body h2{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.body p{font-size:14.5px;color:var(--muted);line-height:1.55;flex:1}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+.tag{font-size:12px;font-weight:600;color:#cdd7f2;background:rgba(91,140,255,.13);
+  border:1px solid rgba(91,140,255,.25);padding:5px 11px;border-radius:20px}
+.meta{display:flex;align-items:center;justify-content:space-between;margin-top:6px;
+  padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.meta .go{color:var(--blue);font-weight:700}
+.links{display:flex;gap:16px}
+.repo{color:var(--muted);text-decoration:none;cursor:pointer}
+.repo:hover{color:var(--cyan)}
 
-/* 히어로(1명, 특수) — 큰 이미지 좌, 정보 우 */
-.npc-hero{
-  display:grid;
-  grid-template-columns:42% 1fr;
-  gap:2.5vw;
-  align-items:stretch;
-  background:var(--bg2);
-  border:1px solid rgba(255,209,102,.45);
-  border-radius:18px;
-  padding:1.6vw;
-  position:relative;
-  overflow:hidden;
-  max-height:62vh;
-}
-.npc-hero::before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(circle at 0 100%,rgba(255,209,102,.10),transparent 55%);
-  pointer-events:none;
-}
-.npc-hero .img-wrap{
-  position:relative;
-  background:radial-gradient(circle at 50% 35%,#22221c,#080812 75%);
-  border-radius:12px;
-  overflow:hidden;
-  border:1px solid var(--line);
-  max-height:55vh;
-  display:flex;align-items:center;justify-content:center;
-}
-.npc-hero .img-wrap img{
-  max-width:100%;
-  max-height:100%;
-  width:auto;height:auto;
-  object-fit:contain;
-  display:block;
-}
-.npc-hero .info{display:flex;flex-direction:column;justify-content:center;gap:.6em}
-.npc-hero .info .npc-role{font-size:clamp(13px,1vw,15px);letter-spacing:.3em}
-.npc-hero .info .npc-name{font-size:clamp(34px,3.6vw,60px);line-height:1;margin-bottom:.2em;letter-spacing:-.03em}
-.npc-hero .info .npc-score.big{font-size:clamp(60px,7vw,110px);line-height:.95}
-.npc-hero .info p{font-size:clamp(16px,1.3vw,20px);color:var(--muted);margin-top:.5em}
-.npc-hero .info .npc-meta{margin-top:1em;font-size:clamp(13px,1vw,16px)}
+footer{border-top:1px solid var(--line);padding:32px 0 48px;color:var(--muted);font-size:13.5px;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+footer a{color:var(--muted);text-decoration:none}footer a:hover{color:var(--cyan)}
 
-/* 보스 카드(교수님) — 큼직한 이미지, 강한 경고 */
-.boss-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.6vw}
-.npc-boss{
-  background:var(--bg2);
-  border:1.5px solid rgba(255,71,87,.55);
-  border-radius:16px;
-  overflow:hidden;
-  position:relative;
-  display:flex;flex-direction:column;
-}
-.npc-boss::before{
-  content:"";position:absolute;inset:0;
-  background:radial-gradient(circle at 100% 0,rgba(255,71,87,.18),transparent 60%);
-  pointer-events:none;z-index:1;
-}
-.npc-boss .img-wrap{
-  position:relative;
-  width:100%;
-  aspect-ratio:1/1;
-  max-height:35vh;
-  background:radial-gradient(circle at 50% 35%,#2a0d12,#060410 75%);
-  overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-}
-.npc-boss .img-wrap img{
-  max-width:100%;
-  max-height:100%;
-  width:auto;height:auto;
-  object-fit:contain;
-  display:block;
-}
-.npc-boss .img-wrap::after{
-  content:"DO NOT SHOOT";
-  position:absolute;top:1em;left:1em;
-  padding:.3em .7em;
-  background:var(--red);color:#fff;
-  font-weight:800;font-size:clamp(10px,.85vw,13px);
-  letter-spacing:.2em;
-  border-radius:4px;
-  z-index:2;
-}
-.npc-boss .body{
-  padding:1.1vw 1.4vw 1.3vw;
-  border-top:1px solid rgba(255,71,87,.3);
-  position:relative;z-index:2;
-}
-.npc-boss .body .npc-name{font-size:clamp(20px,1.7vw,28px);margin-bottom:.15em}
-.npc-boss .body .npc-role{font-size:clamp(10px,.8vw,13px);margin-bottom:.4em;color:#ff8a96}
-.npc-boss .body .npc-score{font-size:clamp(40px,4vw,68px);margin-bottom:.2em;line-height:1}
-.npc-boss .body .npc-meta{font-size:clamp(11px,.85vw,13px);margin-top:.4em}
-
-/* 조작법 슬라이드 */
-.ctrl-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:1.6vw;
-  margin-top:1vh;
-}
-.ctrl-step{
-  background:var(--bg2);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:1.6vw;
-  display:flex;flex-direction:column;
-  position:relative;
-}
-.ctrl-step .step-num{
-  font-size:clamp(11px,.85vw,13px);
-  letter-spacing:.3em;
-  color:var(--cyan);
-  font-weight:700;
-  margin-bottom:.8em;
-}
-.ctrl-step .step-img{
-  width:100%;
-  aspect-ratio:1;
-  border-radius:10px;
-  background:radial-gradient(circle at 50% 30%,#1a1a35,#060615 75%);
-  overflow:hidden;
-  margin-bottom:1.1em;
-  position:relative;
-  display:flex;align-items:center;justify-content:center;
-  border:1px solid var(--line);
-}
-.ctrl-step .step-img img{width:100%;height:100%;object-fit:contain;display:block}
-.ctrl-step .step-img.placeholder{
-  border:2px dashed rgba(139,143,168,.4);
-  color:var(--muted);
-  font-size:clamp(12px,.95vw,15px);
-  text-align:center;
-  padding:1em;
-  letter-spacing:.05em;
-  line-height:1.5;
-}
-.ctrl-step .step-img.placeholder b{color:var(--cyan);font-weight:700}
-.ctrl-step .step-title{
-  font-size:clamp(20px,1.7vw,28px);
-  font-weight:800;
-  margin-bottom:.3em;
-}
-.ctrl-step .step-desc{
-  font-size:clamp(13px,1.05vw,17px);
-  color:var(--muted);
-  line-height:1.5;
-}
-.ctrl-step .step-keys{
-  margin-top:.9em;padding-top:.9em;
-  border-top:1px solid var(--line);
-  display:flex;gap:.45em;flex-wrap:wrap;
-}
-.key-tag{
-  display:inline-block;
-  padding:.35em .6em;
-  background:rgba(0,255,213,.08);
-  border:1px solid rgba(0,255,213,.35);
-  color:var(--cyan);
-  border-radius:5px;
-  font-size:clamp(11px,.9vw,13px);
-  font-weight:700;
-  font-family:"JetBrains Mono","Consolas",monospace;
-  letter-spacing:.02em;
-}
-.key-tag.muted{
-  background:rgba(139,143,168,.06);
-  border-color:rgba(139,143,168,.3);
-  color:var(--muted);
-}
-
-/* 분할 슬라이드 헤더 */
-.section-head{
-  display:flex;align-items:baseline;gap:1.5em;
-  margin-bottom:1.8vh;flex-wrap:wrap;
-}
-.section-head h2{margin:0}
-.section-tag{
-  font-size:clamp(13px,1vw,16px);
-  letter-spacing:.25em;
-  text-transform:uppercase;
-  font-weight:700;
-  padding:.4em .9em;
-  border-radius:4px;
-}
-.section-tag.tag-common{color:var(--green);background:rgba(123,237,159,.13);border:1px solid rgba(123,237,159,.4)}
-.section-tag.tag-special{color:var(--yellow);background:rgba(255,209,102,.13);border:1px solid rgba(255,209,102,.4)}
-.section-tag.tag-boss{color:var(--red);background:rgba(255,71,87,.13);border:1px solid rgba(255,71,87,.4)}
-.section-sub{
-  color:var(--muted);font-size:clamp(14px,1.15vw,20px);
-  margin-top:-1vh;margin-bottom:2vh;
-}
-
-/* 라이트박스 모달 */
-.modal{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.88);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  display:none;
-  align-items:center;justify-content:center;
-  z-index:200;
-  padding:5vh 5vw;
-}
-.modal.open{display:flex;animation:modalFade .25s ease}
-@keyframes modalFade{from{opacity:0}to{opacity:1}}
-.modal-content{
-  display:grid;
-  grid-template-columns:50% 1fr;
-  gap:2.5vw;
-  width:92vw;max-width:1500px;
-  max-height:88vh;
-  background:linear-gradient(160deg,var(--bg2),#0c0d18);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:2vw;
-  position:relative;
-  box-shadow:0 30px 80px rgba(0,0,0,.6);
-  animation:modalIn .35s cubic-bezier(.2,.9,.3,1);
-}
-@keyframes modalIn{from{transform:scale(.94);opacity:0}to{transform:none;opacity:1}}
-.modal-img{
-  background:radial-gradient(circle at 50% 35%,#1a1a35,#060615 75%);
-  border-radius:14px;
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
-  border:1px solid var(--line);
-  min-height:60vh;
-}
-.modal-img img{
-  max-width:100%;max-height:80vh;
-  width:auto;height:auto;
-  object-fit:contain;
-  display:block;
-}
-.modal-info{
-  display:flex;flex-direction:column;justify-content:center;
-  padding-right:1vw;min-width:0;
-}
-.modal-info .npc-role{font-size:clamp(13px,1.05vw,16px);letter-spacing:.25em;margin-bottom:.6em}
-.modal-info .npc-name{font-size:clamp(36px,3.6vw,58px);line-height:1;margin-bottom:.4em;letter-spacing:-.03em}
-.modal-info .npc-score{font-size:clamp(60px,6.5vw,110px);line-height:.95;margin:.3em 0 .2em;letter-spacing:-.05em}
-.modal-info .npc-warn,.modal-info .npc-good{
-  font-size:clamp(13px,1vw,15px);padding:.4em .8em;margin-top:.6em;
-}
-.modal-info .npc-meta{font-size:clamp(13px,1vw,16px);margin-top:1.2em;gap:1.5em;flex-wrap:wrap;display:flex;color:var(--muted)}
-.modal-info .npc-meta b{color:var(--fg);font-weight:700;margin-right:.3em}
-.modal-close{
-  position:absolute;top:1.2em;right:1.2em;
-  width:44px;height:44px;
-  background:rgba(255,255,255,.08);
-  border:1px solid var(--line);
-  border-radius:50%;
-  color:var(--fg);
-  font-size:22px;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  z-index:1;
-  font-weight:300;line-height:1;
-  transition:background .15s,transform .15s;
-}
-.modal-close:hover{background:rgba(255,255,255,.18);transform:scale(1.08)}
-.modal-hint{
-  position:absolute;bottom:1.4em;left:50%;transform:translateX(-50%);
-  font-size:clamp(11px,.85vw,13px);
-  letter-spacing:.25em;text-transform:uppercase;
-  color:var(--muted);opacity:.7;
-  white-space:nowrap;
-}
-
-/* 모달 안 좌/우 화살표 */
-.modal-nav{
-  position:absolute;top:50%;transform:translateY(-50%);
-  width:48px;height:48px;
-  background:rgba(255,255,255,.08);
-  border:1px solid var(--line);
-  border-radius:50%;
-  color:var(--fg);
-  font-size:30px;line-height:1;font-weight:300;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  z-index:2;
-  transition:background .15s,transform .15s;
-}
-.modal-nav:hover{background:rgba(0,255,213,.18);border-color:var(--cyan);color:var(--cyan);transform:translateY(-50%) scale(1.08)}
-.modal-prev{left:-22px}
-.modal-next{right:-22px}
-.modal-counter{
-  position:absolute;top:1.4em;left:50%;transform:translateX(-50%);
-  font-size:clamp(11px,.85vw,13px);
-  letter-spacing:.3em;text-transform:uppercase;
-  color:var(--muted);
-  font-family:"JetBrains Mono","Consolas",monospace;
-}
-.modal-counter b{color:var(--cyan);font-weight:700}
-
-/* 슬라이드 좌/우 버튼 (화면 가장자리) */
-.slide-nav{
-  position:fixed;top:50%;transform:translateY(-50%);
-  width:52px;height:52px;
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--line);
-  border-radius:50%;
-  color:var(--muted);
-  font-size:28px;line-height:1;font-weight:300;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  z-index:50;
-  transition:background .15s,color .15s,border-color .15s,transform .15s;
-}
-.slide-nav:hover{background:rgba(0,255,213,.12);color:var(--cyan);border-color:var(--cyan);transform:translateY(-50%) scale(1.08)}
-.slide-prev{left:1.2vw}
-.slide-next{right:1.2vw}
-.slide-nav:disabled{opacity:.25;cursor:not-allowed}
-.slide-nav:disabled:hover{background:rgba(255,255,255,.04);color:var(--muted);border-color:var(--line);transform:translateY(-50%)}
-
-/* 모달 열린 동안 슬라이드 nav + HUD 비활성 */
-body.modal-open .slide-nav,
-body.modal-open #hud{
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .2s;
-}
-
-/* 카드 클릭 가능 표시 */
-.npc-tile,.npc-boss,.npc-hero{cursor:zoom-in;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
-.npc-tile:hover,.npc-boss:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.4)}
-.npc-hero:hover{box-shadow:0 12px 30px rgba(0,0,0,.4)}
-
-@media (max-width:900px){
-  .modal-content{grid-template-columns:1fr;max-height:92vh;overflow-y:auto}
-  .modal-img{min-height:40vh}
-  .npc-grid{grid-template-columns:1fr}
-  .npc{grid-template-columns:30% 1fr}
-  .tile-grid{grid-template-columns:1fr}
-  .boss-grid{grid-template-columns:1fr}
-  .npc-hero{grid-template-columns:1fr}
-  .cols.c2,.cols.c3{grid-template-columns:1fr}
-  .sys-row{grid-template-columns:1fr}
-  .kv{grid-template-columns:1fr}
-  .team-grid{grid-template-columns:1fr}
+@media (max-width:560px){
+  header{padding:7vh 0 4vh}
+  .grid{grid-template-columns:1fr;gap:20px}
 }
 </style>
 </head>
 <body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span class="dot"></span> b-hyoung · presentation archive</div>
+    <h1>PPT <span class="g">List</span></h1>
+    <p class="tagline">발표 자료를 한곳에 모았습니다. 카드를 골라 바로 슬라이드를 여세요.</p>
+    <div class="count"><b id="cnt">0</b>개의 발표</div>
+  </header>
 
-<div id="bar"></div>
-<div id="stage">
+  <main class="grid" id="grid"></main>
 
-  <!-- 1: 타이틀 -->
-  <section class="slide">
-    <div class="kicker">VR · 1인칭 슈팅 · Meta Quest 3</div>
-    <h1>Hide<span class="dot">.</span>In<span class="ai">AI</span></h1>
-    <p class="muted" style="margin-top:2vh;font-size:clamp(20px,2vw,30px)">AI 속에 숨어라 — 정체를 들킨 적만 처치한다</p>
-    <div class="title-meta">
-      <span><b>버전</b>v1.0</span>
-      <span><b>엔진</b>Unity 2022.3 LTS · URP</span>
-      <span><b>플랫폼</b>Meta Quest 2 / 3 · OpenXR</span>
-    </div>
-
-    <div class="safety">
-      <div class="safety-label">SAFETY NOTICE · 안전 수칙</div>
-      <div class="safety-body">"점수 기록을 꺠야지 <em>옆사람 머리를 깨면 안 됩니다</em>. 주의해주세요.<br>핸드트래킹 도구 움직임을 조심해주세요."</div>
-      <div class="safety-cite">— 김도경</div>
-    </div>
-  </section>
-
-  <!-- 2: 컨셉 -->
-  <section class="slide">
-    <div class="kicker">Concept</div>
-    <h2>AI 사이에 <span class="accent">진짜 적</span>이 섞여 있다</h2>
-    <div class="cols c2" style="margin-top:2vh">
-      <div>
-        <p style="font-size:clamp(20px,1.8vw,28px);line-height:1.5">
-          맵 위에 <b>40명</b>의 AI가 자동 스폰.<br>
-          그 중 일부는 <b>처치 대상</b>, 일부는 <b>건드리면 안 되는 인물</b>.<br>
-          제한 시간 <b>120초</b>. 한 자루 권총. 점수가 곧 실력.
-        </p>
-      </div>
-      <div>
-        <div class="card">
-          <h3>핵심 룰</h3>
-          <p class="desc">· 학생 / 마스코트 → 사격 = 가산점<br>
-          · 교수님 → 사격 = <span style="color:var(--red);font-weight:700">감점</span><br>
-          · 시간 종료 = 게임 오버<br>
-          · RESTART 타겟 사격 시 즉시 재시작</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3: 조작법 -->
-  <section class="slide">
-    <div class="kicker">Controls</div>
-    <h2>조작법</h2>
-    <div class="ctrl-grid">
-
-      <div class="ctrl-step">
-        <div class="step-num">STEP 01 · START</div>
-        <div class="step-img"><img src="images/game_start.png" alt="SHOOT TO START 큐브"></div>
-        <div class="step-title">게임 시작</div>
-        <div class="step-desc">카메라 앞 START 큐브를 권총으로 1발 사격하면 세션 개시.</div>
-        <div class="step-keys">
-          <span class="key-tag">RT · 트리거</span>
-        </div>
-      </div>
-
-      <div class="ctrl-step">
-        <div class="step-num">STEP 02 · FIRE</div>
-        <div class="step-img"><img src="images/fire_right.png" alt="오른손 권총 발사"></div>
-        <div class="step-title">오른손 — 발사</div>
-        <div class="step-desc">오른손 컨트롤러로 권총을 쥐고 검지 트리거를 당겨 발사.</div>
-        <div class="step-keys">
-          <span class="key-tag">Right Trigger</span>
-          <span class="key-tag muted">Right Grip · 잡기</span>
-        </div>
-      </div>
-
-      <div class="ctrl-step">
-        <div class="step-num">STEP 03 · INFO</div>
-        <div class="step-img"><img src="images/left_hand_info.png" alt="왼손 손등 ScoreBoard"></div>
-        <div class="step-title">왼손 — 실시간 정보</div>
-        <div class="step-desc">
-          왼손 손등을 자기 쪽으로 돌리면<br>
-          ScoreBoard 표시.<br>
-          <span style="color:var(--cyan)">점수 · 처치 수 · 남은 시간.</span>
-        </div>
-        <div class="step-keys">
-          <span class="key-tag">Left Wrist · 회전</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- 4: 플레이 흐름 -->
-  <section class="slide">
-    <div class="kicker">Play Flow</div>
-    <h2>한 판의 흐름</h2>
-    <div class="flow">
-      <div class="flow-step"><span class="num">01</span><h4>SHOOT TO START</h4><p>카메라 앞 큐브를 권총으로 1발</p></div>
-      <div class="flow-step"><span class="num">02</span><h4>세션 개시</h4><p>BGM 재생 · 120초 카운트다운 · AI 스폰</p></div>
-      <div class="flow-step"><span class="num">03</span><h4>탐색 & 사격</h4><p>AI 사이에서 표적 식별 · 권총 raycast</p></div>
-      <div class="flow-step"><span class="num">04</span><h4>점수 적립</h4><p>처치 시 ScorePopup · ScoreBoard 갱신</p></div>
-      <div class="flow-step"><span class="num">05</span><h4>GAME OVER</h4><p>결과창 노출 · 누적 점수 / 처치 수</p></div>
-      <div class="flow-step"><span class="num">06</span><h4>RESTART</h4><p>재시작 타겟 사격 → 즉시 새 라운드</p></div>
-    </div>
-  </section>
-
-  <!-- 5: 일반 NPC -->
-  <section class="slide">
-    <div class="kicker">Targets · 1 / 3</div>
-    <div class="section-head">
-      <h2>일반</h2>
-      <span class="section-tag tag-common">Common · 적극 처치</span>
-    </div>
-    <p class="section-sub">맵 곳곳에 가장 많이 등장. 빠르게 점수를 모으는 핵심 타겟.</p>
-    <div class="tile-grid">
-
-      <div class="npc-tile bonus">
-        <div class="img-wrap"><img src="images/leejunseo.png" alt="이서준"></div>
-        <div class="body">
-          <div class="npc-name">이서준 <span style="color:var(--cyan);font-size:.65em;font-weight:600">(학생장)</span></div>
-          <div class="npc-role">Student · Filler</div>
-          <div class="npc-score plus">+3</div>
-          <div class="npc-good">기본 점수원</div>
-          <div class="npc-meta"><span><b>최대</b> 20명</span><span><b>가중치</b> 1.0</span></div>
-        </div>
-      </div>
-
-      <div class="npc-tile bonus">
-        <div class="img-wrap"><img src="images/python.png" alt="파이썬"></div>
-        <div class="body">
-          <div class="npc-name">파이썬</div>
-          <div class="npc-role">Mascot · Common</div>
-          <div class="npc-score plus">+5</div>
-          <div class="npc-good">언어 마스코트</div>
-          <div class="npc-meta"><span><b>최대</b> 4명</span><span><b>가중치</b> 0.6</span></div>
-        </div>
-      </div>
-
-      <div class="npc-tile bonus">
-        <div class="img-wrap"><img src="images/csharp.png" alt="C#"></div>
-        <div class="body">
-          <div class="npc-name">C#</div>
-          <div class="npc-role">Mascot · Common</div>
-          <div class="npc-score plus">+5</div>
-          <div class="npc-good">언어 마스코트</div>
-          <div class="npc-meta"><span><b>최대</b> 4명</span><span><b>가중치</b> 0.6</span></div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- 6: 특수 NPC -->
-  <section class="slide">
-    <div class="kicker">Targets · 2 / 3</div>
-    <div class="section-head">
-      <h2>특수</h2>
-      <span class="section-tag tag-special">Special</span>
-    </div>
-
-    <div class="npc-hero">
-      <div class="img-wrap"><img src="images/assistant.png" alt="조교쌤"></div>
-      <div class="info">
-        <div class="npc-role" style="color:var(--yellow)">★ Assistant · Rare</div>
-        <div class="npc-name">조교쌤</div>
-        <div class="npc-score big" style="color:var(--yellow)">+10</div>
-        <p>
-          맵에 동시 최대 <b style="color:var(--fg)">3명</b>만 등장.<br>
-          일반의 <b style="color:var(--fg)">2 ~ 3배</b> 점수.
-        </p>
-        <p style="margin-top:.8em">
-          <em style="color:var(--yellow);font-style:normal;font-weight:700">
-            맵에서 마주치긴 어렵지만 —<br>
-            왠지 학과사무실 문 열면 계실 것 같다.
-          </em>
-        </p>
-        <div class="npc-meta">
-          <span><b>최대</b> 3명</span>
-          <span><b>가중치</b> 0.6</span>
-          <span><b>점수</b> +10</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 7: 교수님 NPC (Boss) -->
-  <section class="slide">
-    <div class="kicker">Targets · 3 / 3</div>
-    <div class="section-head">
-      <h2 style="color:var(--red)">교수님</h2>
-      <span class="section-tag tag-boss">Boss · 절대 금지</span>
-    </div>
-    <p class="section-sub" style="color:#ff8a96">사격 시 <b style="color:var(--red)">−7점 페널티</b>. AI 사이에 섞여 있어 식별 주의.</p>
-
-    <div class="boss-grid">
-
-      <div class="npc-boss">
-        <div class="img-wrap"><img src="images/kwon.png" alt="권숙연 교수님"></div>
-        <div class="body">
-          <div class="npc-name">권숙연 교수님</div>
-          <div class="npc-role">Professor · Boss-tier</div>
-          <div class="npc-score minus">−7</div>
-          <div style="font-size:clamp(15px,1.3vw,21px);color:#ff8a96;margin-top:.4em;font-weight:700;line-height:1.3">쏜다면 총알에 관한 논문을 써야할 것만 같다...</div>
-          <div class="npc-meta"><span><b>최대</b> 5명</span><span><b>가중치</b> 0.5</span><span><b>등장</b> 흔함</span></div>
-        </div>
-      </div>
-
-      <div class="npc-boss">
-        <div class="img-wrap"><img src="images/jang.png" alt="장진수 교수님"></div>
-        <div class="body">
-          <div class="npc-name">장진수 교수님</div>
-          <div class="npc-role">Professor · Boss-tier</div>
-          <div class="npc-score minus">−7</div>
-          <div style="font-size:clamp(16px,1.4vw,22px);color:#ff8a96;margin-top:.4em;font-weight:700;line-height:1.3">쏘면 혼날 것 같다 <span style="font-weight:500;font-size:.85em">(현실에서)</span></div>
-          <div class="npc-meta"><span><b>최대</b> 5명</span><span><b>가중치</b> 0.5</span><span><b>등장</b> 흔함</span></div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- 8: 마무리 -->
-  <section class="slide" style="text-align:center;align-items:center">
-    <div class="kicker">Demo</div>
-    <div class="end-big">시연.</div>
-    <div class="end-sub">Quest 3 헤드셋 · 권총 한 자루 · 120초</div>
-  </section>
-
-</div>
-
-<div id="hud">
-  <div class="left">
-    <span><b id="cur">1</b> / <span id="tot">9</span></span>
-    <span>HIDE IN AI</span>
-  </div>
-  <div class="right">
-    <span>← → · SPACE · CLICK · ESC</span>
-  </div>
-</div>
-
-<!-- 슬라이드 좌/우 버튼 -->
-<button class="slide-nav slide-prev" id="slidePrev" aria-label="이전 슬라이드">‹</button>
-<button class="slide-nav slide-next" id="slideNext" aria-label="다음 슬라이드">›</button>
-
-<!-- 라이트박스 모달 -->
-<div class="modal" id="modal" aria-hidden="true">
-  <div class="modal-content" role="dialog">
-    <button class="modal-close" id="modalClose" aria-label="닫기">×</button>
-    <button class="modal-nav modal-prev" id="modalPrev" aria-label="이전 캐릭터">‹</button>
-    <button class="modal-nav modal-next" id="modalNext" aria-label="다음 캐릭터">›</button>
-    <div class="modal-counter"><b id="modalCur">1</b> / <span id="modalTot">6</span></div>
-    <div class="modal-img"><img id="modalImg" src="" alt=""></div>
-    <div class="modal-info" id="modalInfo"></div>
-    <div class="modal-hint">← → 캐릭터 이동 · ESC 닫기</div>
-  </div>
+  <footer>
+    <div>© <span id="yr">2026</span> b-hyoung · PPT List</div>
+    <div><a href="https://github.com/b-hyoung/PPT-List" target="_blank" rel="noopener">GitHub · b-hyoung/PPT-List ↗</a></div>
+  </footer>
 </div>
 
 <script>
-const slides=[...document.querySelectorAll('.slide')];
-const total=slides.length;
-document.getElementById('tot').textContent=total;
-let i=0;
-function go(n){
-  i=Math.max(0,Math.min(total-1,n));
-  slides.forEach((s,k)=>s.classList.toggle('active',k===i));
-  document.getElementById('cur').textContent=i+1;
-  document.getElementById('bar').style.width=((i+1)/total*100)+'%';
-}
-// 슬라이드 좌/우 버튼
-const slidePrev = document.getElementById('slidePrev');
-const slideNext = document.getElementById('slideNext');
-function updateNav(){
-  slidePrev.disabled = i === 0;
-  slideNext.disabled = i === total - 1;
-}
-slidePrev.addEventListener('click', e=>{ e.stopPropagation(); if(modal.classList.contains('open'))return; go(i-1); });
-slideNext.addEventListener('click', e=>{ e.stopPropagation(); if(modal.classList.contains('open'))return; go(i+1); });
+// ── 발표 목록: 새 PPT를 추가하려면 아래 배열에 항목만 추가하세요 ──
+const decks = [
+  {
+    title: "안심 스마트홈",
+    href: "smart-care-home/",
+    thumb: "smart-care-home/thumbnail.png",
+    desc: "몸이 불편한 독거노인을 위한 AIoT 안전 모니터링 스마트홈 기획서. 낙상·mmWave 감지부터 자동 구급 신고, VR 시뮬레이션까지.",
+    tags: ["AIoT", "스마트홈", "Unreal · VR", "캡스톤 기획서"],
+    pdf: "smart-care-home/onepager.pdf",
+  },
+  {
+    title: "Hide In AI",
+    href: "hide-in-ai/",
+    thumb: "hide-in-ai/thumbnail.png",
+    desc: "AI 속에 숨어라 — VR 1인칭 라스트맨 스탠딩 멀티플레이 게임 발표 자료.",
+    tags: ["VR", "Unity", "Meta Quest 3", "Game"],
+    repo: "https://github.com/b-hyoung/HideInAI",
+  },
+];
 
-const _go = go;
-go = function(n){ _go(n); updateNav(); };
-go(0);
-
-// ─── 라이트박스 ───────────────────────────────────
-const modal = document.getElementById('modal');
-const modalImg = document.getElementById('modalImg');
-const modalInfo = document.getElementById('modalInfo');
-const modalClose = document.getElementById('modalClose');
-const modalPrev = document.getElementById('modalPrev');
-const modalNext = document.getElementById('modalNext');
-const modalCur = document.getElementById('modalCur');
-const modalTot = document.getElementById('modalTot');
-
-// 모달 안 NPC 순회는 현재 슬라이드 안에서만 (일반/특수/교수님 카테고리 안)
-let modalCards = [];
-let modalIdx = 0;
-
-function showCardInModal(){
-  const card = modalCards[modalIdx];
-  if(!card) return;
-  const img = card.querySelector('.img-wrap img, .npc-img');
-  const info = card.querySelector('.body, .info, .npc-info');
-  if(img){ modalImg.src = img.src; modalImg.alt = img.alt || ''; }
-  if(info){ modalInfo.innerHTML = info.innerHTML; }
-  modalCur.textContent = modalIdx + 1;
-  modalTot.textContent = modalCards.length;
-  // NPC 1명뿐인 슬라이드(특수 = 조교쌤)는 화살표 숨김
-  modalPrev.style.display = modalCards.length > 1 ? 'flex' : 'none';
-  modalNext.style.display = modalCards.length > 1 ? 'flex' : 'none';
-}
-
-function openModalFor(card){
-  const slide = card.closest('.slide');
-  modalCards = [...slide.querySelectorAll('.npc-tile, .npc-hero, .npc-boss')];
-  modalIdx = Math.max(0, modalCards.indexOf(card));
-  showCardInModal();
-  modal.classList.add('open');
-  modal.setAttribute('aria-hidden','false');
-  document.body.classList.add('modal-open');
-}
-
-function navigateModal(delta){
-  if(modalCards.length <= 1) return;
-  modalIdx = (modalIdx + delta + modalCards.length) % modalCards.length;
-  showCardInModal();
-}
-
-function closeModal(){
-  modal.classList.remove('open');
-  modal.setAttribute('aria-hidden','true');
-  document.body.classList.remove('modal-open');
-}
-
-document.querySelectorAll('.npc-tile, .npc-boss, .npc-hero').forEach(card=>{
-  card.addEventListener('click', e=>{
-    e.stopPropagation();
-    openModalFor(card);
-  });
-});
-modal.addEventListener('click', e=>{
-  if(e.target === modal) closeModal();
-});
-modalClose.addEventListener('click', e=>{ e.stopPropagation(); closeModal(); });
-modalPrev.addEventListener('click', e=>{ e.stopPropagation(); navigateModal(-1); });
-modalNext.addEventListener('click', e=>{ e.stopPropagation(); navigateModal(1); });
-
-// ─── 키 / 클릭 핸들러 ─────────────────────────────
-document.addEventListener('keydown',e=>{
-  if(modal.classList.contains('open')){
-    if(e.key==='Escape'){ closeModal(); e.preventDefault(); }
-    else if(e.key==='ArrowRight'){ navigateModal(1); e.preventDefault(); }
-    else if(e.key==='ArrowLeft'){ navigateModal(-1); e.preventDefault(); }
-    return;
-  }
-  if(['ArrowRight','PageDown','Space',' '].includes(e.key)||e.code==='Space'){go(i+1);e.preventDefault();}
-  else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){go(i-1);e.preventDefault();}
-  else if(e.key==='Home'){go(0)}
-  else if(e.key==='End'){go(total-1)}
-});
-document.addEventListener('click',e=>{
-  if(modal.classList.contains('open')) return;
-  if(e.target.closest('.npc-tile, .npc-boss, .npc-hero, .modal, .slide-nav')) return;
-  if(e.clientX<window.innerWidth/2)go(i-1);else go(i+1);
-});
+const grid = document.getElementById('grid');
+grid.innerHTML = decks.map(d => `
+  <a class="card" href="${d.href}">
+    <div class="thumb">
+      <img src="${d.thumb}" alt="${d.title} 표지" loading="lazy" />
+      <div class="open"><span>슬라이드 열기 →</span></div>
+    </div>
+    <div class="body">
+      <h2>${d.title}</h2>
+      <p>${d.desc}</p>
+      <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <div class="meta">
+        <span class="links">
+          ${d.pdf ? `<span class="repo" role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();window.open('${d.pdf}','_blank','noopener')">요약 PDF ↓</span>` : ``}
+          ${d.repo ? `<span class="repo" role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();window.open('${d.repo}','_blank','noopener')">소스 레포 ↗</span>` : ``}
+        </span>
+        <span class="go">열기 →</span>
+      </div>
+    </div>
+  </a>
+`).join('');
+document.getElementById('cnt').textContent = decks.length;
 </script>
 </body>
 </html>
