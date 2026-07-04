@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>마주봄 · PPT 참고자료</title>
+<style>
+  :root{--bg:#070b12;--card:#111826;--line:#212c40;--fg:#eef0f5;--muted:#9aa4ba;--acc:#e6a84a;--pdf:#ef7a5c;--html:#4fa89a}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Pretendard","Apple SD Gothic Neo",system-ui,sans-serif;background:var(--bg);color:var(--fg);
+    line-height:1.5;padding:32px 20px;-webkit-print-color-adjust:exact}
+  .wrap{max-width:760px;margin:0 auto}
+  .ey{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc)}
+  h1{font-size:24px;font-weight:800;margin-top:8px}
+  .sub{color:var(--muted);font-size:13px;margin-top:6px}
+  .list{margin-top:22px;display:flex;flex-direction:column;gap:12px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px}
+  .item h3{font-size:15px;font-weight:700}
+  .item p{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .links{margin-top:9px;display:flex;gap:8px;flex-wrap:wrap}
+  a.btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;text-decoration:none;
+    padding:5px 12px;border-radius:8px;border:1px solid transparent}
+  a.pdf{background:color-mix(in srgb,var(--pdf) 16%,transparent);border-color:color-mix(in srgb,var(--pdf) 40%,transparent);color:#ffd9cd}
+  a.html{background:color-mix(in srgb,var(--html) 16%,transparent);border-color:color-mix(in srgb,var(--html) 40%,transparent);color:#c5ece5}
+  a.btn:hover{filter:brightness(1.25)}
+  .back{margin-top:24px;font-size:12px}
+  .back a{color:var(--acc)}
+  .foot{margin-top:18px;font-size:11px;color:#66728d;font-family:ui-monospace,monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="ey">MAJUBOM · 참고자료</div>
+  <h1>PPT 참고자료 (리서치·근거)</h1>
+  <p class="sub">눌러서 바로 열려요. PDF는 다운로드/공유용, HTML은 브라우저에서 보기 좋음.</p>
+
+  <div class="list">
+    <div class="item">
+      <h3>📌 기존방안 · 상용문제 · mmWave문제 · 센서버그 (종합)</h3>
+      <p>이탈 예측 기존 해결방안, 상용 제품/레이더 문제, mmWave·ToF 실전 버그, 오늘의 결론까지 한 장.</p>
+      <div class="links"><a class="btn pdf" href="existing_solutions_mmwave.pdf">PDF</a><a class="btn html" href="existing_solutions_mmwave.html">HTML</a></div>
+    </div>
+    <div class="item">
+      <h3>침대 이탈 논문 (환각체크)</h3>
+      <p>이탈 예측 선행 논문 정리 + 검증/미검증 배지.</p>
+      <div class="links"><a class="btn pdf" href="bedexit_papers.pdf">PDF</a><a class="btn html" href="bedexit_papers.html">HTML</a></div>
+    </div>
+    <div class="item">
+      <h3>우리 칩(IWR6843) 일치 선행논문</h3>
+      <p>동일/동계열 하드웨어로 한 연구만 추려 정리.</p>
+      <div class="links"><a class="btn pdf" href="mmwave_hw_matched_papers.pdf">PDF</a><a class="btn html" href="mmwave_hw_matched_papers.html">HTML</a></div>
+    </div>
+    <div class="item">
+      <h3>mmWave 시계열 접근 (진행 방법)</h3>
+      <p>PNHM/mPCT 등 시계열 방식 분석 + 우리 진행 계획.</p>
+      <div class="links"><a class="btn pdf" href="mmwave_temporal_approach.pdf">PDF</a><a class="btn html" href="mmwave_temporal_approach.html">HTML</a></div>
+    </div>
+    <div class="item">
+      <h3>치매 낙상 근거 + 시스템 (한 장)</h3>
+      <p>왜 필요한가(근거) → 시스템 구조 요약.</p>
+      <div class="links"><a class="btn pdf" href="evidence_onepager.pdf">PDF</a><a class="btn html" href="evidence_onepager.html">HTML</a></div>
+    </div>
+    <div class="item">
+      <h3>상용 4개 조사 (사이렌케어·Hikvision·Vayyar·SafelyYou)</h3>
+      <p>어디서·어떻게 쓰이나 미리보기.</p>
+      <div class="links"><a class="btn html" href="competitors_preview.html">HTML</a></div>
+    </div>
+  </div>
+
+  <div class="back">← <a href="../">마주봄 발표 덱으로</a> · <a href="../../">전체 갤러리</a></div>
+  <div class="foot">팀 마주봄 · 2026-07 · esp32/docs/presentation/ 원본</div>
+</div>
+</body>
+</html>
