@@ -150,14 +150,17 @@
 <!-- 2 · 문제 -->
 <section class="slide" style="--ac:var(--pri)">
   <div class="kick">01 · <b>문제</b></div>
-  <h2>낙상 하나가 <span class="ac">일상을 통째로</span> 바꾼다</h2>
-  <p class="lead">골절 → 입원 → 회복 이후의 삶의 질까지. 요양시설 사고의 대부분이 낙상이다.</p>
-  <div class="stats" style="margin-top:26px">
-    <div class="stat"><div class="n">~40%</div><div class="l">요양원 <b style="color:var(--fg)">입원의 40%가 낙상</b> 관련 (Vayyar/Essex)</div></div>
-    <div class="stat"><div class="n">야간·침상</div><div class="l">낙상 상당수가 <b style="color:var(--fg)">밤에 침대에서 혼자 일어서다</b> 발생</div></div>
-    <div class="stat"><div class="n">치매 ↑</div><div class="l">치매 어르신은 낙상이 <b style="color:var(--fg)">비치매 대비 1.7~3배</b></div></div>
+  <h2>낙상 하나가 <span class="ac">가정과 사회를 통째로</span> 바꾼다</h2>
+  <div class="stats" style="margin-top:22px">
+    <div class="stat"><div class="n">52조 원</div><div class="l">65세 이상 노인 <b style="color:var(--fg)">건강보험 진료비</b> — 전체의 44.9%<br><span style="font-size:11px;color:var(--faint)">건보심사평가원 2024</span></div></div>
+    <div class="stat"><div class="n">441만 원</div><div class="l">고관절 골절 <b style="color:var(--fg)">수술비 1건</b> + 평균 입원 22.3일<br><span style="font-size:11px;color:var(--faint)">건보심사평가원 2021</span></div></div>
+    <div class="stat"><div class="n">18.2%</div><div class="l">고관절 골절 후 <b style="color:var(--fg)">1년 내 사망률</b><br><span style="font-size:11px;color:var(--faint)">Chung et al. 2025 · NHIS 2006~2022</span></div></div>
   </div>
-  <div class="note"><b>핵심</b> · 넘어진 뒤 대응보다, 넘어지기 전(침대 이탈 전조) 개입이 필요하다.</div>
+  <div class="cols g2" style="margin-top:16px">
+    <div class="card"><h3 style="font-size:15px;color:var(--danger)">가정 부담</h3><p style="font-size:13px">간병비 하루 ~9만 원(22일 입원 ≈ 200만 원) · 1인실 전액 비급여 · 방치 시 합병증(폐렴·욕창·혈전)으로 <b style="color:var(--fg)">2년 내 사망률 70%</b></p></div>
+    <div class="card"><h3 style="font-size:15px;color:var(--pri)">사회 부담</h3><p style="font-size:13px">75세 이상 손상 입원의 <b style="color:var(--fg)">72.5%가 추락·낙상</b>(질병관리청 2025) · 장기요양보험 10.4조 원, 매년 +11.8% 증가</p></div>
+  </div>
+  <div class="note"><b>핵심</b> · 골절이 아니라 <b>누워있는 동안의 합병증</b>이 죽음의 원인 — 넘어지기 <b>"전에"</b> 막는 게 답이다.</div>
 </section>
 
 <!-- 3 · 이탈 예측 방법별 한계 -->
@@ -256,7 +259,7 @@
     <div class="play">▶</div>
     <div class="cap"><b>[촬영]</b> 어르신이 침대에 누워 안정. ToF=재실 / mmWave=조용 / <b>CSI가 HR·호흡 기준선</b>을 잡는 화면. → 이 사람의 <b>개인 baseline</b> 확보.</div>
   </div>
-  <div class="cap2">✓ <b>CSI 실측</b> — 통제환경(에어컨off·숨참기·위상 자기상관) <b>애플워치 대비 ±2bpm</b> (HR 67 vs 68~70). 일상환경 5~18bpm 오차 → 판정 아닌 <b>개인화 가중</b>에만.</div>
+  <div class="cap2">✓ <b>CSI 현황</b> — 단일 안테나 ESP32로 심박 측정을 시도했으나 <b>다중안테나 기반 작업이 필요한 기기의 한계</b>를 확인. 현재는 호흡·재실 신호 중심, 다중안테나 PoC는 향후 과제.</div>
 </section>
 
 <!-- 9 · 데모 S2 (mmWave 액센트, 핵심) -->
@@ -290,7 +293,7 @@
   <div class="stats" style="margin-top:12px">
     <div class="stat"><div class="n">~76점</div><div class="l">mmWave <b style="color:var(--fg)">점군 밀도/프레임</b>(최대 150) — 자세 판별에 충분</div></div>
     <div class="stat"><div class="n">겹침 0</div><div class="l">침대 <b style="color:var(--fg)">안 vs 밖 분리</b> — 거리 특징 비겹침(이탈 감지 견고)</div></div>
-    <div class="stat"><div class="n">±2bpm</div><div class="l">CSI <b style="color:var(--fg)">통제환경 심박</b>(애플워치 대비)</div></div>
+    <div class="stat"><div class="n">recall 79%</div><div class="l">mmWave 시계열(LSTM) <b style="color:var(--fg)">이탈임박 예측</b> — ToF 자동라벨 569시퀀스, F1 61</div></div>
   </div>
   <div class="cols" style="margin-top:16px">
     <div class="card" style="flex:1"><h3 style="font-size:16px;color:var(--ok)">검증 방법 (명시)</h3><p style="font-size:14px">통제 라벨 프로토콜(자세 지정 녹화) · 학습/검증 분할 · <b style="color:var(--fg)">LOSO</b>(새 사람 일반화) · ground-truth 대조 · 1초 프레임 누적</p></div>
@@ -303,7 +306,7 @@
   <div class="kick">09 · <b>정직한 한계</b></div>
   <h2>못 하는 것을 <span class="ac">숨기지 않는다</span></h2>
   <div class="cols g3" style="margin-top:14px">
-    <div class="card"><h3 style="font-size:18px">CSI HRV 불가</h3><p>단일안테나(2.4GHz)라 SDNN(실측 50~183ms) vs 정상(20~50ms) = 범위 밖. 진단: <b style="color:var(--fg)">진폭✗→위상✓</b>, 호흡 고조파·에어컨이 심박대역 오염. → 추세만.</p></div>
+    <div class="card"><h3 style="font-size:18px">CSI 기기의 한계</h3><p><b style="color:var(--fg)">단일 안테나 ESP32</b>로 심박 측정을 시도했으나, 정밀 측정은 <b style="color:var(--fg)">다중안테나 기반(두 안테나 CSI 비율로 노이즈 상쇄)</b>이 필요함을 확인 — 학술적으로도 동일(IEEE BHI 2021 등). → 다중안테나 PoC는 향후 과제.</p></div>
     <div class="card"><h3 style="font-size:18px">자세 미세구분</h3><p>센서 장착 각도에 민감. 눕/앉 미세구분은 데이터 더 필요. <b style="color:var(--fg)">침대 안/밖은 견고</b>.</p></div>
     <div class="card"><h3 style="font-size:18px">데이터 축적</h3><p>현장 반복 데이터로 정확도↑. "융합이 오탐 줄이나"는 <b style="color:var(--fg)">실증으로 답할 것</b>.</p></div>
   </div>
