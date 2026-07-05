@@ -147,16 +147,32 @@
   <div class="team">팀 마주봄 · 2026 · CSI 박형석 · ToF 조우진 · mmWave 유현기</div>
 </section>
 
-<!-- 2 · 문제 -->
+<!-- 1b · 문제: 치매 어르신 -->
 <section class="slide" style="--ac:var(--pri)">
-  <div class="kick">01 · <b>문제</b></div>
-  <h2>낙상 하나가 <span class="ac">가정과 사회를 통째로</span> 바꾼다</h2>
-  <div class="stats" style="margin-top:18px">
-    <div class="stat"><div class="n">52조 원</div><div class="l">65세 이상 노인 <b style="color:var(--fg)">건강보험 진료비</b> — 전체의 44.9%<br><span style="font-size:11px;color:var(--faint)">건보심사평가원 2024</span></div></div>
-    <div class="stat"><div class="n">18.2%</div><div class="l">고관절 골절 후 <b style="color:var(--fg)">1년 내 사망률</b><br><span style="font-size:11px;color:var(--faint)">Chung et al. 2025 · NHIS 2006~2022</span></div></div>
+  <div class="kick">01 · <b>문제 · 왜 치매 어르신인가</b></div>
+  <h2>치매 환자 낙상, <span class="ac">얼마나 심각한가</span></h2>
+  <div class="stats" style="margin-top:20px">
+    <div class="stat"><div class="n">100만</div><div class="l">2026년 한국 <b style="color:var(--fg)">치매 환자 수</b> (유병률 9.17%)<br><span style="font-size:11px;color:var(--faint)">보건복지부 2024</span></div></div>
+    <div class="stat"><div class="n">43.6%</div><div class="l">치매 환자 <b style="color:var(--fg)">연간 낙상 경험률</b><br><span style="font-size:11px;color:var(--faint)">Simpkins et al. 2024 · 35편 7,844명 메타분석</span></div></div>
+    <div class="stat"><div class="n">42%</div><div class="l">넘어진 환자 중 <b style="color:var(--fg)">재낙상 비율</b><br><span style="font-size:11px;color:var(--faint)">Simpkins et al. 2024 · 재낙상률 42.08%</span></div></div>
   </div>
-  <div class="cols g2" style="margin-top:14px">
-    <div class="card" style="flex:1"><h3 style="font-size:15px;color:var(--danger)">가정 부담</h3>
+  <div class="cols g2" style="margin-top:16px">
+    <div class="card"><h3 style="font-size:15px;color:var(--danger)">왜 더 위험한가</h3><p style="font-size:13px">인지저하로 <b style="color:var(--fg)">위험 인지·회피가 어렵고</b>, 착용형·접촉식 기기를 <b style="color:var(--fg)">거부·분실</b> → 기존 대책이 잘 안 통함</p></div>
+    <div class="card"><h3 style="font-size:15px;color:var(--pri)">기존 해결의 한계</h3><p style="font-size:13px">조기 감지는 <b style="color:var(--fg)">접촉식(sEMG·IMU)</b>이거나 <b style="color:var(--fg)">측정·기록에만 그침</b>(mmWave 보행). <b style="color:var(--pri)">비접촉으로 "예측"까지 하는 시스템은 없다</b></p></div>
+  </div>
+  <div class="note"><b>핵심</b> · 매년 43.6%가 넘어지고, 한 번 넘어지면 42%가 반복 낙상 — 가장 취약한데 기존 대책이 안 맞는다.</div>
+</section>
+
+<!-- 2 · 문제: 사회·가정 비용 -->
+<section class="slide" style="--ac:var(--pri)">
+  <div class="kick">01 · <b>문제 · 사회·가정 비용</b></div>
+  <h2>낙상 하나가 <span class="ac">가정과 사회를 통째로</span> 바꾼다</h2>
+  <div class="cols g2" style="margin-top:18px">
+    <div class="card" style="flex:1;border-top:3px solid var(--danger)">
+      <div class="mono" style="font-size:36px;font-weight:800;color:var(--danger)">18.2%</div>
+      <div style="font-size:13.5px;color:var(--muted);margin:4px 0 2px">고관절 골절 후 <b style="color:var(--fg)">1년 내 사망률</b></div>
+      <div style="font-size:10.5px;color:var(--faint);margin-bottom:12px">Chung et al. 2025 · NHIS 2006~2022</div>
+      <h3 style="font-size:15px;color:var(--danger)">가정 부담</h3>
       <p style="font-size:12.5px;line-height:1.75">
         • 고관절 골절 수술비 <b style="color:var(--danger)">441만 원</b> + 평균 입원 <b style="color:var(--danger)">22.3일</b><br>
         <span style="font-size:10.5px;color:var(--faint);margin-left:14px">건보심사평가원 2021</span><br>
@@ -167,7 +183,11 @@
         • 방치 시 합병증(폐렴, 욕창, 혈전)으로 2년 내 사망률 <b style="color:var(--danger)">70%</b><br>
         <span style="font-size:10.5px;color:var(--faint);margin-left:14px">거동 불가 → 가족 상주 간병 또는 간병인 고용 필수</span>
       </p></div>
-    <div class="card" style="flex:1"><h3 style="font-size:15px;color:var(--pri)">사회 부담</h3>
+    <div class="card" style="flex:1;border-top:3px solid var(--pri)">
+      <div class="mono" style="font-size:36px;font-weight:800;color:var(--pri)">52조 원</div>
+      <div style="font-size:13.5px;color:var(--muted);margin:4px 0 2px">65세 이상 노인 <b style="color:var(--fg)">건강보험 진료비</b> — 전체의 44.9%</div>
+      <div style="font-size:10.5px;color:var(--faint);margin-bottom:12px">건보심사평가원 2024</div>
+      <h3 style="font-size:15px;color:var(--pri)">사회 부담</h3>
       <p style="font-size:12.5px;line-height:1.75">
         • 65세 이상 건보 진료비 <b style="color:var(--pri)">52조 원</b>, 전체의 <b style="color:var(--pri)">44.9%</b><br>
         <span style="font-size:10.5px;color:var(--faint);margin-left:14px">건보심사평가원 2024</span><br>
