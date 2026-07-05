@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4주 개발 일정 — 마주봄</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+    <style>
+        :root {
+            --ink-1:   #111418;
+            --ink-2:   #3b4250;
+            --ink-3:   #6b7280;
+            --ink-4:   #9ca3af;
+            --line:    #e5e7eb;
+            --line-2:  #f1f3f5;
+            --paper:   #ffffff;
+            --canvas:  #f4f5f7;
+            --accent:  #1f6feb;
+            --accent-soft: #eff5ff;
+            --green:   #15803d;
+            --green-soft:#ecfdf5;
+            --orange:  #b45309;
+            --orange-soft:#fff7ed;
+            --rose:    #b91c1c;
+            --rose-soft:#fef2f2;
+
+            --page-w: 210mm;
+            --page-h: 297mm;
+            --page-pad: 22mm 22mm 26mm;
+        }
+
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html, body {
+            background:var(--canvas);
+            font-family:'Pretendard Variable','Pretendard',-apple-system,system-ui,sans-serif;
+            color:var(--ink-1);
+            -webkit-font-smoothing:antialiased;
+            text-rendering:optimizeLegibility;
+        }
+
+        /* ── floating PDF button (화면 전용) ─────────────────────── */
+        .toolbar {
+            position:fixed; top:16px; right:16px; z-index:50;
+            display:flex; gap:8px;
+        }
+        .toolbar button {
+            border:1px solid var(--line);
+            background:var(--paper);
+            color:var(--ink-1);
+            font-family:inherit; font-size:13px; font-weight:700;
+            padding:9px 16px; border-radius:8px; cursor:pointer;
+            box-shadow:0 1px 2px rgba(0,0,0,0.04);
+            transition:background 120ms ease;
+        }
+        .toolbar button:hover { background:var(--accent-soft); border-color:var(--accent); color:var(--accent); }
+
+        /* ── A4 page ─────────────────────────────────────────────── */
+        .doc {
+            display:flex; flex-direction:column; align-items:center;
+            padding:32px 16px 80px;
+            gap:24px;
+        }
+        .page {
+            width:var(--page-w);
+            min-height:var(--page-h);
+            background:var(--paper);
+            padding:var(--page-pad);
+            box-shadow:0 1px 2px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
+            position:relative;
+            page-break-after:always;
+            break-after:page;
+            display:flex; flex-direction:column;
+        }
+        .page:last-of-type { page-break-after:auto; break-after:auto; }
+
+        /* page header / footer */
+        .ph {
+            display:flex; align-items:baseline; justify-content:space-between;
+            padding-bottom:10px; border-bottom:1px solid var(--line-2);
+            margin-bottom:18px;
+        }
+        .ph-title { font-size:11px; font-weight:800; color:var(--ink-3); letter-spacing:0.14em; text-transform:uppercase; }
+        .ph-meta  { font-size:11px; color:var(--ink-3); font-variant-numeric:tabular-nums; }
+        .pf {
+            margin-top:auto;
+            padding-top:14px;
+            border-top:1px solid var(--line-2);
+            display:flex; align-items:center; justify-content:space-between;
+            font-size:11px; color:var(--ink-4);
+            font-variant-numeric:tabular-nums;
+        }
+        .pf b { color:var(--ink-2); font-weight:700; }
+
+        /* typography */
+        h1.doc-title {
+            font-size:36px; font-weight:900; letter-spacing:-0.025em;
+            line-height:1.2;
+        }
+        h2.sec-title {
+            font-size:22px; font-weight:900; letter-spacing:-0.02em;
+            margin-bottom:6px;
+        }
+        h3.sub-title {
+            font-size:14px; font-weight:800; color:var(--ink-2);
+            margin:18px 0 8px;
+            letter-spacing:-0.01em;
+        }
+        .lead {
+            font-size:13.5px; color:var(--ink-2); line-height:1.7;
+        }
+        .muted { color:var(--ink-3); font-size:12px; }
+        .kicker {
+            display:inline-block; font-size:10.5px; font-weight:800;
+            letter-spacing:0.16em; text-transform:uppercase;
+            color:var(--accent);
+            padding:3px 9px; border:1px solid var(--accent); border-radius:3px;
+            margin-bottom:10px;
+        }
+        .kicker.w1 { color:#1f6feb; border-color:#1f6feb; }
+        .kicker.w2 { color:#15803d; border-color:#15803d; }
+        .kicker.w3 { color:#b45309; border-color:#b45309; }
+        .kicker.w4 { color:#6d28d9; border-color:#6d28d9; }
+
+        /* cover */
+        .cover {
+            justify-content:center; align-items:center;
+            text-align:center;
+        }
+        .cover .doc-title {
+            font-size:40px; max-width:520px; margin:24px auto 16px;
+        }
+        .cover .lead { max-width:480px; margin:0 auto 28px; }
+        .cover .info {
+            display:grid; grid-template-columns:repeat(2,auto);
+            gap:6px 36px; justify-content:center;
+            font-size:12px; color:var(--ink-2); margin-top:24px;
+        }
+        .cover .info .k { color:var(--ink-3); font-weight:600; }
+        .cover .info .v { font-weight:700; color:var(--ink-1); text-align:left; }
+
+        /* timeline */
+        .timeline {
+            display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+            margin-top:12px;
+        }
+        .tl {
+            border:1px solid var(--line); border-radius:6px;
+            padding:14px 12px;
+        }
+        .tl.w1 { border-top:3px solid #1f6feb; }
+        .tl.w2 { border-top:3px solid #15803d; }
+        .tl.w3 { border-top:3px solid #b45309; }
+        .tl.w4 { border-top:3px solid #6d28d9; }
+        .tl-no { font-size:10.5px; font-weight:800; letter-spacing:0.1em; color:var(--ink-3); }
+        .tl-dt { font-size:10.5px; color:var(--ink-3); font-variant-numeric:tabular-nums; margin-top:2px; }
+        .tl-nm { font-size:13px; font-weight:800; margin:10px 0 6px; }
+        .tl-ds { font-size:11px; color:var(--ink-2); line-height:1.55; }
+
+        /* architecture diagram (텍스트) */
+        .arch {
+            background:var(--canvas);
+            border:1px solid var(--line);
+            border-radius:6px;
+            padding:18px 22px;
+            font-family:'SF Mono','JetBrains Mono',Consolas,monospace;
+            font-size:11.5px; line-height:1.85;
+            color:var(--ink-2);
+            white-space:pre;
+            overflow-x:auto;
+            margin-bottom:14px;
+        }
+        .arch b.tag-tof { color:var(--orange); font-weight:700; }
+        .arch b.tag-mm  { color:var(--green); font-weight:700; }
+        .arch b.tag-esp { color:var(--accent); font-weight:700; }
+        .arch b.tag-pi  { color:#6d28d9; font-weight:700; }
+
+        /* parts table */
+        table.parts {
+            width:100%; border-collapse:collapse;
+            font-size:11.5px;
+        }
+        table.parts th, table.parts td {
+            text-align:left; padding:8px 10px; border-bottom:1px solid var(--line);
+        }
+        table.parts th { color:var(--ink-3); font-weight:700; font-size:10.5px; letter-spacing:0.04em; text-transform:uppercase; }
+        table.parts td.qty { text-align:right; font-variant-numeric:tabular-nums; color:var(--ink-2); white-space:nowrap; }
+
+        /* role split */
+        .roles {
+            display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+        }
+        .role {
+            border:1px solid var(--line); border-radius:6px;
+            padding:14px 14px 16px;
+        }
+        .role.esp32  { border-top:3px solid var(--accent); }
+        .role.mmwave { border-top:3px solid var(--green); }
+        .role.tof    { border-top:3px solid var(--orange); }
+        .role-tag {
+            display:inline-block;
+            font-size:10px; font-weight:800; letter-spacing:0.08em;
+            padding:2px 7px; border-radius:3px;
+            margin-bottom:6px;
+        }
+        .role.esp32  .role-tag { background:var(--accent-soft); color:var(--accent); }
+        .role.mmwave .role-tag { background:var(--green-soft);  color:var(--green); }
+        .role.tof    .role-tag { background:var(--orange-soft); color:var(--orange); }
+        .role-nm { font-size:14px; font-weight:900; margin-bottom:8px; }
+        .role ul { list-style:none; font-size:11.5px; color:var(--ink-2); line-height:1.7; }
+        .role ul li { padding-left:11px; position:relative; }
+        .role ul li::before {
+            content:''; position:absolute; left:0; top:8px;
+            width:4px; height:4px; border-radius:50%;
+            background:var(--ink-4);
+        }
+        .role ul li b { color:var(--ink-1); font-weight:700; }
+
+        /* week page */
+        .goal-box {
+            background:var(--canvas);
+            border-left:3px solid var(--ink-1);
+            padding:12px 16px;
+            font-size:12.5px; line-height:1.6;
+            color:var(--ink-2);
+            margin:10px 0 18px;
+            border-radius:0 4px 4px 0;
+        }
+        .goal-box b { color:var(--ink-1); }
+
+        .tasks {
+            display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+            margin-bottom:14px;
+        }
+        .task {
+            border:1px solid var(--line); border-radius:6px;
+            padding:14px;
+        }
+        .task .who {
+            font-size:10px; font-weight:800; letter-spacing:0.1em;
+            text-transform:uppercase; margin-bottom:4px;
+        }
+        .task .who.esp32  { color:var(--accent); }
+        .task .who.mmwave { color:var(--green); }
+        .task .who.tof    { color:var(--orange); }
+        .task .nm { font-size:13px; font-weight:800; margin-bottom:8px; }
+        .task ul { list-style:none; font-size:11px; color:var(--ink-2); line-height:1.65; }
+        .task ul li { padding-left:10px; position:relative; }
+        .task ul li::before {
+            content:''; position:absolute; left:0; top:7px;
+            width:3px; height:3px; border-radius:50%;
+            background:var(--ink-4);
+        }
+        .task ul li b { color:var(--ink-1); font-weight:700; }
+
+        .milestone {
+            margin-top:10px;
+            padding:10px 14px;
+            border:1px solid var(--ink-1);
+            border-radius:4px;
+            font-size:12px; color:var(--ink-1); font-weight:700;
+            display:flex; align-items:center; gap:8px;
+        }
+        .milestone .flag {
+            display:inline-block;
+            font-size:10px; font-weight:900;
+            background:var(--ink-1); color:white;
+            padding:2px 7px; border-radius:3px;
+            letter-spacing:0.06em;
+        }
+
+        /* algorithm section */
+        h3.algo-head {
+            font-size:11px; font-weight:800; letter-spacing:0.12em;
+            text-transform:uppercase; color:var(--ink-3);
+            margin:18px 0 10px;
+            padding-top:12px; border-top:1px solid var(--line-2);
+        }
+        .algo {
+            display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+        }
+        .algo-box {
+            border:1px solid var(--line); border-radius:6px;
+            padding:12px 14px;
+        }
+        .algo-box .a-tag {
+            font-size:10px; font-weight:800; letter-spacing:0.08em;
+            margin-bottom:4px; color:var(--ink-3); text-transform:uppercase;
+        }
+        .algo-box .a-nm { font-size:12.5px; font-weight:800; margin-bottom:8px; color:var(--ink-1); }
+        .algo-box p { font-size:11px; color:var(--ink-2); line-height:1.65; margin-bottom:6px; }
+        .algo-box code {
+            font-family:'SF Mono','JetBrains Mono',Consolas,monospace;
+            font-size:10.5px;
+            background:var(--canvas); border:1px solid var(--line);
+            padding:1px 5px; border-radius:3px; color:var(--ink-1);
+        }
+        .algo-box pre {
+            background:var(--canvas);
+            border:1px solid var(--line);
+            border-radius:4px;
+            padding:9px 11px;
+            font-family:'SF Mono','JetBrains Mono',Consolas,monospace;
+            font-size:10px; line-height:1.6; color:var(--ink-1);
+            white-space:pre-wrap;
+            margin-top:6px;
+        }
+
+        /* resources page */
+        .res-block {
+            border-top:1px solid var(--line);
+            padding-top:12px; margin-top:14px;
+        }
+        .res-block:first-of-type { border-top:none; padding-top:0; margin-top:0; }
+        .res-head {
+            display:flex; align-items:baseline; gap:8px;
+            margin-bottom:8px;
+        }
+        .res-cat {
+            font-size:10.5px; font-weight:800;
+            padding:2px 8px; border-radius:3px;
+            letter-spacing:0.06em;
+        }
+        .res-cat.mmwave { background:var(--green-soft); color:var(--green); }
+        .res-cat.tof    { background:var(--orange-soft); color:var(--orange); }
+        .res-cat.esp32  { background:var(--accent-soft); color:var(--accent); }
+        .res-cat.pi     { background:#f3e8ff; color:#6d28d9; }
+        .res-cat.risk   { background:var(--rose-soft); color:var(--rose); }
+        .res-nm { font-size:13.5px; font-weight:800; }
+        .res-grid {
+            display:grid; grid-template-columns:1fr 1.2fr; gap:10px;
+        }
+        .pitfall {
+            border:1px solid var(--rose);
+            background:var(--rose-soft);
+            border-radius:5px;
+            padding:10px 12px;
+        }
+        .pitfall .h {
+            font-size:10.5px; font-weight:800; color:var(--rose);
+            letter-spacing:0.08em; margin-bottom:6px; text-transform:uppercase;
+        }
+        .pitfall ul { list-style:none; font-size:11px; color:var(--ink-2); line-height:1.65; }
+        .pitfall ul li { padding-left:11px; position:relative; }
+        .pitfall ul li::before {
+            content:'!'; position:absolute; left:1px; top:0;
+            font-weight:900; color:var(--rose); font-size:11px;
+        }
+        .pitfall ul li b { color:var(--ink-1); font-weight:700; }
+
+        .ref {
+            border:1px solid var(--line);
+            border-radius:5px;
+            padding:10px 12px;
+        }
+        .ref .h {
+            font-size:10.5px; font-weight:800; color:var(--ink-3);
+            letter-spacing:0.08em; margin-bottom:6px; text-transform:uppercase;
+        }
+        table.reflist {
+            width:100%; border-collapse:collapse; font-size:11px;
+        }
+        table.reflist td {
+            padding:4px 0; vertical-align:top;
+            border-bottom:1px dashed var(--line-2);
+        }
+        table.reflist tr:last-child td { border-bottom:none; }
+        table.reflist td.name { font-weight:700; color:var(--ink-1); white-space:nowrap; padding-right:8px; }
+        table.reflist td.url  {
+            font-family:'SF Mono','JetBrains Mono',Consolas,monospace;
+            font-size:10px; color:var(--accent);
+            word-break:break-all;
+        }
+        table.reflist td.desc { color:var(--ink-2); font-size:10.5px; }
+
+        /* ── PRINT (PDF 저장) ─────────────────────────────────────── */
+        @page { size:A4; margin:0; }
+        @media print {
+            html, body { background:var(--paper); }
+            .toolbar { display:none !important; }
+            .doc { padding:0; gap:0; }
+            .page {
+                box-shadow:none;
+                width:210mm; height:297mm;
+                margin:0;
+                page-break-after:always;
+            }
+            .page:last-of-type { page-break-after:auto; }
+        }
+
+        /* 작은 화면(모바일) — 미리보기용으로 비율 유지 안 함, 자연스럽게 */
+        @media (max-width:760px) {
+            .doc { padding:16px 8px 60px; }
+            .page {
+                width:100%; min-height:auto;
+                padding:18px 18px 22px;
+                box-shadow:0 1px 2px rgba(0,0,0,0.06);
+            }
+            .timeline, .roles, .tasks, .algo { grid-template-columns:1fr 1fr; }
+            .toolbar { top:8px; right:8px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="toolbar">
+    <button onclick="window.print()">📄 PDF로 저장 (인쇄)</button>
+</div>
+
+<div class="doc">
+
+<!-- ─────────────── 표지 ─────────────── -->
+<section class="page cover">
+    <div class="ph">
+        <div class="ph-title">Team MajuBom · 1차 통합 개발</div>
+        <div class="ph-meta">2026 Capstone Design</div>
+    </div>
+
+    <div style="margin:auto 0; text-align:center">
+        <div class="kicker">Development Schedule</div>
+        <h1 class="doc-title">4주 개발 일정<br>ESP32 · mmWave · ToF 통합</h1>
+        <p class="lead">기기 도착 후 한 달 안에 ToF + mmWave가 한 시스템에서 같이 돌고, Raspberry Pi 5에서 위험도가 한 화면에 표시되는 1차 통합본 완성</p>
+
+        <div class="info">
+            <div class="k">개발 기간</div>     <div class="v">2026. 06. 01 (월) ~ 06. 28 (일)</div>
+            <div class="k">담당자</div>         <div class="v">박형석 · 유현기 · 조우진</div>
+            <div class="k">제외 범위</div>     <div class="v">WiFi CSI (후속 작업으로 분리)</div>
+            <div class="k">통합 목표</div>     <div class="v">ToF + mmWave 동시 동작 + Pi 5 표시</div>
+        </div>
+    </div>
+
+    <div class="pf">
+        <span><b>치매환자 낙상 위험 사전 예측을 위한 비접촉 다중 센서 시스템</b></span>
+        <span>p. 1 / 7</span>
+    </div>
+</section>
+
+<!-- ─────────────── 한눈에 + 구조 + 분담 ─────────────── -->
+<section class="page">
+    <div class="ph">
+        <div class="ph-title">Overview · Architecture · Team</div>
+        <div class="ph-meta">개요</div>
+    </div>
+
+    <h2 class="sec-title">한눈에 보는 4주</h2>
+    <p class="lead">매주 금요일 마일스톤을 두고 통합 수준을 단계적으로 키운다. 통합 위험을 마지막 주로 미루지 않는다.</p>
+
+    <div class="timeline">
+        <div class="tl w1">
+            <div class="tl-no">WEEK 1</div><div class="tl-dt">6/1 — 6/7</div>
+            <div class="tl-nm">통신 골격</div>
+            <div class="tl-ds">ESP32 두 개가 가짜 데이터라도 Pi 5에 던지는 흐름 완성. 데이터 형식 못 박기.</div>
+        </div>
+        <div class="tl w2">
+            <div class="tl-no">WEEK 2</div><div class="tl-dt">6/8 — 6/14</div>
+            <div class="tl-nm">핵심 알고리즘</div>
+            <div class="tl-ds">ToF는 "누움/앉음/이탈" 글자, mmWave는 보행 속도/흔들림 숫자 표시.</div>
+        </div>
+        <div class="tl w3">
+            <div class="tl-no">WEEK 3</div><div class="tl-dt">6/15 — 6/21</div>
+            <div class="tl-nm">통합 + 위험도</div>
+            <div class="tl-ds">정상/주의/경고/위험 한 글자 표시. 개인별 z-score 베이스라인 도입.</div>
+        </div>
+        <div class="tl w4">
+            <div class="tl-no">WEEK 4</div><div class="tl-dt">6/22 — 6/28</div>
+            <div class="tl-nm">튜닝 + 발표</div>
+            <div class="tl-ds">임계값 튜닝, 자동 부팅, 시연 영상, 발표 슬라이드 1차 드래프트.</div>
+        </div>
+    </div>
+
+    <h3 class="sub-title">시스템 구조</h3>
+    <div class="arch">
+<b class="tag-tof">[ToF #1 침대 옆]</b> ──┐
+                       ├──→ <b class="tag-esp">ESP32-S3 #1</b> ──WiFi──┐
+<b class="tag-tof">[ToF #2 통로]   </b> ──┘                                │
+                                                         ├──→ <b class="tag-pi">Raspberry Pi 5</b>
+<b class="tag-mm">[mmWave IWR6843]</b> ─UART→ <b class="tag-esp">ESP32-S3 #2</b> ──WiFi────┘     │
+                                                               ├─ 데이터 수신 / 표시
+                                                               ├─ 위험도 계산 (3주차~)
+                                                               └─ 4단계 알림 (3주차~)
+    </div>
+
+    <h3 class="sub-title">부품 (도착 완료)</h3>
+    <table class="parts">
+        <thead><tr><th>구성</th><th>모델</th><th class="qty">수량</th></tr></thead>
+        <tbody>
+            <tr><td>mmWave 레이더</td><td>TI IWR6843AOPEVM (60GHz · 자체 DSP)</td><td class="qty">1</td></tr>
+            <tr><td>ToF 센서</td><td>ST VL53L8CX (8×8 멀티존)</td><td class="qty">2</td></tr>
+            <tr><td>마이크로컨트롤러</td><td>ESP32-S3 (YD-ESP32-S3)</td><td class="qty">2</td></tr>
+            <tr><td>통합 허브</td><td>Raspberry Pi 5 (8GB) + AI HAT+ 26TOPS</td><td class="qty">1</td></tr>
+        </tbody>
+    </table>
+
+    <h3 class="sub-title">분담 (3명)</h3>
+    <div class="roles">
+        <div class="role esp32">
+            <span class="role-tag">ESP32 · Pi 5</span>
+            <div class="role-nm">박형석</div>
+            <ul>
+                <li><b>ESP32 #1, #2 펌웨어 골격</b></li>
+                <li><b>WiFi 통신 (MQTT)</b></li>
+                <li><b>Pi 5 수신 서버</b> + 화면</li>
+                <li>시간 동기화 / 끊김 재접속</li>
+                <li>위험도 계산기 (3주차~)</li>
+            </ul>
+        </div>
+        <div class="role mmwave">
+            <span class="role-tag">mmWave</span>
+            <div class="role-nm">유현기</div>
+            <ul>
+                <li><b>IWR6843AOPEVM 펌웨어</b> (TI SDK 데모)</li>
+                <li><b>UART TLV 패킷 파싱</b></li>
+                <li>보행 속도 / 좌우 흔들림 추출</li>
+                <li>z-score 베이스라인</li>
+                <li>시연용 보행 데이터 수집</li>
+            </ul>
+        </div>
+        <div class="role tof">
+            <span class="role-tag">ToF</span>
+            <div class="role-nm">조우진</div>
+            <ul>
+                <li><b>VL53L8CX × 2 I²C 연결</b></li>
+                <li>8×8 zone depth map 처리</li>
+                <li><b>침상 상태 FSM</b> (누움/앉음/이탈)</li>
+                <li>이탈 임박 단계 (centroid 추적)</li>
+                <li>환경별 임계값 보정</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="pf">
+        <span><b>개요 · 구조 · 분담</b> · 2026. 06. 01 ~ 06. 28</span>
+        <span>p. 2 / 7</span>
+    </div>
+</section>
+
+<!-- ─────────────── 1주차 ─────────────── -->
+<section class="page">
+    <div class="ph">
+        <div class="ph-title">Week 1 · 통신 골격</div>
+        <div class="ph-meta">6/1 (월) — 6/7 (일)</div>
+    </div>
+
+    <span class="kicker w1">Week 1</span>
+    <h2 class="sec-title">인터페이스부터 못 박는다</h2>
+    <p class="lead">알고리즘 깊이 들어가지 않는다. 데이터가 흘러간다는 사실을 보이는 게 전부다.</p>
+
+    <div class="goal-box">
+        <b>이번 주 끝나면 보여야 할 그림 —</b> ESP32 두 개가 각자 가짜 데이터라도 Pi 5에 보내고, 한 화면에 "ToF 노드 OK / mmWave 노드 OK"가 같이 찍힌다.
+    </div>
+
+    <div class="tasks">
+        <div class="task">
+            <div class="who esp32">박형석 · ESP32 + Pi</div>
+            <div class="nm">통신 골격 + 데이터 형식 합의</div>
+            <ul>
+                <li>ESP32-S3 환경 셋업 (<b>Arduino-ESP32</b> 또는 ESP-IDF)</li>
+                <li>WiFi STA 모드 접속</li>
+                <li><b>JSON 포맷 합의</b> (envelope)</li>
+                <li>Pi 5에 <b>Mosquitto MQTT</b> 설치</li>
+                <li>토픽: <code>fall/tof</code>, <code>fall/mmwave</code></li>
+            </ul>
+        </div>
+        <div class="task">
+            <div class="who mmwave">유현기 · mmWave</div>
+            <div class="nm">IWR6843 데모 펌웨어</div>
+            <ul>
+                <li>TI <b>mmWave SDK 설치</b> (Uniflash, CCS)</li>
+                <li><b>OOB Demo 펌웨어</b> 굽기</li>
+                <li>UART 출력 확인 (921600 bps)</li>
+                <li>ESP32 #2 UART 연결</li>
+                <li>TLV 매직워드 검출까지</li>
+            </ul>
+        </div>
+        <div class="task">
+            <div class="who tof">조우진 · ToF</div>
+            <div class="nm">VL53L8CX 거리 출력</div>
+            <ul>
+                <li>ST <b>VL53L8CX 라이브러리</b> 추가</li>
+                <li>ESP32 #1에 I²C 연결 (×2)</li>
+                <li><b>4×4 zone, 10Hz</b> 시작</li>
+                <li>시리얼에 거리값 출력</li>
+                <li>두 센서 동시 동작</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="milestone">
+        <span class="flag">MILESTONE</span>
+        <span>6/5 (금) — Pi 화면에 두 노드 신호가 1초마다 같이 깜빡인다</span>
+    </div>
+
+    <h3 class="algo-head">안에 들어갈 알고리즘 · 포맷</h3>
+    <div class="algo">
+        <div class="algo-box">
+            <div class="a-tag">ESP32 / Pi</div>
+            <div class="a-nm">JSON 메시지 envelope</div>
+            <p>모든 노드 공통. payload만 노드별 자유.</p>
+<pre>{
+  "node": "tof",         // "tof" | "mmwave"
+  "ts":   1717200000123, // ms (Pi 기준 보정)
+  "payload": { ... }
+}</pre>
+            <p>시간 동기화: ESP32 부팅 시 <code>SNTP</code> 1회 → 이후 <code>millis()</code> + 오프셋.</p>
+        </div>
+        <div class="algo-box">
+            <div class="a-tag">mmWave</div>
+            <div class="a-nm">TLV 패킷 검출</div>
+            <p>TI mmWave SDK OOB Demo 출력 구조:</p>
+<pre>Magic: 02 01 04 03 06 05 08 07
+Header: version, totalPacketLen, ...
+TLVs:   type, length, payload ...</pre>
+            <p>1주차는 <b>매직워드 동기화</b>까지. 본 파싱은 2주차.</p>
+        </div>
+        <div class="algo-box">
+            <div class="a-tag">ToF</div>
+            <div class="a-nm">4×4 zone moving average</div>
+            <p>16개 zone 각각 5-tap 이동평균 후 중앙값.</p>
+<pre>for each zone z:
+  avg[z] = mean(last 5 of z)
+distance = median(avg[0..15])</pre>
+            <p><b>median</b>으로 튀는 zone 영향 차단.</p>
+        </div>
+    </div>
+
+    <div class="pf">
+        <span><b>WEEK 1</b> · 통신 골격 · 6/1 — 6/7</span>
+        <span>p. 3 / 7</span>
+    </div>
+</section>
+
+<!-- ─────────────── 2주차 ─────────────── -->
+<section class="page">
+    <div class="ph">
+        <div class="ph-title">Week 2 · 핵심 알고리즘</div>
+        <div class="ph-meta">6/8 (월) — 6/14 (일)</div>
+    </div>
+
+    <span class="kicker w2">Week 2</span>
+    <h2 class="sec-title">각자 결과가 글자 / 숫자로 보인다</h2>
+    <p class="lead">1주차에 깔린 통신 라인 위에 본격 알고리즘을 올린다. 통합 작업은 아직 시작하지 않는다.</p>
+
+    <div class="goal-box">
+        <b>이번 주 끝나면 —</b> ToF는 "누움/앉음/이탈" 글자가, mmWave는 "보행 속도 1.1 m/s, 흔들림 0.18" 같은 숫자가 화면에 뜬다.
+    </div>
+
+    <div class="tasks">
+        <div class="task">
+            <div class="who esp32">박형석 · ESP32 + Pi</div>
+            <div class="nm">통신 안정화 + 기록</div>
+            <ul>
+                <li>WiFi 끊김 시 <b>자동 재접속</b></li>
+                <li>패킷 손실: RAM 큐 5개 버퍼링</li>
+                <li>Pi에서 <b>CSV 자동 저장</b> (튜닝 데이터)</li>
+                <li>간단 <b>웹 대시보드</b> (Flask)</li>
+                <li>노드별 last-seen 추적, 무신호 경고</li>
+            </ul>
+        </div>
+        <div class="task">
+            <div class="who mmwave">유현기 · mmWave</div>
+            <div class="nm">보행 속도 + 좌우 흔들림</div>
+            <ul>
+                <li>TLV 본격 파싱 (point cloud / tracker)</li>
+                <li><b>사람 1명 추적</b> (가장 가까운 클러스터)</li>
+                <li>속도 = √(vx² + vy²) 1초 평균</li>
+                <li>흔들림 = x 좌표 1초 표준편차</li>
+                <li>ESP32 #2 → MQTT 전송</li>
+            </ul>
+        </div>
+        <div class="task">
+            <div class="who tof">조우진 · ToF</div>
+            <div class="nm">침상 상태 FSM 완성</div>
+            <ul>
+                <li>거리 임계값 <b>3상태 판정</b></li>
+                <li>채터링 방지 <b>0.5초 디바운스</b></li>
+                <li>이상치: <b>Hampel filter</b> 추가</li>
+                <li>이탈 트리거 이벤트 발사</li>
+                <li>ESP32 #1 → MQTT 전송</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="milestone">
+        <span class="flag">MILESTONE</span>
+        <span>6/12 (금) — 각자 1분 데모 영상 / 30분간 끊김 없이 CSV 저장</span>
+    </div>
+
+    <h3 class="algo-head">안에 들어갈 알고리즘</h3>
+    <div class="algo">
+        <div class="algo-box">
+            <div class="a-tag">ToF</div>
+            <div class="a-nm">상태 머신 (FSM)</div>
+<pre>if   dist &lt; 40 cm   → 누움
+elif dist &lt; 100 cm  → 앉음
+elif dist ≥ 100 cm
+     for 1.0s 이상  → 이탈 ◆</pre>
+            <p>상태 전이 <b>0.5초 디바운스</b>로 채터링 차단.</p>
+<pre>// Hampel (window=7, k=3)
+med = median(w)
+mad = median(|x - med|)
+if |x[i]-med| &gt; k·1.4826·mad
+   → x[i] = med</pre>
+        </div>
+        <div class="algo-box">
+            <div class="a-tag">mmWave</div>
+            <div class="a-nm">보행 특징 추출</div>
+            <p>TI SDK tracker 출력: <code>id, x, y, vx, vy</code></p>
+<pre>// 가장 가까운 1명만
+target = argmin √(x² + y²)
+
+// 1초 윈도우 (50ms × 20)
+speed = mean(√(vx²+vy²))
+sway  = std(x)
+hdg   = atan2(mean(vy),
+              mean(vx))</pre>
+            <p>파싱 실패 패킷은 <b>무시</b> (drop count 로그).</p>
+        </div>
+        <div class="algo-box">
+            <div class="a-tag">ESP32 / Pi</div>
+            <div class="a-nm">CSV 자동 저장</div>
+            <p>Pi 5에서 MQTT 구독 → 일별 파일 append.</p>
+<pre>ts, node, key, value
+…123, tof,    state,    sitting
+…150, tof,    distance, 87.4
+…200, mmwave, speed,    1.12
+…200, mmwave, sway,     0.18</pre>
+            <p><b>flat key-value</b>로 저장 → pandas 분석 편함.</p>
+        </div>
+    </div>
+
+    <div class="pf">
+        <span><b>WEEK 2</b> · 핵심 알고리즘 · 6/8 — 6/14</span>
+        <span>p. 4 / 7</span>
+    </div>
+</section>
+
+<!-- ─────────────── 3주차 ─────────────── -->
+<section class="page">
+    <div class="ph">
+        <div class="ph-title">Week 3 · 통합 + 위험도</div>
+        <div class="ph-meta">6/15 (월) — 6/21 (일)</div>
+    </div>
+
+    <span class="kicker w3">Week 3</span>
+    <h2 class="sec-title">합쳐서 위험도 한 글자로</h2>
+    <p class="lead">트리거(ToF) → 본 분석(mmWave) → 종합 판정(Pi). 개인별 베이스라인으로 평소와 다른지를 본다.</p>
+
+    <div class="goal-box">
+        <b>이번 주 끝나면 —</b> 화면에 "지금 위험도: 주의" 같은 한 줄이 뜬다. ToF가 "이탈" 찍히면 1초 뒤 mmWave 데이터를 같이 보고 종합 판단.
+    </div>
+
+    <div class="tasks">
+        <div class="task">
+            <div class="who esp32">박형석 · ESP32 + Pi</div>
+            <div class="nm">위험도 계산 + 4단계</div>
+            <ul>
+                <li>위험도 모듈 (Pi 5, Python)</li>
+                <li><b>가중합</b>으로 단순 시작</li>
+                <li>분류: <b>정상 / 주의 / 경고 / 위험</b></li>
+                <li>대시보드에 큰 글씨 표시</li>
+                <li>이력 로그 (SQLite)</li>
+            </ul>
+        </div>
+        <div class="task">
+            <div class="who mmwave">유현기 · mmWave</div>
+            <div class="nm">z-score 베이스라인</div>
+            <ul>
+                <li><b>최근 30회</b> 보행 측정값 저장</li>
+                <li>SQLite에 user별 mean / std 누적</li>
+                <li>z = (x − mean) / std</li>
+                <li><b>2σ 이상 이탈</b> 시 위험도↑</li>
+                <li>30회 미만은 <b>고정 임계값 폴백</b></li>
+            </ul>
+        </div>
+        <div class="task">
+            <div class="who tof">조우진 · ToF</div>
+            <div class="nm">이탈 임박 단계 추가</div>
+            <ul>
+                <li>8×8 zone <b>무게중심(centroid)</b></li>
+                <li>centroid가 가장자리 방향 이동</li>
+                <li>가장자리 zone <b>dD/dt</b> 감시</li>
+                <li>임계 초과 시 <b>"이탈 임박"</b></li>
+                <li>FSM 4상태로 확장</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="milestone">
+        <span class="flag">MILESTONE</span>
+        <span>6/19 (금) — 일부러 침대에서 일어나면 화면이 "주의 → 경고"로 단계가 바뀐다</span>
+    </div>
+
+    <h3 class="algo-head">안에 들어갈 알고리즘</h3>
+    <div class="algo">
+        <div class="algo-box">
+            <div class="a-tag">Pi 5 계산</div>
+            <div class="a-nm">위험도 가중합 + 분류</div>
+<pre>trigger = (tof_state in
+           ["이탈","이탈임박"])
+if not trigger: return "정상"
+
+mm_risk = normalize(mm_features)
+score   = 0.7·mm_risk
+        + 0.3·tof_confidence
+
+if   score &lt; 0.3: return "주의"
+elif score &lt; 0.6: return "경고"
+else            : return "위험"</pre>
+            <p>가중치는 4주차에 튜닝.</p>
+        </div>
+        <div class="algo-box">
+            <div class="a-tag">mmWave</div>
+            <div class="a-nm">z-score 정규화</div>
+            <p>개인별 베이스라인을 SQLite에 누적.</p>
+<pre>CREATE TABLE gait_baseline (
+  user_id  TEXT,
+  feature  TEXT,  -- speed|sway
+  values   BLOB   -- ring(30)
+);
+
+z = (x_today - mean) / std
+
+mm_risk = sigmoid(-z_speed
+                  + z_sway)</pre>
+            <p>속도↓, 흔들림↑ 일수록 위험.</p>
+        </div>
+        <div class="algo-box">
+            <div class="a-tag">ToF</div>
+            <div class="a-nm">centroid 추적</div>
+<pre>// 무게중심
+cx = Σ(x_i·w_i) / Σ w_i
+cy = Σ(y_i·w_i) / Σ w_i
+  w_i = 1 if zone 유효
+
+// 가장자리 변화율
+edge_dD =
+  (D_edge[t] - D_edge[t-3])/0.3s
+
+if edge_dD &gt; 30 mm/s
+   AND cx &gt; threshold_x
+   → "이탈 임박"</pre>
+        </div>
+    </div>
+
+    <div class="pf">
+        <span><b>WEEK 3</b> · 통합 + 위험도 · 6/15 — 6/21</span>
+        <span>p. 5 / 7</span>
+    </div>
+</section>
+
+<!-- ─────────────── 4주차 ─────────────── -->
+<section class="page">
+    <div class="ph">
+        <div class="ph-title">Week 4 · 튜닝 + 발표</div>
+        <div class="ph-meta">6/22 (월) — 6/28 (일)</div>
+    </div>
+
+    <span class="kicker w4">Week 4</span>
+    <h2 class="sec-title">실제처럼 굴리고 발표 준비</h2>
+    <p class="lead">2주차에 모은 CSV 데이터로 임계값을 튜닝하고, 시연 시나리오를 자동으로 띄울 수 있게 묶는다.</p>
+
+    <div class="goal-box">
+        <b>이번 주 끝나면 —</b> 실험실에서 30분 돌려도 오탐이 적고, 시연 영상 3분 + 발표 슬라이드 1차 드래프트가 나온다.
+    </div>
+
+    <div class="tasks">
+        <div class="task">
+            <div class="who esp32">박형석 · ESP32 + Pi</div>
+            <div class="nm">자동 부팅 + 튜닝 도구</div>
+            <ul>
+                <li><b>systemd 유닛</b> 한 번에 기동</li>
+                <li>MQTT + 위험도 계산 + 대시보드</li>
+                <li>임계값 <b>그리드 서치 스크립트</b></li>
+                <li>2주차 CSV로 오프라인 분석</li>
+                <li>시연 시나리오 자동화</li>
+            </ul>
+        </div>
+        <div class="task">
+            <div class="who mmwave">유현기 · mmWave</div>
+            <div class="nm">시연 케이스 + 모델 보정</div>
+            <ul>
+                <li>정상 / 느림 / 흔들림 각 10회 수집</li>
+                <li>녹화 영상 + CSV 라벨링</li>
+                <li>z-score 가중치 조정</li>
+                <li>오탐 사례 분석</li>
+                <li>발표 자료 mmWave 파트</li>
+            </ul>
+        </div>
+        <div class="task">
+            <div class="who tof">조우진 · ToF</div>
+            <div class="nm">환경 보정 + 발표 자료</div>
+            <ul>
+                <li>침대 높이별 임계값 보정</li>
+                <li>침대 형태 다양화 테스트</li>
+                <li>이불, 베개 영향 확인</li>
+                <li>edge case 보고서</li>
+                <li>발표 자료 ToF 파트</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="milestone">
+        <span class="flag">MILESTONE</span>
+        <span>6/26 (금) — 시연 영상 3분 + 발표 슬라이드 1차 드래프트 완성</span>
+    </div>
+
+    <h3 class="algo-head">튜닝 절차 + 자동화</h3>
+    <div class="algo">
+        <div class="algo-box">
+            <div class="a-tag">튜닝</div>
+            <div class="a-nm">그리드 서치</div>
+<pre>정상 시나리오 ×10
+위험 시나리오 ×10
+→ CSV 라벨링
+
+for w1  in [0.5..0.8]:
+ for th1 in [0.2..0.4]:
+  for th2 in [0.5..0.7]:
+   m = FP + 2·FN
+   log(w1, th1, th2, m)
+
+best = argmin(m)</pre>
+            <p>목표: <b>FP ≤ 10%, FN ≤ 5%</b></p>
+        </div>
+        <div class="algo-box">
+            <div class="a-tag">자동 부팅</div>
+            <div class="a-nm">systemd 한 줄 기동</div>
+<pre>[Unit]
+Description=MajuBom
+After=network.target
+      mosquitto.service
+
+[Service]
+Type=simple
+WorkingDirectory=/home/pi/majubom
+ExecStart=/usr/bin/python3 main.py
+Restart=on-failure
+User=pi
+
+[Install]
+WantedBy=multi-user.target</pre>
+            <p>ESP32는 USB 전원 연결로 자동.</p>
+        </div>
+        <div class="algo-box">
+            <div class="a-tag">시연 시나리오</div>
+            <div class="a-nm">테스트 케이스</div>
+<pre>[정상]
+- 정상 보행 (1.2 m/s)
+- 이탈 후 안정 보행
+
+[주의]
+- 천천히 일어남
+- 살짝 흔들리는 보행
+
+[경고]
+- 비틀거리는 보행
+- 평소보다 30% 느림
+
+[위험]
+- 가장자리로 쏠림
+- 보행 중 정지 / 회복</pre>
+        </div>
+    </div>
+
+    <div class="pf">
+        <span><b>WEEK 4</b> · 튜닝 + 발표 · 6/22 — 6/28</span>
+        <span>p. 6 / 7</span>
+    </div>
+</section>
+
+<!-- ─────────────── 참고사항 + 오픈소스 ─────────────── -->
+<section class="page">
+    <div class="ph">
+        <div class="ph-title">Resources · 어려운 점 + 참고 오픈소스</div>
+        <div class="ph-meta">착수 전 체크</div>
+    </div>
+
+    <span class="kicker">Resources</span>
+    <h2 class="sec-title">시작 전에 알아둘 함정 · 참고할 오픈소스</h2>
+    <p class="lead">각 부품별로 한 달짜리 일정을 늘릴 수 있는 함정 (왼쪽) 과 시간을 줄여줄 참고 코드 (오른쪽).</p>
+
+    <!-- mmWave -->
+    <div class="res-block">
+        <div class="res-head">
+            <span class="res-cat mmwave">mmWave</span>
+            <span class="res-nm">IWR6843AOPEVM — 가장 빡센 파트</span>
+        </div>
+        <div class="res-grid">
+            <div class="pitfall">
+                <div class="h">⚠ 함정</div>
+                <ul>
+                    <li><b>TI 환경 셋업</b>이 반나절~1일 (CCS + mmWave SDK + Uniflash, TI 계정 등록)</li>
+                    <li><b>SOP 점퍼</b>(Flash vs Functional) 모르면 펌웨어 안 굽힘</li>
+                    <li>UART <b>2개 (CFG 115200 + DATA 921600)</b> — CFG에 cfg 파일 보내야 sensor 시작</li>
+                    <li>cfg 직접 쓰지 말고 <b>TI 공식 데모 cfg 그대로 사용</b></li>
+                </ul>
+            </div>
+            <div class="ref">
+                <div class="h">참고 오픈소스</div>
+                <table class="reflist">
+                    <tr><td class="name">pymmw</td><td class="url">github.com/m6c7l/pymmw</td></tr>
+                    <tr><td colspan="2" class="desc">Python으로 mmWave 데이터 빨리 시각화. <b>1순위 — 빨리 점이 찍히는지 확인용</b></td></tr>
+                    <tr><td class="name">OpenRadar</td><td class="url">github.com/presenseradar/openradar</td></tr>
+                    <tr><td colspan="2" class="desc">TI mmWave 파싱/분석 Python 라이브러리. 학습 자료 풍부</td></tr>
+                    <tr><td class="name">TI Industrial Toolbox</td><td class="url">dev.ti.com/tirex (mmWave 검색)</td></tr>
+                    <tr><td colspan="2" class="desc">공식. "People Counting", "3D People Tracking" 데모 cfg + 펌웨어</td></tr>
+                    <tr><td class="name">ti_mmwave_rospkg</td><td class="url">github.com/radar-lab/ti_mmwave_rospkg</td></tr>
+                    <tr><td colspan="2" class="desc">ROS 안 써도 TLV 파서 코드 참고 가치</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ToF -->
+    <div class="res-block">
+        <div class="res-head">
+            <span class="res-cat tof">ToF</span>
+            <span class="res-nm">VL53L8CX × 2 — 쉽지만 회로 함정</span>
+        </div>
+        <div class="res-grid">
+            <div class="pitfall">
+                <div class="h">⚠ 함정</div>
+                <ul>
+                    <li><b>2개 동시 사용 시 I²C 주소 충돌</b> (둘 다 기본 0x29) — <b>LPn 핀으로 한 개 reset 후 주소 변경</b> 필요</li>
+                    <li>ST 공식 드라이버는 STM32용 → ESP32 포팅된 라이브러리 사용</li>
+                    <li><b>8×8 @ 15Hz vs 4×4 @ 60Hz</b> — 동시 불가, 트레이드오프</li>
+                    <li>검정 이불, 햇빛 직사광 → 거리값 튐. 침실 환경 테스트 필수</li>
+                </ul>
+            </div>
+            <div class="ref">
+                <div class="h">참고 오픈소스</div>
+                <table class="reflist">
+                    <tr><td class="name">stm32duino/VL53L8CX</td><td class="url">github.com/stm32duino/VL53L8CX</td></tr>
+                    <tr><td colspan="2" class="desc">Arduino + ESP32 동작. <b>VL53L8CX용 1순위</b></td></tr>
+                    <tr><td class="name">SparkFun VL53L5CX</td><td class="url">github.com/sparkfun/SparkFun_VL53L5CX_Arduino_Library</td></tr>
+                    <tr><td colspan="2" class="desc">5CX용이지만 8CX와 API 거의 동일. <b>Example7_TwoSensors.ino</b> — 2개 동시 사용 예제</td></tr>
+                    <tr><td class="name">ST UltraLite Driver</td><td class="url">github.com/stm32duino/VL53L8CX/tree/main/src</td></tr>
+                    <tr><td colspan="2" class="desc">플랫폼 독립 C 드라이버. 직접 포팅할 때</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ESP32 통신 -->
+    <div class="res-block">
+        <div class="res-head">
+            <span class="res-cat esp32">ESP32 · 통신</span>
+            <span class="res-nm">WiFi + MQTT — 표준적</span>
+        </div>
+        <div class="res-grid">
+            <div class="pitfall">
+                <div class="h">⚠ 함정</div>
+                <ul>
+                    <li>WiFi 끊김 자동 재접속 — <code>WiFi.setAutoReconnect(true)</code> + 디스커넥트 콜백 처리</li>
+                    <li>MQTT QoS — <b>0이면 손실 가능, 1은 ACK 대기로 느려짐</b> (보통 0 충분)</li>
+                    <li>시간 동기화: NTP 라이브러리 무거움 → <b>SNTP가 ESP32 내장</b>이라 가벼움</li>
+                    <li>Pi 5 IP 자동 찾기: <b>mDNS</b>(<code>pi.local</code>) 또는 고정 IP</li>
+                </ul>
+            </div>
+            <div class="ref">
+                <div class="h">참고 오픈소스</div>
+                <table class="reflist">
+                    <tr><td class="name">PubSubClient</td><td class="url">github.com/knolleary/pubsubclient</td></tr>
+                    <tr><td colspan="2" class="desc">ESP32 MQTT 표준 라이브러리. <b>고민 없이 1순위</b></td></tr>
+                    <tr><td class="name">Mosquitto</td><td class="url">mosquitto.org / apt install mosquitto</td></tr>
+                    <tr><td colspan="2" class="desc">Pi 5에 깔 MQTT 브로커</td></tr>
+                    <tr><td class="name">paho-mqtt (Python)</td><td class="url">pypi.org/project/paho-mqtt</td></tr>
+                    <tr><td colspan="2" class="desc">Pi 5에서 MQTT 구독</td></tr>
+                    <tr><td class="name">arduino-esp32 SimpleTime</td><td class="url">github.com/espressif/arduino-esp32</td></tr>
+                    <tr><td colspan="2" class="desc">SNTP 동기화 예제 (examples / Time / SimpleTime)</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pi 5 대시보드 -->
+    <div class="res-block">
+        <div class="res-head">
+            <span class="res-cat pi">Pi 5 · 대시보드</span>
+            <span class="res-nm">시각화 — 선택지 많음, 빨리 띄우는 게 핵심</span>
+        </div>
+        <div class="res-grid">
+            <div class="pitfall">
+                <div class="h">⚠ 함정</div>
+                <ul>
+                    <li>대시보드에 시간 쓰지 마라 — 학생들이 알고리즘보다 UI에 빠지면 위험</li>
+                    <li>실시간 업데이트는 <b>WebSocket 또는 SSE</b>가 표준 (HTTP polling은 비효율)</li>
+                    <li>발표용 깔끔한 UI는 4주차 — 1~3주차는 <b>되는 것만 화면에 띄우자</b></li>
+                </ul>
+            </div>
+            <div class="ref">
+                <div class="h">참고 오픈소스</div>
+                <table class="reflist">
+                    <tr><td class="name">Streamlit</td><td class="url">streamlit.io</td></tr>
+                    <tr><td colspan="2" class="desc">Python 30줄로 차트 + 텍스트. <b>1순위 — 30분이면 띄움</b></td></tr>
+                    <tr><td class="name">Plotly Dash</td><td class="url">dash.plotly.com</td></tr>
+                    <tr><td colspan="2" class="desc">실시간 업데이트 강함. 3주차 본격 대시보드 후보</td></tr>
+                    <tr><td class="name">Node-RED</td><td class="url">nodered.org</td></tr>
+                    <tr><td colspan="2" class="desc">드래그&드롭 흐름 구성. 빠른 프로토타입</td></tr>
+                    <tr><td class="name">FastAPI + WebSocket</td><td class="url">fastapi.tiangolo.com</td></tr>
+                    <tr><td colspan="2" class="desc">직접 만들 때. 발표용 깔끔한 UI 원하면</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="pf">
+        <span><b>RESOURCES</b> · 어려운 점 + 참고 오픈소스</span>
+        <span>p. 7 / 7</span>
+    </div>
+</section>
+
+</div>
+
+</body>
+</html>
