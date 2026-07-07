@@ -610,7 +610,7 @@
         </div>
     </div><div style="align-self:center;color:var(--text-3);font-size:22px;flex:0 0 auto;">&rarr;</div><div style="flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:18px 17px;display:flex;flex-direction:column;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:30px;height:30px;border-radius:50%;background:#5b8af5;color:#0f1117;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">3</div><span style="font-size:15.5px;font-weight:800;color:var(--text-1);line-height:1.25;">센서 디바이스 (Pi&nbsp;5)</span></div>
-        <div style="width:108px;height:88px;background:var(--accent-soft);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:2px auto 10px;"><svg width="78" height="78" viewBox="0 0 64 64">
+        <div class="zoomable" onclick="openLB(3)" style="width:108px;height:88px;background:var(--accent-soft);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:2px auto 10px;cursor:zoom-in;"><svg width="78" height="78" viewBox="0 0 64 64">
 <rect x="8" y="16" width="48" height="32" rx="3" fill="#2e7d5b"/>
 <rect x="12" y="17" width="34" height="4" rx="1" fill="#e6b800"/>
 <rect x="25" y="27" width="15" height="13" rx="1.5" fill="#12151c"/>
@@ -619,7 +619,7 @@
 <rect x="21" y="41" width="9" height="6" rx="1" fill="#c0c4cc"/>
 <circle cx="12" cy="27" r="1.6" fill="#12151c"/><circle cx="52" cy="44" r="1.6" fill="#12151c"/>
 </svg></div>
-        <div style="font-size:13.5px;color:var(--text-2);line-height:1.55;display:flex;flex-direction:column;gap:3px;"><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>센서 데이터 수집·동기화</span></div><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>노이즈 제거 · 특징 추출</span></div></div>
+        <div style="font-size:13.5px;color:var(--text-2);line-height:1.55;display:flex;flex-direction:column;gap:3px;"><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>데이터 수신·시간 동기화</span></div><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>노이즈 제거·특징 추출</span></div><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>원내 저장 — 외부 전송 없음</span></div></div>
     </div><div style="align-self:center;color:var(--text-3);font-size:22px;flex:0 0 auto;">&rarr;</div><div style="flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:18px 17px;display:flex;flex-direction:column;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:30px;height:30px;border-radius:50%;background:#a78bfa;color:#0f1117;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">4</div><span style="font-size:15.5px;font-weight:800;color:var(--text-1);line-height:1.25;">위험도 인식 알고리즘</span></div>
         <div style="width:108px;height:88px;background:var(--purple-soft);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:2px auto 10px;"><svg width="78" height="78" viewBox="0 0 64 64">
@@ -845,7 +845,8 @@ function switchLayout5(id) {
     const GAL=[
         {src:'sensor3d.png?v=2', cap:'센서 3D 배치 — 요양병원 단독실 (mmWave 폴 · ToF 머리맡/발치)'},
         {src:'sensor_mmwave.png?v=7', cap:'mmWave 레이더 — IWR6843AOP · 위치·보행·심박·호흡'},
-        {src:'sensor_tof.png?v=6', cap:'ToF 센서 — VL53L5CX · 침대 가장자리·이탈 전조'}
+        {src:'sensor_tof.png?v=6', cap:'ToF 센서 — VL53L5CX · 자세 형태·가장자리 접근'},
+        {src:'sensor_pi.png?v=1', cap:'센서 디바이스 — Raspberry Pi 5 · 수신·동기화·전처리·원내 저장'}
     ];
     let idx=0;
     const lb=document.getElementById('lb'), img=document.getElementById('lbImg'),
