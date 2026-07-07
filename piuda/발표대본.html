@@ -152,23 +152,27 @@ strong{color:#fff;font-weight:800}
 
   <!-- 6 -->
   <div class="slide">
-    <div class="top"><div class="name"><span class="n">6</span> · 시스템 개념도</div><div class="time">2:15–3:05</div></div>
+    <div class="top"><div class="name"><span class="n">6</span> · 시스템 개념도</div><div class="time">2:15–3:20</div></div>
     <div class="script">
       <div class="l">시스템 전체는 이렇게 흘러갑니다. <span class="pause">쉼</span></div>
-      <div class="l">여기 보이는 사진들은 저희가 구현 과정에서 <strong>실제로 사용한 장비</strong>들입니다.</div>
-      <div class="l">병실에는 딱 두 종류의 센서만 둡니다. <span class="pause">쉼</span></div>
-      <div class="l">mmWave 레이더가 위치와 걸음을 읽고, <span class="pause">쉼</span></div>
-      <div class="l">ToF 센서가 침대 위 자세와 가장자리 접근을 읽습니다. <span class="pause">쉼</span></div>
-      <div class="l">이 데이터를 라즈베리파이 한 대가 모아서, <span class="pause">쉼</span></div>
-      <div class="l">노이즈를 걸러내고 <strong>그 어르신의 30일 평소치</strong>와 비교합니다. <span class="slow">천천히</span></div>
-      <div class="l">판단 결과는 곧바로 간호사 대시보드로 갑니다. <span class="pause">쉼</span></div>
+      <div class="l">여기 보이는 사진들은 저희가 구현 과정에서 <strong>실제로 사용한 장비</strong>들입니다. <span class="pause">쉼</span></div>
+      <div class="l">먼저 mmWave 레이더는 어르신의 위치를 <strong>x,y 좌표로 실시간 추적</strong>해서, <span class="pause">쉼</span></div>
+      <div class="l">보행 속도와 걸음의 흔들림 — 즉 <strong>얼마나 위태롭게 걷는지</strong>를 숫자로 만들어냅니다. <span class="pause">쉼</span></div>
+      <div class="l">ToF 센서는 침대 위 <strong>자세</strong>를 읽습니다. <span class="pause">쉼</span></div>
+      <div class="l">누워 계신지, 앉으셨는지, 가장자리에 걸터앉으셨는지를 <strong>거리 변화</strong>로 구분하고요. <span class="slow">천천히</span></div>
+      <div class="l">이 두 신호가 겹치면 — 알고리즘이 <strong>'곧 나오시겠구나'</strong>를 판단합니다. <span class="pause">쉼</span></div>
+      <div class="l">판단은 그 어르신의 <strong>30일 평소치와 비교한 z-score</strong>로 이루어지고, <span class="pause">쉼</span></div>
+      <div class="l">결과는 <strong>정상·주의·경고·위험</strong> 네 단계로 나옵니다. <span class="pause">쉼</span></div>
+      <div class="l">이 모든 게 간호사 대시보드에 뜹니다. <span class="slow">천천히</span></div>
+      <div class="l">병실 평면도 위에 어르신 위치가 <strong>실시간으로 움직이고</strong>, <span class="pause">쉼</span></div>
+      <div class="l">위험 등급과 센서 상태가 한눈에 — 위험하면 <strong>즉시 알림</strong>이 갑니다.</div>
     </div>
     <div class="note">→ 여유 있으면 사진 하나 클릭해서 실물·실측 그래프 보여주기.</div>
   </div>
 
   <!-- 7 -->
   <div class="slide demo">
-    <div class="top"><div class="name"><span class="n">7</span> · 실제 시연 영상</div><div class="time">3:05–3:45</div></div>
+    <div class="top"><div class="name"><span class="n">7</span> · 실제 시연 영상</div><div class="time">3:20–3:55</div></div>
     <div class="script">
       <div class="l">다음으로 보실 것은 실제 시연입니다. <span class="pause">쉼</span></div>
       <div class="l"><span style="color:var(--green);font-weight:700">( 영상 재생 — 잠시 말 멈추고 같이 봅니다 )</span> <span class="slow">천천히</span></div>
@@ -180,7 +184,7 @@ strong{color:#fff;font-weight:800}
 
   <!-- 8 -->
   <div class="slide demo">
-    <div class="top"><div class="name"><span class="n">8</span> · 활용 효과</div><div class="time">3:45–4:15</div></div>
+    <div class="top"><div class="name"><span class="n">8</span> · 활용 효과</div><div class="time">3:55–4:25</div></div>
     <div class="script">
       <div class="l">이게 현장에 들어가면 이렇게 달라집니다. <span class="pause">쉼</span></div>
       <div class="l">사람 손이 가장 부족한 새벽 시간을 시스템이 대신 지켜주고요. <span class="pause">쉼</span></div>
@@ -191,7 +195,7 @@ strong{color:#fff;font-weight:800}
 
   <!-- 9 -->
   <div class="slide key">
-    <div class="top"><div class="name"><span class="n">9</span> · 마무리 (Q&A)</div><div class="time">4:15–4:35</div></div>
+    <div class="top"><div class="name"><span class="n">9</span> · 마무리 (Q&A)</div><div class="time">4:25–4:45</div></div>
     <div class="script">
       <div class="l">저희 마주봄은, <span class="pause">쉼</span></div>
       <div class="l">넘어진 <strong>뒤</strong>에 달려가는 게 아니라, <span class="slow">천천히</span></div>
