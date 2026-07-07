@@ -611,7 +611,7 @@
     </div><div style="align-self:center;color:var(--text-3);font-size:22px;flex:0 0 auto;">&rarr;</div><div style="flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:18px 17px;display:flex;flex-direction:column;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:30px;height:30px;border-radius:50%;background:#5b8af5;color:#0f1117;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">3</div><span style="font-size:15.5px;font-weight:800;color:var(--text-1);line-height:1.25;">센서 디바이스 (Pi&nbsp;5)</span></div>
         <img src="pi_photo.jpg?v=1" alt="Pi 5 실물" class="zoomable" onclick="openLB(3)" style="width:100%;height:70px;object-fit:cover;border-radius:9px;border:1px solid rgba(91,138,245,0.35);margin:2px 0 10px;cursor:zoom-in;">
-        <div style="font-size:13.5px;color:var(--text-2);line-height:1.55;display:flex;flex-direction:column;gap:3px;"><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>데이터 수신·시간 동기화</span></div><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>노이즈 제거·특징 추출</span></div></div>
+        <div style="font-size:13.5px;color:var(--text-2);line-height:1.55;display:flex;flex-direction:column;gap:3px;"><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>두 센서 수신·시간 동기화</span></div><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>전처리 — 노이즈 제거·z-score</span></div><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>30일 저장 &rarr; 대시보드 전송</span></div></div>
     </div><div style="align-self:center;color:var(--text-3);font-size:22px;flex:0 0 auto;">&rarr;</div><div style="flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:18px 17px;display:flex;flex-direction:column;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:30px;height:30px;border-radius:50%;background:#a78bfa;color:#0f1117;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">4</div><span style="font-size:15.5px;font-weight:800;color:var(--text-1);line-height:1.25;">위험도 인식 알고리즘</span></div>
         <div style="width:108px;height:88px;background:var(--purple-soft);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:2px auto 10px;"><svg width="78" height="78" viewBox="0 0 64 64">
@@ -624,14 +624,7 @@
         <div style="font-size:13.5px;color:var(--text-2);line-height:1.55;display:flex;flex-direction:column;gap:3px;"><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>30일 개인 베이스라인 z-score</span></div><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>규칙 + 경량 ML 분류</span></div><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>상태: <span style="color:var(--green);font-weight:700;">정상</span> / <span style="color:var(--orange);font-weight:700;">주의</span> / <span style="color:var(--purple);font-weight:700;">경고</span> / <span style="color:var(--rose);font-weight:700;">위험</span></span></div></div>
     </div><div style="align-self:center;color:var(--text-3);font-size:22px;flex:0 0 auto;">&rarr;</div><div style="flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:18px 17px;display:flex;flex-direction:column;">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:30px;height:30px;border-radius:50%;background:#60a5fa;color:#0f1117;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">5</div><span style="font-size:15.5px;font-weight:800;color:var(--text-1);line-height:1.25;">관리자 모니터링·알림</span></div>
-        <div style="width:108px;height:88px;background:var(--blue-soft);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:2px auto 10px;"><svg width="78" height="78" viewBox="0 0 64 64">
-<rect x="6" y="15" width="34" height="24" rx="2.5" fill="#141a26" stroke="#60a5fa" stroke-width="2"/>
-<path d="M10 33 L16 27 L21 30 L28 21 L36 25" stroke="#60a5fa" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-<rect x="20" y="39" width="6" height="4" fill="#3a4150"/><rect x="15" y="43" width="16" height="2.6" rx="1.3" fill="#3a4150"/>
-<rect x="44" y="20" width="15" height="26" rx="3" fill="#20283a" stroke="#60a5fa" stroke-width="1.6"/>
-<rect x="47" y="24" width="9" height="14" rx="1" fill="#141a26"/>
-<circle cx="51.5" cy="18" r="4.2" fill="#e0708a"/>
-</svg></div>
+        <img src="dashboard_photo.jpg?v=1" alt="대시보드 실제 화면" class="zoomable" onclick="openLB(4)" style="width:100%;height:70px;object-fit:cover;object-position:top;border-radius:9px;border:1px solid rgba(167,139,250,0.35);margin:2px 0 10px;cursor:zoom-in;">
         <div style="font-size:13.5px;color:var(--text-2);line-height:1.55;display:flex;flex-direction:column;gap:3px;"><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>실시간 상태 표시</span></div><div style="display:flex;gap:5px;"><span style="color:var(--text-3);">&bull;</span><span>위험 시 즉시 알림 · 이력 관리</span></div></div>
     </div>
         </div>
@@ -838,7 +831,8 @@ function switchLayout5(id) {
         {src:'sensor3d.png?v=2', cap:'센서 3D 배치 — 요양병원 단독실 (mmWave 폴 · ToF 머리맡/발치)'},
         {src:'sensor_mmwave.png?v=7', cap:'mmWave 레이더 — IWR6843AOP · 위치·보행·심박·호흡'},
         {src:'sensor_tof.png?v=6', cap:'ToF 센서 — VL53L5CX · 자세 형태·가장자리 접근'},
-        {src:'sensor_pi.png?v=6', cap:'센서 디바이스 — Raspberry Pi 5 · 수신·동기화·전처리·원내 저장'}
+        {src:'sensor_pi.png?v=6', cap:'센서 디바이스 — Raspberry Pi 5 · 수신·동기화·전처리·저장·전송'},
+        {src:'sensor_dashboard.png?v=1', cap:'관리자 대시보드 — 평면도·종합판정·센서 상태·알림'}
     ];
     let idx=0;
     const lb=document.getElementById('lb'), img=document.getElementById('lbImg'),
