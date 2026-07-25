@@ -17,9 +17,12 @@
   html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
   body{background:var(--bg);color:var(--fg);
     font-family:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Segoe UI",system-ui,sans-serif;
-    letter-spacing:-.018em;-webkit-font-smoothing:antialiased}
+    letter-spacing:-.018em;-webkit-font-smoothing:antialiased;
+    word-break:keep-all;overflow-wrap:break-word;text-wrap:pretty}
+  h1,h2{text-wrap:balance}
+  .lead,.psb .txt,.lc .d,.band .sub,.mini .sub,.tcard .why,.cmp .q{text-wrap:pretty}
   .slide{min-height:100vh;scroll-snap-align:start;position:relative;
-    display:flex;flex-direction:column;justify-content:center;padding:6.5vh 7vw;overflow:hidden;
+    display:flex;flex-direction:column;justify-content:center;padding:4.2vh 7vw;overflow:hidden;
     background:
       radial-gradient(900px 500px at 12% -10%,rgba(91,140,255,.14),transparent 60%),
       radial-gradient(800px 500px at 100% 8%,rgba(56,225,200,.09),transparent 55%),
@@ -28,11 +31,21 @@
   .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;
     color:var(--cyan);letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px}
   .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+  .eyebrow.big{font-size:clamp(30px,4vw,44px);font-weight:800;letter-spacing:-.02em;text-transform:none;color:var(--fg);margin-bottom:22px}
+  .eyebrow.big .dot{width:14px;height:14px}
   h1{font-size:clamp(38px,6.4vw,76px);font-weight:800;line-height:1.02;letter-spacing:-.04em}
-  h2{font-size:clamp(26px,4vw,46px);font-weight:800;line-height:1.08;letter-spacing:-.03em;margin-bottom:6px}
-  .g{background:linear-gradient(92deg,var(--blue),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-  .lead{font-size:clamp(15px,1.8vw,22px);color:var(--muted);max-width:46ch;line-height:1.55;margin-top:18px}
-  .meta{margin-top:auto;padding-top:26px;font-size:13.5px;color:var(--dim);font-weight:600}
+  h2{font-size:clamp(30px,4.6vw,54px);font-weight:800;line-height:1.06;letter-spacing:-.03em;margin-bottom:6px}
+  .g{color:var(--cyan)}
+  .gg{background:linear-gradient(92deg,var(--blue),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lead{font-size:clamp(16px,2vw,25px);color:var(--muted);max-width:52ch;line-height:1.55;margin-top:20px}
+  .meta{margin-top:30px;padding-top:22px;border-top:1px solid var(--line);font-size:14px;color:var(--dim);font-weight:600}
+  .tags{display:flex;flex-wrap:wrap;gap:11px;margin-top:30px}
+  .tags span{font-size:14.5px;font-weight:700;color:var(--muted);background:var(--surface);border:1px solid var(--line);padding:10px 18px;border-radius:999px}
+  .tags span b{color:var(--cyan);font-weight:800}
+  .cgroup{margin-top:26px}
+  .cgroup .cl{font-size:12.5px;font-weight:800;color:var(--cyan);letter-spacing:.1em;text-transform:uppercase;margin-bottom:13px}
+  .cgroup .tags{margin-top:0}
+  .cgroup .tags span{color:var(--fg)}
   .num{position:absolute;top:5vh;right:7vw;font-size:12.5px;font-weight:700;color:var(--dim);letter-spacing:.1em}
 
   .psb{display:grid;gap:13px;margin-top:24px;max-width:900px}
@@ -44,18 +57,35 @@
   .psb .b .tag{background:rgba(61,220,151,.12);color:var(--green)}
   .psb .txt{font-size:clamp(14px,1.4vw,17.5px);line-height:1.5}
   .psb .txt b{color:var(--cyan)} .psb .txt .mut{color:var(--muted)}
+  .techrow{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}
+  .techrow span{font-family:ui-monospace,monospace;font-size:12.5px;font-weight:700;color:var(--cyan);background:rgba(56,225,200,.1);border:1px solid rgba(56,225,200,.28);padding:7px 12px;border-radius:8px}
+  .code{background:#0a1124;border:1px solid var(--line);border-radius:16px;padding:34px 32px;font-family:ui-monospace,SFMono-Regular,monospace;font-size:17px;line-height:2.15;color:#c7d2e6;white-space:pre;overflow-x:auto;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+  .code .k{color:var(--violet);font-weight:700} .code .s{color:var(--green)} .code .c{color:var(--dim)} .code .op{color:var(--amber);font-weight:700}
 
   .split{display:grid;grid-template-columns:1.02fr .98fr;gap:34px;align-items:center}
   @media(max-width:860px){.split{grid-template-columns:1fr;gap:22px}.psb .row{grid-template-columns:72px 1fr}}
   .shot{border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5);background:#fff}
-  .shot img{width:100%;display:block}
+  .shot img{width:100%;display:block;cursor:zoom-in}
   .shot .cap{background:var(--surface);color:var(--muted);font-size:12px;padding:8px 12px;border-top:1px solid var(--line);font-weight:600}
+  .shot{position:relative}
+  .shot::after{content:"🔍 클릭해서 크게 보기";position:absolute;top:8px;right:8px;font-size:11px;font-weight:700;color:#fff;background:rgba(11,16,32,.72);border:1px solid var(--line);padding:4px 9px;border-radius:999px;opacity:0;transition:opacity .15s;pointer-events:none}
+  .shot:hover::after{opacity:1}
+  .lb{position:fixed;inset:0;z-index:200;display:none;background:rgba(3,6,18,.94);overflow-y:auto;overflow-x:hidden;cursor:zoom-out}
+  .lb.open{display:block}
+  .lb .imgwrap{min-height:100%;display:flex;align-items:flex-start;justify-content:center;padding:64px 6vw 80px}
+  .lb img{max-width:min(1080px,88vw);width:100%;height:auto;border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.65);border:1px solid var(--line);cursor:pointer}
+  .lb .x{position:fixed;top:18px;right:28px;font-size:26px;line-height:1;color:#fff;font-weight:700;opacity:.85;cursor:pointer;z-index:2}
+  .lb .nav{position:fixed;top:50%;transform:translateY(-50%);font-size:40px;line-height:1;color:#fff;font-weight:800;opacity:.55;cursor:pointer;user-select:none;padding:14px 20px;z-index:2}
+  .lb .nav:hover{opacity:1}
+  .lb .prev{left:10px} .lb .next{right:10px}
+  .lb .cnt{position:fixed;top:22px;left:30px;font-size:13px;color:#cbd5e1;font-weight:700;font-family:ui-monospace,monospace;z-index:2}
+  .lb .cap2{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);font-size:13px;color:#e2e8f0;font-weight:700;background:rgba(11,16,32,.85);border:1px solid var(--line);padding:7px 16px;border-radius:999px;white-space:nowrap;z-index:2}
 
-  .stats{display:flex;flex-wrap:wrap;gap:14px;margin-top:22px}
-  .stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 22px;min-width:130px}
-  .stat .v{font-size:clamp(26px,3.6vw,40px);font-weight:800;line-height:1}
+  .stats{display:flex;flex-wrap:wrap;gap:18px;margin-top:34px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:34px 42px;min-width:220px}
+  .stat .v{font-size:clamp(38px,5vw,62px);font-weight:800;line-height:1}
   .stat .v.blue{color:var(--blue)} .stat .v.cyan{color:var(--cyan)} .stat .v.green{color:var(--green)} .stat .v.red{color:var(--red)} .stat .v.amber{color:var(--amber)}
-  .stat .l{font-size:12.5px;color:var(--muted);margin-top:7px}
+  .stat .l{font-size:14px;color:var(--muted);margin-top:11px}
 
   .cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
   .cmp .col{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
@@ -66,44 +96,101 @@
   .cmp .q b{color:var(--amber);background:rgba(255,190,77,.1);padding:0 3px;border-radius:4px}
   .cmp .rn{font-size:11.5px;color:var(--dim);font-family:ui-monospace,monospace;margin-top:8px}
 
-  .tech{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:24px;max-width:1000px}
+  .tech{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:34px;max-width:1080px}
   @media(max-width:860px){.tech{grid-template-columns:1fr}}
-  .tcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;
-    display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
-  .tcard .chip{font-family:ui-monospace,monospace;font-size:12px;font-weight:700;color:var(--bg);
-    background:var(--cyan);padding:5px 9px;border-radius:7px;white-space:nowrap}
+  .tcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 24px;
+    display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+  .tcard .chip{font-family:ui-monospace,monospace;font-size:13px;font-weight:700;color:var(--bg);
+    background:var(--cyan);padding:6px 11px;border-radius:8px;white-space:nowrap}
   .tcard .chip.b{background:var(--blue)} .tcard .chip.v{background:var(--violet);color:#fff}
-  .tcard .what{font-size:14.5px;font-weight:700;color:var(--fg);margin-bottom:3px}
-  .tcard .why{font-size:13px;color:var(--muted);line-height:1.45}
+  .tcard .what{font-size:17px;font-weight:700;color:var(--fg);margin-bottom:5px}
+  .tcard .why{font-size:14.5px;color:var(--muted);line-height:1.5}
   .tcard .why b{color:var(--cyan);font-weight:700}
 
-  .gal{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+  /* 아키텍처 흐름 (기술 스택) */
+  .arch{display:flex;flex-direction:column;gap:11px;margin-top:30px;max-width:1140px;width:100%}
+  .band{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 26px;display:flex;align-items:center;gap:14px}
+  .band .lab{font-size:19px;font-weight:800;color:var(--fg)}
+  .band .sub{font-size:14.5px;color:var(--muted)}
+  .band .side{margin-left:auto;font-family:ui-monospace,monospace;font-size:13px;font-weight:700;background:rgba(56,225,200,.14);color:var(--cyan);padding:7px 13px;border-radius:8px;white-space:nowrap}
+  .band.obs{background:linear-gradient(92deg,rgba(138,107,255,.18),rgba(91,140,255,.12));border-color:rgba(138,107,255,.42)}
+  .band.obs .lab{color:var(--violet)}
+  .astep{text-align:center;font-family:ui-monospace,monospace;font-size:14px;font-weight:700;color:var(--blue);letter-spacing:.01em;padding:2px 0}
+  .astep .d{color:var(--dim);font-family:inherit}
+  .arow{display:grid;gap:11px}
+  .arow.c3{grid-template-columns:repeat(3,1fr)} .arow.c2{grid-template-columns:1fr 1fr}
+  .mini{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:20px 18px;text-align:center}
+  .mini .lab{font-size:17.5px;font-weight:800;color:var(--fg)} .mini .sub{font-size:13.5px;color:var(--muted);margin-top:5px}
+  .mini.store{text-align:left;display:flex;flex-direction:column;gap:4px;padding:22px 24px}
+  .mini.store .tag{font-family:ui-monospace,monospace;font-size:12.5px;font-weight:800}
+  .mini.store.json{border-color:rgba(56,225,200,.5)} .mini.store.json .tag{color:var(--cyan)}
+  .mini.store.db{border-color:rgba(138,107,255,.5)} .mini.store.db .tag{color:var(--violet)}
+  @media(max-width:860px){.arow.c3{grid-template-columns:1fr}.band{flex-wrap:wrap;gap:6px}.band .side{margin-left:0}}
+
+  .scores{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:42px;max-width:1160px}
+  .score{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:38px 30px;min-height:236px;display:flex;flex-direction:column;justify-content:center}
+  .score .v{font-size:clamp(38px,5vw,58px);font-weight:800;line-height:1}
+  .score .k{font-size:18.5px;font-weight:800;color:var(--fg);margin-top:14px}
+  .score .d{font-size:14.5px;color:var(--muted);margin-top:6px}
+  @media(max-width:860px){.scores{grid-template-columns:1fr}}
+
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:46px;max-width:1140px}
+  .vs .col{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:40px 44px}
+  .vs .col.new{border-color:rgba(56,225,200,.42);background:linear-gradient(180deg,rgba(56,225,200,.06),transparent)}
+  .vs .ct{font-size:20px;font-weight:800;margin-bottom:26px;letter-spacing:.01em}
+  .vs .old .ct{color:var(--muted)} .vs .new .ct{color:var(--cyan)}
+  .vs ul{list-style:none}
+  .vs li{font-size:17px;line-height:1.5;padding:16px 0 16px 38px;position:relative}
+  .vs li+li{border-top:1px solid var(--line)}
+  .vs .old li{color:var(--muted)} .vs .new li{color:var(--fg)}
+  .vs li b{color:var(--cyan)}
+  .vs .old li::before{content:"✕";position:absolute;left:4px;top:17px;color:var(--red);font-weight:800}
+  .vs .new li::before{content:"✓";position:absolute;left:4px;top:17px;color:var(--green);font-weight:800}
+  @media(max-width:860px){.vs{grid-template-columns:1fr}}
+
+  .gal{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:32px}
   @media(max-width:860px){.gal{grid-template-columns:1fr 1fr}}
-  .gal .shot img{height:200px;object-fit:cover;object-position:top}
+  .gal .shot img{height:320px;object-fit:cover;object-position:top}
+  .gal .shot .cap{font-size:13px;padding:11px 14px}
 
   /* Before → After */
-  .ba{margin-top:22px;max-width:1040px;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .ba{margin-top:34px;max-width:1120px;border:1px solid var(--line);border-radius:18px;overflow:hidden}
   .ba .hd,.ba .rw{display:grid;grid-template-columns:1.1fr 1.2fr 1.2fr 1fr;gap:0}
-  .ba .hd>div{background:var(--surface2);font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--muted);padding:13px 16px;text-transform:uppercase}
-  .ba .rw>div{padding:15px 16px;border-top:1px solid var(--line);font-size:14px;line-height:1.4}
+  .ba .hd>div{background:var(--surface2);font-size:14px;font-weight:800;letter-spacing:.04em;color:var(--muted);padding:20px 26px;text-transform:uppercase}
+  .ba .rw>div{padding:32px 26px;border-top:1px solid var(--line);font-size:18.5px;line-height:1.45}
   .ba .rw .area{font-weight:800;color:var(--fg)}
   .ba .rw .before{color:var(--muted)} .ba .rw .before .x{color:var(--red);font-weight:800;margin-right:4px}
   .ba .rw .after{color:var(--fg)} .ba .rw .after .a{color:var(--cyan);font-weight:800;margin-right:4px}
   .ba .rw .eff{font-weight:800;color:var(--green)}
   @media(max-width:860px){.ba .hd{display:none}.ba .rw{grid-template-columns:1fr;gap:2px}.ba .rw>div{border-top:none}.ba .rw{border-top:1px solid var(--line);padding:6px 0}}
 
-  .tlist{display:grid;gap:11px;margin-top:22px;max-width:1000px}
-  .tl{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;
-    background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 18px;font-size:14px}
+  .tlist{display:grid;gap:20px;margin-top:38px;max-width:1160px}
+  .tl{display:grid;grid-template-columns:1fr auto 1.05fr;gap:24px;align-items:center;
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:34px 34px;font-size:19px}
   .tl .prob{color:var(--muted)} .tl .arrow{color:var(--blue);font-weight:800} .tl .sol b{color:var(--cyan)}
   .tl code{font-family:ui-monospace,monospace;font-size:12.5px;background:var(--surface2);padding:1px 5px;border-radius:5px;color:var(--amber)}
   @media(max-width:720px){.tl{grid-template-columns:1fr;gap:4px}.tl .arrow{display:none}}
 
-  .learn{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:22px;max-width:1000px}
-  .lc{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
-  .lc .k{font-size:14.5px;font-weight:800;color:var(--cyan);margin-bottom:7px}
-  .lc .d{font-size:13px;color:var(--muted);line-height:1.5}
+  .learn{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:38px;max-width:1000px}
+  .lc{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:44px 38px;display:flex;flex-direction:column;justify-content:center;min-height:180px}
+  .lc .k{font-size:22px;font-weight:800;color:var(--cyan);margin-bottom:12px}
+  .lc .d{font-size:17px;color:var(--muted);line-height:1.6}
   .lc .d b{color:var(--cyan)}
+
+  /* 파이프라인 다이어그램 */
+  .pipe{display:flex;flex-direction:column;align-items:center;gap:5px;margin-top:14px}
+  .node{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:9px 34px;text-align:center;min-width:580px;position:relative}
+  .node .t{font-size:16.5px;font-weight:800;color:var(--fg)}
+  .node .s{font-size:13px;color:var(--muted);margin-top:2px}
+  .node .st{display:inline-block;font-size:11px;font-weight:800;font-family:ui-monospace,monospace;padding:2px 8px;border-radius:999px;margin-top:4px}
+  .st.ok{background:rgba(61,220,151,.14);color:var(--green)} .st.chk{background:rgba(91,140,255,.16);color:var(--blue)} .st.soon{background:rgba(255,190,77,.14);color:var(--amber)}
+  .fork{display:flex;gap:16px}
+  .fork .node{min-width:380px}
+  .node.gen{border-color:rgba(56,225,200,.45)}
+  .node.out{background:linear-gradient(92deg,rgba(91,140,255,.18),rgba(56,225,200,.14));border-color:rgba(56,225,200,.5)}
+  .node.out .t{color:var(--cyan)}
+  .ar{color:var(--blue);font-size:14px;font-weight:800;line-height:.5;margin:-1px 0}
+  @media(max-width:720px){.node,.fork .node{min-width:0;width:100%}.fork{flex-direction:column}}
 
   .prog{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan));width:0;z-index:99;transition:width .1s}
   .hint{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);font-size:11.5px;color:var(--dim);z-index:98;animation:bob 2s infinite}
@@ -114,49 +201,72 @@
 <body>
 <div class="prog" id="prog"></div>
 
-<!-- 1 표지 -->
 <section class="slide" id="s1">
-  <span class="num">01 / 11</span>
+  <span class="num">01 / 14</span>
   <div class="eyebrow"><span class="dot"></span>개인 프로젝트 · Core-CBT</div>
-  <h1>수작업을 <span class="g">자동화</span>로 바꾼<br />빈출 문제 개발기</h1>
+  <h1>수작업을 <span class="gg">자동화</span>로 바꾼<br />빈출 문제 개발기</h1>
   <p class="lead">사람이 하던 일을 <b style="color:var(--cyan)">임베딩·벡터·AI</b>로 자동화 — <b style="color:var(--cyan)">비슷한 빈출 유형</b>을 찾고, 해설을 원클릭으로. <span style="color:var(--dim)">무슨 기술을, 왜 썼나.</span></p>
+  <div class="tags"><span>임베딩 · 벡터</span><span>RAG A/B 실험</span><span>AI 해설 자동화</span><span>Next.js · pgvector</span></div>
   <div class="meta">정보처리산업기사 CBT 학습 웹 · 문제 → 해결 → 이득 · 2026</div>
 </section>
 
-<!-- 2 우리 웹 -->
 <section class="slide" id="s2">
-  <span class="num">02 / 11</span>
+  <span class="num">02 / 14</span>
   <div class="eyebrow"><span class="dot"></span>우리 웹</div>
-  <h2>정보처리산업기사 <span class="g">CBT 학습 웹</span></h2>
-  <p class="lead">회차별 기출을 실제 시험처럼 풀고, 오답을 추적하고, AI 해설까지 붙인 자격증 학습 서비스. <b style="color:var(--green)">실사용 78.5점 합격</b>.</p>
+  <h2>IT 자격증 <span class="g">CBT 학습 웹</span></h2>
+  <p class="lead">회차별 기출을 실제 시험처럼 풀고, 오답 추적·AI 해설까지 —<br>여러 자격증을 한 곳에서.</p>
   <div class="stats">
     <div class="stat"><div class="v blue">840+</div><div class="l">필기 기출 (9회차)</div></div>
     <div class="stat"><div class="v cyan">250</div><div class="l">실기 문항</div></div>
-    <div class="stat"><div class="v green">89</div><div class="l">테스트 통과 · 회귀 0</div></div>
   </div>
+  <div class="cgroup"><div class="cl">지원 자격증</div><div class="tags"><span>정보처리산업기사</span><span>네트워크관리사 2급</span><span>SQLD</span><span>AI 프롬프트</span></div></div>
+  <div class="cgroup"><div class="cl">AI 기능</div><div class="tags"><span>GPT 해설보기</span><span>빈출 자동 분석</span><span>오답 재학습</span><span>개인 약점 맞춤</span></div></div>
   <div class="meta">Stack — Next.js(App Router) · Tailwind · PostgreSQL + pgvector · OpenAI 임베딩·gpt-4.1-mini · Langfuse</div>
 </section>
 
-<!-- 3 성과 1 + 앱 스크린샷 -->
 <section class="slide" id="s3">
-  <span class="num">03 / 11</span>
+  <span class="num">03 / 14</span>
+  <div class="eyebrow"><span class="dot"></span>왜 만들었나 · 차별점</div>
+  <h2>기존 CBT가 있는데 <span class="g">새로 만든 이유</span></h2>
+  <div class="vs">
+    <div class="col old">
+      <div class="ct">기존 CBT (영진닷컴 등)</div>
+      <ul>
+        <li>문제만 빠르게 넘기는 UI — 한 문제를 깊게 보거나 <b style="color:var(--muted)">오답을 다시 파는 흐름</b>이 없음</li>
+        <li>모르는 문제가 나오면 창을 나가 <b style="color:var(--muted)">ChatGPT에 문제를 복붙</b>해 따로 물어봐야 — 흐름이 끊김</li>
+        <li>내가 자주 틀리는 <b style="color:var(--muted)">약점·유형을 모아주는 개인화가 없음</b></li>
+      </ul>
+    </div>
+    <div class="col new">
+      <div class="ct">Core-CBT — 불편한 걸 하나씩 고침</div>
+      <ul>
+        <li><b>한 문제에 집중</b> — 모르겠어요 표시·오답만 다시 풀기·재학습 모드로 약점을 파고듦</li>
+        <li>풀다 막히면 그 자리에서 <b>GPT 해설보기 원클릭</b> — 복붙·창 이동 없이 4섹션 해설</li>
+        <li>오답·빈출을 <b>임베딩으로 분석해 '내 약점 유형'을 자동으로</b> 모아 우선 연습</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s4">
+  <span class="num">04 / 14</span>
   <div class="eyebrow"><span class="dot"></span>성과 ① · 빈출 문제 자동 탐지</div>
   <div class="split">
     <div>
       <h2>사람이 못 하던 걸 <span class="g">자동으로</span></h2>
       <div class="psb">
         <div class="row p"><div class="tag">문제</div><div class="txt">필기 기출이 <b>75~81% 반복</b>인데 사용자는 <span class="mut">뭐가 빈출인지 모름.</span> 540문제를 사람이 눈으로 비교·태깅하는 건 사실상 불가능.</div></div>
-        <div class="row s"><div class="tag">해결</div><div class="txt">문제를 <b>임베딩(의미 벡터)</b>화 → 유사도로 <b>자동 군집</b> → 반복 유형 탐지. <b>과목 메타데이터</b>로 스코프.</div></div>
+        <div class="row s"><div class="tag">해결</div><div class="txt"><b>글자 그대로의 JSON으론</b> '비슷한 문제'를 못 찾음 → 문제를 <b>임베딩(의미 벡터)</b>해 벡터로 → <b>유사도로 자동 군집</b>.</div></div>
         <div class="row b"><div class="tag">이득</div><div class="txt"><b>157개 빈출 유형 자동</b>(사람 태깅 0). "6회 반복 + 오답률 33%" → 자주 틀리는 걸 <b>우선 연습</b>.</div></div>
       </div>
+      <div class="techrow"><span>text-embedding-3-small</span><span>pgvector (벡터DB)</span><span>코사인 유사도 · Union-Find</span></div>
     </div>
     <div class="shot"><img src="app-frequent.png" alt="실제 앱 빈출 문제 Beta 페이지" /><div class="cap">실제 앱 · /frequent (과목 탭 · 반복 회차 · 오답률 뱃지)</div></div>
   </div>
 </section>
 
-<!-- 4 동일 vs 변형 + 아티팩트 -->
-<section class="slide" id="s4">
-  <span class="num">04 / 11</span>
+<section class="slide" id="s5">
+  <span class="num">05 / 14</span>
   <div class="eyebrow"><span class="dot"></span>핵심 · 왜 벡터인가</div>
   <div class="split">
     <div>
@@ -167,114 +277,164 @@
         <div class="col var"><div class="ct">✓ 변형 — 임베딩만 잡음</div><div class="q">교착상태의 <b>필요충분조건</b> vs <b>필요조건</b>에 해당하지 않는 것은?</div><div class="rn">뜻 같고 표현 다름</div></div>
       </div>
     </div>
-    <div class="shot"><img src="analysis-subject.png" alt="과목 메타데이터로 나눈 빈출 문제 분석" /><div class="cap">분석 아티팩트 · 과목 메타데이터 군집 (유사도 86%↑)</div></div>
+    <div class="shot"><img src="variants.png" alt="말만 바꾼 변형 문제들 — 임베딩이 같은 유형으로 묶음" /><div class="cap">실제 변형 유형 · 노란 표시 = 회차마다 바뀐 표현 (임베딩만 묶음)</div></div>
   </div>
 </section>
 
-<!-- 5 기술 스택 & 왜 -->
-<section class="slide" id="s5">
-  <span class="num">05 / 11</span>
-  <div class="eyebrow"><span class="dot"></span>무슨 기술을, 왜 썼나</div>
-  <h2>도구는 <span class="g">데이터 성격</span>에 맞춰 골랐다</h2>
-  <div class="tech">
-    <div class="tcard"><span class="chip b">text-embedding-3-small</span><div><div class="what">문제를 의미 벡터로</div><div class="why"><b>왜</b> — 값싸고(문항당 ~$0.00002) 1536차원으로 충분. 말 바꾼 변형까지 의미로 매칭.</div></div></div>
-    <div class="tcard"><span class="chip">코사인 유사도 + Union-Find</span><div><div class="what">반복 유형 자동 군집</div><div class="why"><b>왜</b> — 임계값 하나(0.86)로 "동일/변형"이 자동으로 나뉨. 룰 코딩 불필요.</div></div></div>
-    <div class="tcard"><span class="chip">과목 메타데이터</span><div><div class="what">의미는 벡터, 과목은 필터</div><div class="why"><b>왜</b> — 과목 안에서만 비교 → 착시 제거·정확도↑. 벡터와 필터의 역할 분리.</div></div></div>
-    <div class="tcard"><span class="chip">정적 JSON 미리계산</span><div><div class="what">빌드시 계산 → 파일로</div><div class="why"><b>왜</b> — 입력이 고정(기출)이라 런타임 DB 불필요. <b>배포 쉽고 비용 0</b>.</div></div></div>
-    <div class="tcard"><span class="chip v">pgvector · gpt-4.1-mini</span><div><div class="what">실시간 중복검사 · 해설 생성</div><div class="why"><b>왜</b> — 런타임에 <b>새로 들어오는 입력</b>엔 벡터DB·LLM이 필요. 정적과 반대 케이스.</div></div></div>
-    <div class="tcard"><span class="chip v">Langfuse + OpenRouter</span><div><div class="what">A/B 실험 관측·다모델</div><div class="why"><b>왜</b> — 프롬프트·트레이스를 남겨 <b>실험을 재현·측정</b> 가능하게.</div></div></div>
-  </div>
-</section>
-
-<!-- 6 성과 2 + 실험 스크린샷 -->
 <section class="slide" id="s6">
-  <span class="num">06 / 11</span>
-  <div class="eyebrow"><span class="dot"></span>성과 ② · 기술 의사결정</div>
+  <span class="num">06 / 14</span>
+  <div class="eyebrow"><span class="dot"></span>성과 ② · 생성 방식 A/B 실험</div>
   <div class="split">
     <div>
-      <h2>감이 아니라 <span class="g">데이터로</span> 정하다</h2>
+      <h2>비슷한 유형을 쏟아내<br /><span class="g">약점을 메운다</span></h2>
       <div class="psb">
-        <div class="row p"><div class="tag">문제</div><div class="txt">문제은행이 JSON. <span class="mut">"DB·VectorDB로 바꿔야 하나?"</span> 감으로 정하면 <b>오버엔지니어링</b> 위험.</div></div>
-        <div class="row s"><div class="tag">해결</div><div class="txt"><b>A/B 실험(100문제)</b>으로 RAG 실제 이득 측정. "입력이 <b>고정</b>이냐 <b>런타임</b>이냐" 기준 도출.</div></div>
-        <div class="row b"><div class="tag">이득</div><div class="txt">RAG 생성 이득 <b>단 2%p</b>(오류율 14%→12.1%) 증명 → 정적은 <b>JSON</b>으로 → <b>불필요한 DB 이전 회피</b>.</div></div>
+        <div class="row p"><div class="tag">문제</div><div class="txt">사용자가 <b>자주 틀리는 약점 유형</b> — 그 유형 문제를 어떻게 더 줄까? <span class="mut">JSON식 vs RAG식, 감으론 못 정함.</span></div></div>
+        <div class="row s"><div class="tag">해결</div><div class="txt"><b>60문제(시험 1회분)</b>를 A/B로 생성 → <b>25·40·60</b>마다 오류율·유사도 측정.</div></div>
+        <div class="row b"><div class="tag">이득</div><div class="txt"><b>RAG는 오류율 절반</b>(정확↑) + <b>비슷한 유형을 밀도 있게</b> 생성 → <b>약점 유형을 같은 형태 문제로 채워 보완</b>(약점 구조로 이어짐).</div></div>
       </div>
     </div>
-    <div class="shot"><img src="ab-compare.png" alt="JSON식 vs RAG식 A/B 품질·중복 비교" /><div class="cap">실험 아티팩트 · A/B 품질 + 내부 중복 (100문항)</div></div>
+    <div class="shot"><img src="ab-compare.png" alt="JSON식 vs RAG식 60문제 오류율·중복률 비교" /><div class="cap">실험 아티팩트 · 60문제 A/B — 오류율(25·40·60) + 내부 중복률</div></div>
   </div>
 </section>
 
-<!-- 7 성과 3 : AI 해설 자동화 + GPT 스크린샷 -->
 <section class="slide" id="s7">
-  <span class="num">07 / 11</span>
-  <div class="eyebrow"><span class="dot"></span>성과 ③ · AI 해설 자동화</div>
+  <span class="num">07 / 14</span>
+  <div class="eyebrow"><span class="dot"></span>기술 의사결정 · 저장소</div>
   <div class="split">
     <div>
-      <h2>해설을 <span class="g">딸깍</span> 한 번으로</h2>
+      <h2>JSON에서<br /><span class="g">Postgres + pgvector</span>로</h2>
       <div class="psb">
-        <div class="row p"><div class="tag">문제</div><div class="txt">해설을 <b>사람이 직접</b> 쓰고 보강해야 했음. <span class="mut">문제마다 다시 작성 — 시간·손이 많이 감.</span></div></div>
-        <div class="row s"><div class="tag">해결</div><div class="txt"><b>GPT 해설보기</b> 원클릭 생성(4섹션 고정 포맷) + <b>👍👎 피드백</b> + <b>캐시</b> 재사용. gpt-4.1-mini.</div></div>
-        <div class="row b"><div class="tag">이득</div><div class="txt">클릭 <b>즉시</b> 해설 · 같은 문제 재요청 <b>비용 0</b>(캐시). 좋아요로 <b>좋은 해설을 자동 선별</b>.</div></div>
+        <div class="row p"><div class="tag">문제</div><div class="txt">문제은행이 <b>JSON 파일</b> — 커지면 전부 읽어야 하고, 관계형 쿼리·<b>'비슷한 문제'(벡터) 검색</b>이 안 됨.</div></div>
+        <div class="row s"><div class="tag">해결</div><div class="txt">정형은 <b>SQL</b>, 의미 검색은 <b>벡터</b> — 둘 다 필요해서 <b>Postgres에 pgvector를 붙임</b>. (MySQL은 오픈소스 벡터 인덱스가 없음)</div></div>
+        <div class="row b"><div class="tag">이득</div><div class="txt">문제·정답·임베딩이 <b>한 테이블</b> → <b>과목 필터 + 벡터 유사도를 한 쿼리에</b>. 별도 벡터DB 불필요.</div></div>
       </div>
     </div>
-    <div class="shot"><img src="gpt-explanation.png" alt="GPT 해설 원클릭 생성 화면" /><div class="cap">실제 앱 · GPT 해설(4섹션) + 좋아요/싫어요 + 캐시</div></div>
+    <div class="code"><span class="k">CREATE EXTENSION</span> vector;   <span class="c">-- 벡터를 Postgres 안으로</span>
+
+<span class="k">SELECT</span> * <span class="k">FROM</span> problems
+<span class="k">WHERE</span>  subject = <span class="s">'DB'</span>       <span class="c">-- ① SQL 필터</span>
+<span class="k">ORDER BY</span> embedding <span class="op">&lt;=&gt;</span> q    <span class="c">-- ② 벡터 유사도</span>
+<span class="k">LIMIT</span> 5;                    <span class="c">-- 한 쿼리에 ①+②</span></div>
   </div>
 </section>
 
-<!-- 8 자동화 Before → After -->
 <section class="slide" id="s8">
-  <span class="num">08 / 11</span>
+  <span class="num">08 / 14</span>
+  <div class="eyebrow"><span class="dot"></span>성과 ③ · GPT 해설 → 기본 해설</div>
+  <div class="split">
+    <div>
+      <h2>GPT 해설을 <span class="g">기본 해설</span>로,<br />비용은 아래로</h2>
+      <div class="psb">
+        <div class="row p"><div class="tag">문제</div><div class="txt">해설이 부실한 문제는 볼 때마다 <b>GPT 해설보기</b>를 눌러 생성. <span class="mut">호출할 때마다 GPT API 비용이 계속 쌓임.</span></div></div>
+        <div class="row s"><div class="tag">해결</div><div class="txt"><b>👍좋아요로 검증된 GPT 해설</b>을 골라 <b>우리 기본 해설로 채택</b>. (gpt-4.1-mini · 4섹션 포맷)</div></div>
+        <div class="row b"><div class="tag">이득</div><div class="txt">같은 문제에 <b>GPT를 다시 부를 필요 없음</b> → <b>GPT 호출·비용 ↓</b>. 해설 품질도 균일하게 ↑.</div></div>
+      </div>
+    </div>
+    <div class="shot"><img src="gpt-explanation.png" alt="GPT 해설 화면 — 기본 해설로 채택" /><div class="cap">GPT 해설보기 결과(4섹션) → 검증 후 기본 해설로 채택 (재호출·비용↓)</div></div>
+  </div>
+</section>
+
+<section class="slide" id="s9">
+  <span class="num">09 / 14</span>
+  <div class="eyebrow"><span class="dot"></span>확장 구조 · 개인 맞춤</div>
+  <h2>빈출 + 오답을 합쳐 <span class="g">약점 유형 새 문제</span>를</h2>
+  <p class="lead" style="max-width:64ch">같은 기술(임베딩·군집·RAG)을 이어 붙이면 — 개인이 <b style="color:var(--cyan)">틀린 유형</b>을 모아 <b style="color:var(--cyan)">'비슷하지만 새로운'</b> 문제를 뽑아내는 구조가 된다.</p>
+  <div class="pipe">
+    <div class="node"><div class="t">기출 문제은행 · 필기 840+</div><div class="s">회차별 문항 원본</div></div>
+    <div class="ar">↓</div>
+    <div class="node"><div class="t">임베딩 — 의미 벡터화</div><div class="s">text-embedding-3-small</div><span class="st ok">✓ 배포</span></div>
+    <div class="ar">↓</div>
+    <div class="fork">
+      <div class="node"><div class="t">빈출 유형 군집</div><div class="s">자주 나온 유형</div><span class="st ok">✓ /frequent</span></div>
+      <div class="node"><div class="t">내 오답 유형 군집</div><div class="s">개인 약점 (오답률 집계)</div><span class="st ok">✓ 데이터</span></div>
+    </div>
+    <div class="ar">↓</div>
+    <div class="node gen"><div class="t">RAG로 같은 유형 새 문제 생성</div><div class="s">같은 개념·다른 표현의 새 문항</div><span class="st chk">✓ A/B 60문항 검증</span></div>
+    <div class="ar">↓</div>
+    <div class="node out"><div class="t">개인 약점 맞춤 새 문제 출제</div><div class="s">틀린 유형만 골라 반복 연습</div><span class="st soon">🔜 조립 단계</span></div>
+  </div>
+</section>
+
+<section class="slide" id="s10">
+  <span class="num">10 / 14</span>
   <div class="eyebrow"><span class="dot"></span>불편 → 자동화 → 편해짐</div>
   <h2>수작업을 <span class="g">전부 자동으로</span> 바꿨다</h2>
   <div class="ba">
     <div class="hd"><div>영역</div><div>Before · 수작업</div><div>After · 자동</div><div>효과</div></div>
-    <div class="rw"><div class="area">빈출 유형</div><div class="before"><span class="x">✕</span>540문제 눈으로 비교(사실상 불가)</div><div class="after"><span class="a">→</span>임베딩 자동 군집</div><div class="eff">157개 유형 · 태깅 0</div></div>
-    <div class="rw"><div class="area">문제 해설</div><div class="before"><span class="x">✕</span>해설 직접 작성·보강</div><div class="after"><span class="a">→</span>GPT 원클릭 + 캐시</div><div class="eff">클릭 즉시 · 재요청 비용 0</div></div>
+    <div class="rw"><div class="area">빈출 유형</div><div class="before"><span class="x">✕</span>540문제 눈으로 비교(사실상&nbsp;불가)</div><div class="after"><span class="a">→</span>임베딩 자동 군집</div><div class="eff">157개 유형 · 태깅 0</div></div>
+    <div class="rw"><div class="area">문제 해설</div><div class="before"><span class="x">✕</span>볼 때마다 GPT 반복 호출</div><div class="after"><span class="a">→</span>검증된 GPT 해설을 기본값으로</div><div class="eff">GPT 호출·비용 ↓</div></div>
     <div class="rw"><div class="area">신고 처리</div><div class="before"><span class="x">✕</span>신고 1건씩 확인·수정</div><div class="after"><span class="a">→</span>12건 일괄 처리 파이프라인</div><div class="eff">처리량 대폭 ↑</div></div>
-    <div class="rw"><div class="area">저장소 결정</div><div class="before"><span class="x">✕</span>감으로 판단</div><div class="after"><span class="a">→</span>A/B 실험 자동 측정</div><div class="eff">데이터로 2%p 확인</div></div>
   </div>
   <p class="lead" style="max-width:64ch">공통 원리 — <b style="color:var(--cyan)">반복되는 수작업은 데이터·AI로 자동화</b>하고, 사람은 판단만.</p>
 </section>
 
-<!-- 9 실제 만든 것 갤러리 -->
-<section class="slide" id="s9">
-  <span class="num">09 / 11</span>
-  <div class="eyebrow"><span class="dot"></span>실제 만든 것</div>
-  <h2>화면으로 <span class="g">남긴 결과물</span></h2>
-  <div class="gal">
-    <div class="shot"><img src="app-frequent.png" alt="빈출 문제 앱" /><div class="cap">① 빈출 문제 Beta</div></div>
-    <div class="shot"><img src="analysis-subject.png" alt="과목별 군집 분석" /><div class="cap">② 과목별 반복 유형 분석</div></div>
-    <div class="shot"><img src="ab-compare.png" alt="A/B 실험" /><div class="cap">③ JSON vs RAG A/B 실험</div></div>
-    <div class="shot"><img src="gpt-explanation.png" alt="GPT 해설" /><div class="cap">④ GPT 해설 자동화</div></div>
-  </div>
-  <p class="lead" style="max-width:66ch">임베딩 분석 → 실험으로 저장소 결정 → 실서비스 <b style="color:var(--cyan)">/frequent</b> 배포 + AI 해설. <span style="color:var(--dim)">89 테스트 통과 · 기존 퀴즈·채점 코드 불변(격리).</span></p>
-</section>
-
-<!-- 10 트러블슈팅 -->
-<section class="slide" id="s10">
-  <span class="num">10 / 11</span>
-  <div class="eyebrow"><span class="dot"></span>트러블슈팅</div>
-  <h2>부딪힌 것들, <span class="g">이렇게</span> 풀었다</h2>
-  <div class="tlist">
-    <div class="tl"><div class="prob">과목이 뒤섞여 "네트워크가 많아 보이는" 착시</div><div class="arrow">→</div><div class="sol"><b>과목 메타데이터</b>로 스코프 → 과목별 정확 분리</div></div>
-    <div class="tl"><div class="prob">개별 문제 오답률이 표본 5~19개라 노이즈</div><div class="arrow">→</div><div class="sol"><b>표본 20↑ 게이트</b> → 신뢰할 지표만 노출</div></div>
-    <div class="tl"><div class="prob">스크립트에서 <code>@/</code> alias·타임아웃으로 실행 실패</div><div class="arrow">→</div><div class="sol"><b>커스텀 로더 + 재시도/타임아웃</b> → 안정 실행</div></div>
-    <div class="tl"><div class="prob">같은 문제 GPT 해설 반복 호출 = 비용·지연</div><div class="arrow">→</div><div class="sol"><b>SHA-256 캐시</b>로 재사용 → 호출·비용 0</div></div>
-  </div>
-</section>
-
-<!-- 11 배운 점 -->
 <section class="slide" id="s11">
-  <span class="num">11 / 11</span>
-  <div class="eyebrow"><span class="dot"></span>개선 & 배운 점</div>
-  <h2>무엇을 <span class="g">얻었나</span></h2>
+  <span class="num">11 / 14</span>
+  <div class="eyebrow"><span class="dot"></span>성과 한눈에</div>
+  <h2>숫자로 <span class="g">남긴 결과</span></h2>
+  <div class="scores">
+    <div class="score"><div class="v" style="color:var(--cyan)">157개</div><div class="k">빈출 유형 자동 탐지</div><div class="d">임베딩 군집으로 · 사람 태깅 0</div></div>
+    <div class="score"><div class="v" style="color:var(--blue)">75~81%</div><div class="k">필기 기출 반복률</div><div class="d">동일 135 · 변형 22 자동 분류</div></div>
+    <div class="score"><div class="v" style="color:var(--green)">오류 ½</div><div class="k">RAG 품질 A/B 검증</div><div class="d">60문항 · 오류율 21% → 11%</div></div>
+  </div>
+  <p class="lead" style="max-width:70ch">임베딩 분석 → A/B 실험으로 저장소 결정 → 실서비스 <b style="color:var(--cyan)">/frequent</b> 배포 + AI 해설까지.</p>
+</section>
+
+<section class="slide" id="s12">
+  <span class="num">12 / 14</span>
+  <div class="eyebrow big"><span class="dot"></span>트러블슈팅</div>
+  <div class="tlist">
+    <div class="tl"><div class="prob">과목이 섞여 "네트워크 문제가 유독 많다"는 착시</div><div class="arrow">→</div><div class="sol">문제마다 <b>과목 꼬리표</b>를 붙여 같은 과목끼리만 비교</div></div>
+    <div class="tl"><div class="prob">푼 사람이 적은 문제(5~19명)는 오답률이 들쭉날쭉</div><div class="arrow">→</div><div class="sol"><b>20명 이상 푼 문제만</b> 오답률 공개 → 믿을 숫자만</div></div>
+    <div class="tl"><div class="prob">분석 프로그램이 파일 경로를 못 찾거나 도중에 멈춤</div><div class="arrow">→</div><div class="sol"><b>경로를 자동으로 찾는 로더 + 실패 시 재시도</b></div></div>
+    <div class="tl"><div class="prob">같은 문제 해설을 GPT에 매번 새로 물어 돈·시간 낭비</div><div class="arrow">→</div><div class="sol">받은 해설을 <b>저장해뒀다가 그대로 재사용</b></div></div>
+  </div>
+</section>
+
+<section class="slide" id="s13">
+  <span class="num">13 / 14</span>
+  <div class="eyebrow big"><span class="dot"></span>개선 & 배운 점</div>
   <div class="learn">
-    <div class="lc"><div class="k">수작업의 자동화</div><div class="d">빈출 태깅·해설 작성·신고 처리 — 반복 노동을 임베딩·AI·배치로 대체.</div></div>
-    <div class="lc"><div class="k">데이터 기반 결정</div><div class="d">감이 아니라 A/B 실험으로 RAG·저장소를 정함. 오버엔지니어링 회피.</div></div>
-    <div class="lc"><div class="k">임베딩 실전 적용</div><div class="d">"같은 문제"를 넘어 변형까지 잡는 벡터 유사도로 빈출 유형 자동화.</div></div>
-    <div class="lc"><div class="k">격리 · 비용 0</div><div class="d">새 라우트+정적 데이터만 추가, <b>89 테스트</b> 통과. 런타임 비용 0.</div></div>
+    <div class="lc"><div class="k">반복 작업 자동화</div><div class="d">손이 많이 가던 빈출 정리·해설 작성·신고 처리를 AI·임베딩이 대신함.</div></div>
+    <div class="lc"><div class="k">감이 아닌 데이터로 결정</div><div class="d">실험으로 실제 이득을 재보고 결정 — 필요한 만큼만 만듦.</div></div>
+    <div class="lc"><div class="k">의미로 찾는 검색 적용</div><div class="d">글자가 아닌 '의미'로 비슷한 문제를 찾아 빈출·약점을 자동 정리.</div></div>
+    <div class="lc"><div class="k">기존 기능은 그대로</div><div class="d">새 화면·데이터만 추가, <b>테스트 89개</b> 전부 통과. 추가 비용 없음.</div></div>
   </div>
   <div class="meta">Core-CBT · 임베딩·벡터·AI로 반복 수작업을 자동화하다</div>
 </section>
+
+<section class="slide" id="s14">
+  <span class="num">14 / 14</span>
+  <div class="eyebrow"><span class="dot"></span>추후 할 것 · Roadmap</div>
+  <h2>프롬프트 × 모델 <span class="g">실험 루프</span></h2>
+  <p class="lead" style="max-width:66ch">해설·생성 품질을 계속 끌어올리기 위해 — <b style="color:var(--cyan)">Langfuse</b>에 등록한 프롬프트와 <b style="color:var(--cyan)">OpenRouter</b>의 여러 모델을 <b>양방향</b>으로 돌려 자동 튜닝.</p>
+  <div class="cmp" style="max-width:1040px;margin-top:30px">
+    <div class="col" style="border-color:rgba(91,140,255,.42)">
+      <div class="ct" style="color:var(--blue);font-size:16px">① 프롬프트 고정 → 모델 탐색</div>
+      <div class="q" style="font-size:15.5px;line-height:1.75;color:var(--muted)">
+        <b style="color:var(--cyan)">Langfuse</b> 등록 프롬프트를 그대로 두고<br />
+        <b style="color:var(--cyan)">OpenRouter</b>로 여러 모델을 한 번에 실행<br />
+        → 제일 잘 나온 <b style="color:var(--fg)">모델</b>을 선택
+      </div>
+    </div>
+    <div class="col" style="border-color:rgba(56,225,200,.42)">
+      <div class="ct" style="color:var(--cyan);font-size:16px">② 모델 고정 → 프롬프트 개선</div>
+      <div class="q" style="font-size:15.5px;line-height:1.75;color:var(--muted)">
+        잘 나온 모델을 기준으로<br />
+        프롬프트를 <b style="color:var(--fg)">이것저것</b> 바꿔가며 비교<br />
+        → 개선 버전을 다시 <b style="color:var(--cyan)">Langfuse</b>에 등록
+      </div>
+    </div>
+  </div>
+  <div class="stats" style="margin-top:26px">
+    <div class="stat" style="min-width:0;padding:16px 22px"><div class="v cyan" style="font-size:clamp(20px,2.4vw,28px)">↺ 자동 루프</div><div class="l">두 방향을 번갈아 반복</div></div>
+    <div class="stat" style="min-width:0;padding:16px 22px"><div class="v blue" style="font-size:clamp(20px,2.4vw,28px)">오류율·재생성·중복도</div><div class="l">Langfuse 스코어로 측정</div></div>
+  </div>
+</section>
+
+
+
+
 
 <div class="hint">↓ 스크롤 / 방향키로 이동</div>
 <script>
@@ -282,7 +442,42 @@
   const upd=()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';};
   addEventListener('scroll',upd,{passive:true});upd();
   const slides=[...document.querySelectorAll('.slide')];
+
+  // 스크린샷 라이트박스 — 좌우로 넘겨보기
+  const SHOTS=[
+    {src:'app-frequent.png',full:'app-frequent-full.png',cap:'① 빈출 문제 Beta (실서비스 /frequent) · 스크롤 ↓'},
+    {src:'variants.png',cap:'② 변형 유형 — 임베딩만 잡는 반복'},
+    {src:'ab-compare.png',cap:'③ 60문제 A/B — 오류율·중복률'},
+    {src:'gpt-explanation.png',cap:'④ GPT 해설 자동화 (4섹션 · 캐시)'},
+  ];
+  const idxOf=(src)=>{const b=String(src).split('/').pop();return SHOTS.findIndex(s=>s.src===b);};
+  let cur=0;
+  const lb=document.createElement('div');
+  lb.className='lb';
+  lb.innerHTML='<span class="x">✕</span><span class="nav prev">‹</span><span class="nav next">›</span><span class="cnt"></span><div class="imgwrap"><img alt="확대 이미지" /></div><span class="cap2"></span>';
+  document.body.appendChild(lb);
+  const lbImg=lb.querySelector('img'), cap2=lb.querySelector('.cap2'), cnt=lb.querySelector('.cnt');
+  function show(i){cur=(i+SHOTS.length)%SHOTS.length;lbImg.src=SHOTS[cur].full||SHOTS[cur].src;cap2.textContent=SHOTS[cur].cap;cnt.textContent=(cur+1)+' / '+SHOTS.length;lb.classList.add('open');lb.scrollTop=0;}
+  const close=()=>lb.classList.remove('open');
+
+  document.querySelectorAll('.shot img').forEach(im=>im.addEventListener('click',ev=>{
+    ev.stopPropagation();
+    const i=idxOf(im.getAttribute('src'));
+    show(i<0?0:i);
+  }));
+  lbImg.addEventListener('click',ev=>{ev.stopPropagation();show(cur+1);});          // 이미지 클릭 = 다음
+  lb.querySelector('.next').addEventListener('click',ev=>{ev.stopPropagation();show(cur+1);});
+  lb.querySelector('.prev').addEventListener('click',ev=>{ev.stopPropagation();show(cur-1);});
+  lb.querySelector('.x').addEventListener('click',ev=>{ev.stopPropagation();close();});
+  lb.addEventListener('click',close);                                                 // 바깥 어두운 곳 = 닫기
+
   addEventListener('keydown',e=>{
+    if(lb.classList.contains('open')){
+      if(e.key==='Escape')close();
+      if(e.key==='ArrowRight')show(cur+1);
+      if(e.key==='ArrowLeft')show(cur-1);
+      return;
+    }
     const i=slides.findIndex(s=>s.getBoundingClientRect().top>=-window.innerHeight/2);
     if(e.key==='ArrowDown'||e.key==='PageDown'){e.preventDefault();slides[Math.min(i+1,slides.length-1)]?.scrollIntoView();}
     if(e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();slides[Math.max(i-1,0)]?.scrollIntoView();}
