@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Core-CBT · 빈출 문제 기능 개발기</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+  :root{
+    --bg:#0b1020; --surface:#141b31; --surface2:#1a2340; --line:#26304d;
+    --fg:#eef1fb; --muted:#9aa6c4; --dim:#6b779c;
+    --blue:#5b8cff; --cyan:#38e1c8; --violet:#8a6bff;
+    --red:#ff6b6b; --amber:#ffbe4d; --green:#3ddc97;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--fg);
+    font-family:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Segoe UI",system-ui,sans-serif;
+    letter-spacing:-.018em;-webkit-font-smoothing:antialiased}
+  .slide{min-height:100vh;scroll-snap-align:start;position:relative;
+    display:flex;flex-direction:column;justify-content:center;padding:6.5vh 7vw;overflow:hidden;
+    background:
+      radial-gradient(900px 500px at 12% -10%,rgba(91,140,255,.14),transparent 60%),
+      radial-gradient(800px 500px at 100% 8%,rgba(56,225,200,.09),transparent 55%),
+      var(--bg);
+    border-bottom:1px solid var(--line)}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700;
+    color:var(--cyan);letter-spacing:.15em;text-transform:uppercase;margin-bottom:20px}
+  .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
+  h1{font-size:clamp(38px,6.4vw,76px);font-weight:800;line-height:1.02;letter-spacing:-.04em}
+  h2{font-size:clamp(26px,4vw,46px);font-weight:800;line-height:1.08;letter-spacing:-.03em;margin-bottom:6px}
+  .g{background:linear-gradient(92deg,var(--blue),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .lead{font-size:clamp(15px,1.8vw,22px);color:var(--muted);max-width:46ch;line-height:1.55;margin-top:18px}
+  .meta{margin-top:auto;padding-top:26px;font-size:13.5px;color:var(--dim);font-weight:600}
+  .num{position:absolute;top:5vh;right:7vw;font-size:12.5px;font-weight:700;color:var(--dim);letter-spacing:.1em}
+
+  .psb{display:grid;gap:13px;margin-top:24px;max-width:900px}
+  .psb .row{display:grid;grid-template-columns:88px 1fr;gap:16px;align-items:start;
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:17px 20px}
+  .psb .tag{font-size:12.5px;font-weight:800;padding:6px 0;text-align:center;border-radius:8px}
+  .psb .p .tag{background:rgba(255,107,107,.12);color:var(--red)}
+  .psb .s .tag{background:rgba(255,190,77,.12);color:var(--amber)}
+  .psb .b .tag{background:rgba(61,220,151,.12);color:var(--green)}
+  .psb .txt{font-size:clamp(14px,1.4vw,17.5px);line-height:1.5}
+  .psb .txt b{color:var(--cyan)} .psb .txt .mut{color:var(--muted)}
+
+  .split{display:grid;grid-template-columns:1.02fr .98fr;gap:34px;align-items:center}
+  @media(max-width:860px){.split{grid-template-columns:1fr;gap:22px}.psb .row{grid-template-columns:72px 1fr}}
+  .shot{border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5);background:#fff}
+  .shot img{width:100%;display:block}
+  .shot .cap{background:var(--surface);color:var(--muted);font-size:12px;padding:8px 12px;border-top:1px solid var(--line);font-weight:600}
+
+  .stats{display:flex;flex-wrap:wrap;gap:14px;margin-top:22px}
+  .stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 22px;min-width:130px}
+  .stat .v{font-size:clamp(26px,3.6vw,40px);font-weight:800;line-height:1}
+  .stat .v.blue{color:var(--blue)} .stat .v.cyan{color:var(--cyan)} .stat .v.green{color:var(--green)} .stat .v.red{color:var(--red)} .stat .v.amber{color:var(--amber)}
+  .stat .l{font-size:12.5px;color:var(--muted);margin-top:7px}
+
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+  .cmp .col{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .cmp .col.same{border-color:rgba(61,220,151,.35)} .cmp .col.var{border-color:rgba(138,107,255,.4)}
+  .cmp .ct{font-size:12.5px;font-weight:800;margin-bottom:10px}
+  .cmp .same .ct{color:var(--green)} .cmp .var .ct{color:var(--violet)}
+  .cmp .q{font-size:14px;line-height:1.5;color:var(--fg)}
+  .cmp .q b{color:var(--amber);background:rgba(255,190,77,.1);padding:0 3px;border-radius:4px}
+  .cmp .rn{font-size:11.5px;color:var(--dim);font-family:ui-monospace,monospace;margin-top:8px}
+
+  .tech{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:24px;max-width:1000px}
+  @media(max-width:860px){.tech{grid-template-columns:1fr}}
+  .tcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+    display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+  .tcard .chip{font-family:ui-monospace,monospace;font-size:12px;font-weight:700;color:var(--bg);
+    background:var(--cyan);padding:5px 9px;border-radius:7px;white-space:nowrap}
+  .tcard .chip.b{background:var(--blue)} .tcard .chip.v{background:var(--violet);color:#fff}
+  .tcard .what{font-size:14.5px;font-weight:700;color:var(--fg);margin-bottom:3px}
+  .tcard .why{font-size:13px;color:var(--muted);line-height:1.45}
+  .tcard .why b{color:var(--cyan);font-weight:700}
+
+  .gal{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+  @media(max-width:860px){.gal{grid-template-columns:1fr 1fr}}
+  .gal .shot img{height:200px;object-fit:cover;object-position:top}
+
+  /* Before → After */
+  .ba{margin-top:22px;max-width:1040px;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .ba .hd,.ba .rw{display:grid;grid-template-columns:1.1fr 1.2fr 1.2fr 1fr;gap:0}
+  .ba .hd>div{background:var(--surface2);font-size:12px;font-weight:800;letter-spacing:.04em;color:var(--muted);padding:13px 16px;text-transform:uppercase}
+  .ba .rw>div{padding:15px 16px;border-top:1px solid var(--line);font-size:14px;line-height:1.4}
+  .ba .rw .area{font-weight:800;color:var(--fg)}
+  .ba .rw .before{color:var(--muted)} .ba .rw .before .x{color:var(--red);font-weight:800;margin-right:4px}
+  .ba .rw .after{color:var(--fg)} .ba .rw .after .a{color:var(--cyan);font-weight:800;margin-right:4px}
+  .ba .rw .eff{font-weight:800;color:var(--green)}
+  @media(max-width:860px){.ba .hd{display:none}.ba .rw{grid-template-columns:1fr;gap:2px}.ba .rw>div{border-top:none}.ba .rw{border-top:1px solid var(--line);padding:6px 0}}
+
+  .tlist{display:grid;gap:11px;margin-top:22px;max-width:1000px}
+  .tl{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;
+    background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 18px;font-size:14px}
+  .tl .prob{color:var(--muted)} .tl .arrow{color:var(--blue);font-weight:800} .tl .sol b{color:var(--cyan)}
+  .tl code{font-family:ui-monospace,monospace;font-size:12.5px;background:var(--surface2);padding:1px 5px;border-radius:5px;color:var(--amber)}
+  @media(max-width:720px){.tl{grid-template-columns:1fr;gap:4px}.tl .arrow{display:none}}
+
+  .learn{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:22px;max-width:1000px}
+  .lc{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .lc .k{font-size:14.5px;font-weight:800;color:var(--cyan);margin-bottom:7px}
+  .lc .d{font-size:13px;color:var(--muted);line-height:1.5}
+  .lc .d b{color:var(--cyan)}
+
+  .prog{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan));width:0;z-index:99;transition:width .1s}
+  .hint{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);font-size:11.5px;color:var(--dim);z-index:98;animation:bob 2s infinite}
+  @keyframes bob{0%,100%{opacity:.45}50%{opacity:1}}
+  @media(prefers-reduced-motion:reduce){.hint{animation:none}}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+
+<!-- 1 표지 -->
+<section class="slide" id="s1">
+  <span class="num">01 / 11</span>
+  <div class="eyebrow"><span class="dot"></span>개인 프로젝트 · Core-CBT</div>
+  <h1>수작업을 <span class="g">자동화</span>로 바꾼<br />빈출 문제 개발기</h1>
+  <p class="lead">사람이 하던 일을 <b style="color:var(--cyan)">임베딩·벡터·AI</b>로 자동화 — <b style="color:var(--cyan)">비슷한 빈출 유형</b>을 찾고, 해설을 원클릭으로. <span style="color:var(--dim)">무슨 기술을, 왜 썼나.</span></p>
+  <div class="meta">정보처리산업기사 CBT 학습 웹 · 문제 → 해결 → 이득 · 2026</div>
+</section>
+
+<!-- 2 우리 웹 -->
+<section class="slide" id="s2">
+  <span class="num">02 / 11</span>
+  <div class="eyebrow"><span class="dot"></span>우리 웹</div>
+  <h2>정보처리산업기사 <span class="g">CBT 학습 웹</span></h2>
+  <p class="lead">회차별 기출을 실제 시험처럼 풀고, 오답을 추적하고, AI 해설까지 붙인 자격증 학습 서비스. <b style="color:var(--green)">실사용 78.5점 합격</b>.</p>
+  <div class="stats">
+    <div class="stat"><div class="v blue">840+</div><div class="l">필기 기출 (9회차)</div></div>
+    <div class="stat"><div class="v cyan">250</div><div class="l">실기 문항</div></div>
+    <div class="stat"><div class="v green">89</div><div class="l">테스트 통과 · 회귀 0</div></div>
+  </div>
+  <div class="meta">Stack — Next.js(App Router) · Tailwind · PostgreSQL + pgvector · OpenAI 임베딩·gpt-4.1-mini · Langfuse</div>
+</section>
+
+<!-- 3 성과 1 + 앱 스크린샷 -->
+<section class="slide" id="s3">
+  <span class="num">03 / 11</span>
+  <div class="eyebrow"><span class="dot"></span>성과 ① · 빈출 문제 자동 탐지</div>
+  <div class="split">
+    <div>
+      <h2>사람이 못 하던 걸 <span class="g">자동으로</span></h2>
+      <div class="psb">
+        <div class="row p"><div class="tag">문제</div><div class="txt">필기 기출이 <b>75~81% 반복</b>인데 사용자는 <span class="mut">뭐가 빈출인지 모름.</span> 540문제를 사람이 눈으로 비교·태깅하는 건 사실상 불가능.</div></div>
+        <div class="row s"><div class="tag">해결</div><div class="txt">문제를 <b>임베딩(의미 벡터)</b>화 → 유사도로 <b>자동 군집</b> → 반복 유형 탐지. <b>과목 메타데이터</b>로 스코프.</div></div>
+        <div class="row b"><div class="tag">이득</div><div class="txt"><b>157개 빈출 유형 자동</b>(사람 태깅 0). "6회 반복 + 오답률 33%" → 자주 틀리는 걸 <b>우선 연습</b>.</div></div>
+      </div>
+    </div>
+    <div class="shot"><img src="app-frequent.png" alt="실제 앱 빈출 문제 Beta 페이지" /><div class="cap">실제 앱 · /frequent (과목 탭 · 반복 회차 · 오답률 뱃지)</div></div>
+  </div>
+</section>
+
+<!-- 4 동일 vs 변형 + 아티팩트 -->
+<section class="slide" id="s4">
+  <span class="num">04 / 11</span>
+  <div class="eyebrow"><span class="dot"></span>핵심 · 왜 벡터인가</div>
+  <div class="split">
+    <div>
+      <h2>"같은 문제"가 아니라 <span class="g">비슷한 유형</span>까지</h2>
+      <p class="lead">단어 매칭은 <b style="color:var(--violet)">말만 바꾼 반복</b>을 놓친다. 임베딩은 <b style="color:var(--cyan)">의미로</b> 묶어 변형까지 잡는다 — <b style="color:var(--cyan)">동일 135 · 변형 22</b>개 유형.</p>
+      <div class="cmp">
+        <div class="col same"><div class="ct">✓ 완전 동일</div><div class="q">루프 검사의 4가지 반복 구조가 아닌 것은?</div><div class="rn">5개 회차 · 글자까지 동일</div></div>
+        <div class="col var"><div class="ct">✓ 변형 — 임베딩만 잡음</div><div class="q">교착상태의 <b>필요충분조건</b> vs <b>필요조건</b>에 해당하지 않는 것은?</div><div class="rn">뜻 같고 표현 다름</div></div>
+      </div>
+    </div>
+    <div class="shot"><img src="analysis-subject.png" alt="과목 메타데이터로 나눈 빈출 문제 분석" /><div class="cap">분석 아티팩트 · 과목 메타데이터 군집 (유사도 86%↑)</div></div>
+  </div>
+</section>
+
+<!-- 5 기술 스택 & 왜 -->
+<section class="slide" id="s5">
+  <span class="num">05 / 11</span>
+  <div class="eyebrow"><span class="dot"></span>무슨 기술을, 왜 썼나</div>
+  <h2>도구는 <span class="g">데이터 성격</span>에 맞춰 골랐다</h2>
+  <div class="tech">
+    <div class="tcard"><span class="chip b">text-embedding-3-small</span><div><div class="what">문제를 의미 벡터로</div><div class="why"><b>왜</b> — 값싸고(문항당 ~$0.00002) 1536차원으로 충분. 말 바꾼 변형까지 의미로 매칭.</div></div></div>
+    <div class="tcard"><span class="chip">코사인 유사도 + Union-Find</span><div><div class="what">반복 유형 자동 군집</div><div class="why"><b>왜</b> — 임계값 하나(0.86)로 "동일/변형"이 자동으로 나뉨. 룰 코딩 불필요.</div></div></div>
+    <div class="tcard"><span class="chip">과목 메타데이터</span><div><div class="what">의미는 벡터, 과목은 필터</div><div class="why"><b>왜</b> — 과목 안에서만 비교 → 착시 제거·정확도↑. 벡터와 필터의 역할 분리.</div></div></div>
+    <div class="tcard"><span class="chip">정적 JSON 미리계산</span><div><div class="what">빌드시 계산 → 파일로</div><div class="why"><b>왜</b> — 입력이 고정(기출)이라 런타임 DB 불필요. <b>배포 쉽고 비용 0</b>.</div></div></div>
+    <div class="tcard"><span class="chip v">pgvector · gpt-4.1-mini</span><div><div class="what">실시간 중복검사 · 해설 생성</div><div class="why"><b>왜</b> — 런타임에 <b>새로 들어오는 입력</b>엔 벡터DB·LLM이 필요. 정적과 반대 케이스.</div></div></div>
+    <div class="tcard"><span class="chip v">Langfuse + OpenRouter</span><div><div class="what">A/B 실험 관측·다모델</div><div class="why"><b>왜</b> — 프롬프트·트레이스를 남겨 <b>실험을 재현·측정</b> 가능하게.</div></div></div>
+  </div>
+</section>
+
+<!-- 6 성과 2 + 실험 스크린샷 -->
+<section class="slide" id="s6">
+  <span class="num">06 / 11</span>
+  <div class="eyebrow"><span class="dot"></span>성과 ② · 기술 의사결정</div>
+  <div class="split">
+    <div>
+      <h2>감이 아니라 <span class="g">데이터로</span> 정하다</h2>
+      <div class="psb">
+        <div class="row p"><div class="tag">문제</div><div class="txt">문제은행이 JSON. <span class="mut">"DB·VectorDB로 바꿔야 하나?"</span> 감으로 정하면 <b>오버엔지니어링</b> 위험.</div></div>
+        <div class="row s"><div class="tag">해결</div><div class="txt"><b>A/B 실험(100문제)</b>으로 RAG 실제 이득 측정. "입력이 <b>고정</b>이냐 <b>런타임</b>이냐" 기준 도출.</div></div>
+        <div class="row b"><div class="tag">이득</div><div class="txt">RAG 생성 이득 <b>단 2%p</b>(오류율 14%→12.1%) 증명 → 정적은 <b>JSON</b>으로 → <b>불필요한 DB 이전 회피</b>.</div></div>
+      </div>
+    </div>
+    <div class="shot"><img src="ab-compare.png" alt="JSON식 vs RAG식 A/B 품질·중복 비교" /><div class="cap">실험 아티팩트 · A/B 품질 + 내부 중복 (100문항)</div></div>
+  </div>
+</section>
+
+<!-- 7 성과 3 : AI 해설 자동화 + GPT 스크린샷 -->
+<section class="slide" id="s7">
+  <span class="num">07 / 11</span>
+  <div class="eyebrow"><span class="dot"></span>성과 ③ · AI 해설 자동화</div>
+  <div class="split">
+    <div>
+      <h2>해설을 <span class="g">딸깍</span> 한 번으로</h2>
+      <div class="psb">
+        <div class="row p"><div class="tag">문제</div><div class="txt">해설을 <b>사람이 직접</b> 쓰고 보강해야 했음. <span class="mut">문제마다 다시 작성 — 시간·손이 많이 감.</span></div></div>
+        <div class="row s"><div class="tag">해결</div><div class="txt"><b>GPT 해설보기</b> 원클릭 생성(4섹션 고정 포맷) + <b>👍👎 피드백</b> + <b>캐시</b> 재사용. gpt-4.1-mini.</div></div>
+        <div class="row b"><div class="tag">이득</div><div class="txt">클릭 <b>즉시</b> 해설 · 같은 문제 재요청 <b>비용 0</b>(캐시). 좋아요로 <b>좋은 해설을 자동 선별</b>.</div></div>
+      </div>
+    </div>
+    <div class="shot"><img src="gpt-explanation.png" alt="GPT 해설 원클릭 생성 화면" /><div class="cap">실제 앱 · GPT 해설(4섹션) + 좋아요/싫어요 + 캐시</div></div>
+  </div>
+</section>
+
+<!-- 8 자동화 Before → After -->
+<section class="slide" id="s8">
+  <span class="num">08 / 11</span>
+  <div class="eyebrow"><span class="dot"></span>불편 → 자동화 → 편해짐</div>
+  <h2>수작업을 <span class="g">전부 자동으로</span> 바꿨다</h2>
+  <div class="ba">
+    <div class="hd"><div>영역</div><div>Before · 수작업</div><div>After · 자동</div><div>효과</div></div>
+    <div class="rw"><div class="area">빈출 유형</div><div class="before"><span class="x">✕</span>540문제 눈으로 비교(사실상 불가)</div><div class="after"><span class="a">→</span>임베딩 자동 군집</div><div class="eff">157개 유형 · 태깅 0</div></div>
+    <div class="rw"><div class="area">문제 해설</div><div class="before"><span class="x">✕</span>해설 직접 작성·보강</div><div class="after"><span class="a">→</span>GPT 원클릭 + 캐시</div><div class="eff">클릭 즉시 · 재요청 비용 0</div></div>
+    <div class="rw"><div class="area">신고 처리</div><div class="before"><span class="x">✕</span>신고 1건씩 확인·수정</div><div class="after"><span class="a">→</span>12건 일괄 처리 파이프라인</div><div class="eff">처리량 대폭 ↑</div></div>
+    <div class="rw"><div class="area">저장소 결정</div><div class="before"><span class="x">✕</span>감으로 판단</div><div class="after"><span class="a">→</span>A/B 실험 자동 측정</div><div class="eff">데이터로 2%p 확인</div></div>
+  </div>
+  <p class="lead" style="max-width:64ch">공통 원리 — <b style="color:var(--cyan)">반복되는 수작업은 데이터·AI로 자동화</b>하고, 사람은 판단만.</p>
+</section>
+
+<!-- 9 실제 만든 것 갤러리 -->
+<section class="slide" id="s9">
+  <span class="num">09 / 11</span>
+  <div class="eyebrow"><span class="dot"></span>실제 만든 것</div>
+  <h2>화면으로 <span class="g">남긴 결과물</span></h2>
+  <div class="gal">
+    <div class="shot"><img src="app-frequent.png" alt="빈출 문제 앱" /><div class="cap">① 빈출 문제 Beta</div></div>
+    <div class="shot"><img src="analysis-subject.png" alt="과목별 군집 분석" /><div class="cap">② 과목별 반복 유형 분석</div></div>
+    <div class="shot"><img src="ab-compare.png" alt="A/B 실험" /><div class="cap">③ JSON vs RAG A/B 실험</div></div>
+    <div class="shot"><img src="gpt-explanation.png" alt="GPT 해설" /><div class="cap">④ GPT 해설 자동화</div></div>
+  </div>
+  <p class="lead" style="max-width:66ch">임베딩 분석 → 실험으로 저장소 결정 → 실서비스 <b style="color:var(--cyan)">/frequent</b> 배포 + AI 해설. <span style="color:var(--dim)">89 테스트 통과 · 기존 퀴즈·채점 코드 불변(격리).</span></p>
+</section>
+
+<!-- 10 트러블슈팅 -->
+<section class="slide" id="s10">
+  <span class="num">10 / 11</span>
+  <div class="eyebrow"><span class="dot"></span>트러블슈팅</div>
+  <h2>부딪힌 것들, <span class="g">이렇게</span> 풀었다</h2>
+  <div class="tlist">
+    <div class="tl"><div class="prob">과목이 뒤섞여 "네트워크가 많아 보이는" 착시</div><div class="arrow">→</div><div class="sol"><b>과목 메타데이터</b>로 스코프 → 과목별 정확 분리</div></div>
+    <div class="tl"><div class="prob">개별 문제 오답률이 표본 5~19개라 노이즈</div><div class="arrow">→</div><div class="sol"><b>표본 20↑ 게이트</b> → 신뢰할 지표만 노출</div></div>
+    <div class="tl"><div class="prob">스크립트에서 <code>@/</code> alias·타임아웃으로 실행 실패</div><div class="arrow">→</div><div class="sol"><b>커스텀 로더 + 재시도/타임아웃</b> → 안정 실행</div></div>
+    <div class="tl"><div class="prob">같은 문제 GPT 해설 반복 호출 = 비용·지연</div><div class="arrow">→</div><div class="sol"><b>SHA-256 캐시</b>로 재사용 → 호출·비용 0</div></div>
+  </div>
+</section>
+
+<!-- 11 배운 점 -->
+<section class="slide" id="s11">
+  <span class="num">11 / 11</span>
+  <div class="eyebrow"><span class="dot"></span>개선 & 배운 점</div>
+  <h2>무엇을 <span class="g">얻었나</span></h2>
+  <div class="learn">
+    <div class="lc"><div class="k">수작업의 자동화</div><div class="d">빈출 태깅·해설 작성·신고 처리 — 반복 노동을 임베딩·AI·배치로 대체.</div></div>
+    <div class="lc"><div class="k">데이터 기반 결정</div><div class="d">감이 아니라 A/B 실험으로 RAG·저장소를 정함. 오버엔지니어링 회피.</div></div>
+    <div class="lc"><div class="k">임베딩 실전 적용</div><div class="d">"같은 문제"를 넘어 변형까지 잡는 벡터 유사도로 빈출 유형 자동화.</div></div>
+    <div class="lc"><div class="k">격리 · 비용 0</div><div class="d">새 라우트+정적 데이터만 추가, <b>89 테스트</b> 통과. 런타임 비용 0.</div></div>
+  </div>
+  <div class="meta">Core-CBT · 임베딩·벡터·AI로 반복 수작업을 자동화하다</div>
+</section>
+
+<div class="hint">↓ 스크롤 / 방향키로 이동</div>
+<script>
+  const prog=document.getElementById('prog');
+  const upd=()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';};
+  addEventListener('scroll',upd,{passive:true});upd();
+  const slides=[...document.querySelectorAll('.slide')];
+  addEventListener('keydown',e=>{
+    const i=slides.findIndex(s=>s.getBoundingClientRect().top>=-window.innerHeight/2);
+    if(e.key==='ArrowDown'||e.key==='PageDown'){e.preventDefault();slides[Math.min(i+1,slides.length-1)]?.scrollIntoView();}
+    if(e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();slides[Math.max(i-1,0)]?.scrollIntoView();}
+  });
+</script>
+</body>
+</html>
