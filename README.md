@@ -10,6 +10,7 @@
 ## 발표 목록
 | 발표 | 폴더 | 설명 |
 |------|------|------|
+| 면접 미리보기 · Interview Coach | `interview-coach/` | MediaPipe 기반 자세 추적 및 음성·답변 분석을 활용한 AI 면접 코칭 소개 · 10장 |
 | 견훤, 천년의 귀환 | `gyeonhwon/` | 후백제 역사 LBE VR 학교 심사 발표 · 플레이 영상과 킨텍스 현장 영상 포함 |
 | 안심 스마트홈 | `smart-care-home/` | 독거노인을 위한 AIoT 안전 스마트홈 기획서 (Unreal·VR) |
 | Hide In AI | `hide-in-ai/` | VR 라스트맨 스탠딩 멀티플레이 게임 발표 · [게임 레포](https://github.com/b-hyoung/HideInAI) |
