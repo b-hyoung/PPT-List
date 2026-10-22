@@ -409,10 +409,10 @@
       두 참가자의 1인칭 시점과 관찰자 시점 · 1분 14초
     </div>
 
-    <video class="element" style="left:160px;top:108px;width:1280px;height:720px;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,0.8);" controls playsinline preload="none" poster="assets/image-f294f67a0ebf.jpg" src="assets/gameplay.mp4"></video>
+    <video class="element" style="left:160px;top:108px;width:1280px;height:720px;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,0.8);" data-auto-loop data-sound controls loop playsinline preload="auto" poster="assets/image-f294f67a0ebf.jpg" src="assets/gameplay.mp4"></video>
 
     <div class="element txt" style="left:160px;top:848px;width:1280px;height:31px;font-size:19px;color:#B8C2CD;font-weight:400;text-align:center">
-      화면 클릭을 통한 2인 동행 플레이 및 인터랙션 시연 영상 재생
+      2인 동행 플레이 및 인터랙션 시연 영상 · 자동 반복 재생
     </div>
 
     <aside hidden>발표 멘트: 1분 14초 분량의 실제 인게임 플레이 영상입니다. 참가자 두 명의 시점과 전체를 조망하는 관찰자 시점을 비교해 보시면, 두 사람이 동일한 가상 공간을 자유롭게 걸으며 같은 사건을 함께 호흡하고 상호작용하는 워크스루 구성을 확인하실 수 있습니다.</aside>
@@ -550,7 +550,7 @@
 </nav>
 
 <!-- Help tooltip -->
-<div id="help">← → 슬라이드 이동 · F 전체 화면 · N 발표 노트 · 영상은 클릭 재생</div>
+<div id="help">← → 슬라이드 이동 · F 전체 화면 · N 발표 노트 · 영상은 자동 재생</div>
 
 <!-- Presenter Notes Panel -->
 <div id="notesPanel">
@@ -597,9 +597,10 @@
     updateNotes();
 
     pages[index].querySelectorAll('video[data-auto-loop]').forEach(v => {
-      v.muted = true;
       v.currentTime = 0;
-      v.play().catch(() => {});
+      // 소리 재생이 막히면 무음으로 다시 시도
+      v.muted = !v.hasAttribute('data-sound');
+      v.play().catch(() => { v.muted = true; v.play().catch(() => {}); });
     });
   }
 
