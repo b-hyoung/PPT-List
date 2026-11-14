@@ -21,7 +21,7 @@ LEAD, TAIL = 0.6, 1.0  # 슬라이드 시작 후 말 시작까지, 말 끝난 �
 # 슬라이드 안 영상 위치(덱 좌표 left, top, width, height). speed: 재생 배속
 # speed "fit": 원본 전체를 슬라이드 길이에 맞춰 배속 재생. None: 1배속(짧으면 반복).
 SLIDE_VIDEOS = {
-    4: [("assets/kintex-loop.mp4", 1179.5, 226.5, 339, 278.5, None, 4)],
+    4: [("assets/kintex-loop.mp4", 1181, 228, 336, 277, None, 4)],  # 강조 테두리(3px) 안쪽
     5: [("assets/gameplay.mp4", 160, 108, 1280, 720, None)],
     6: [("assets/gameplay-fishing.mp4", 80, 230, 830, 467, None),
         ("assets/kintex-loop.mp4", 960, 230, 560, 467, None)],
@@ -31,13 +31,14 @@ MIN_DUR = {5: 25.0}  # 플레이 영상은 최소 25초 보여 줌
 # 단계 강조: 이 단어로 시작하는 자막 줄이 나올 때 덱의 data-step 카드가 차례로 떠오른다
 STEPS = {3: ["첫째", "둘째", "셋째"],
          4: ["먼저", "동행자와", "이어지는", "마지막"]}
-LIFT = 10  # 강조 시 떠오르는 높이(덱 px) — index.html .feat 의 translateY 와 같게
+LIFT, DIM = 14, 0.6  # 강조 시 떠오르는 높이(덱 px)·나머지 카드 어둡기 — index.html .feat 와 같게
 STEP_ANIM, STEP_FRAMES = 0.45, 9  # 강조 전환 길이(초), 전환 중간 프레임 수
 
 # 녹화용 사본에서 ?lv=1:0.5,2:1 처럼 카드별 강조 정도(0~1)를 고정한다
 REC_JS = """<script>(function(){
-const q=new URLSearchParams(location.search).get('lv'); if(!q) return;
-const els=document.querySelector('.slide.active').querySelectorAll('[data-step]');
+const P=new URLSearchParams(location.search), q=P.get('lv'); if(!q) return;
+const sl=document.querySelector('.slide.active'), els=sl.querySelectorAll('[data-step]');
+sl.style.transition='none'; sl.style.setProperty('--dim',P.get('dim')||'0');
 els.forEach(e=>{e.style.transition='none';e.style.setProperty('--lv','0');});
 q.split(',').forEach(kv=>{const [k,v]=kv.split(':');
   els.forEach(e=>{if(e.dataset.step===k)e.style.setProperty('--lv',v);});});
@@ -100,10 +101,15 @@ def step_starts(n, cues):
     return [next(a for text, a, _ in cues if text.startswith(w)) for w in STEPS.get(n, [])]
 
 
-def lift_expr(starts, k):
-    """k단계 카드의 떠오름 정도(0~1)를 시간 t의 ffmpeg 식으로 (ease in-out)."""
+def ramp(t0, t="t"):
+    u = f"clip(({t}-{t0:.3f})/{STEP_ANIM},0,1)"
+    return f"({u}*{u}*(3-2*{u}))"
+
+
+def lift_expr(starts, k, t="t"):
+    """k단계 카드의 강조 정도(0~1)를 시간 t의 ffmpeg 식으로 (ease in-out)."""
     def ramp(t0):
-        u = f"clip((t-{t0:.3f})/{STEP_ANIM},0,1)"
+        u = f"clip(({t}-{t0:.3f})/{STEP_ANIM},0,1)"
         return f"({u}*{u}*(3-2*{u}))"
     up = ramp(starts[k - 1])
     return f"({up}-{ramp(starts[k])})" if k < len(starts) else up
@@ -111,10 +117,10 @@ def lift_expr(starts, k):
 
 def step_states(n, cues, dur, rec):
     """배경 이미지 목록 [(png, 길이)] — 단계 강조가 있으면 전환 프레임까지 캡처."""
-    def capture(levels, name):
+    def capture(levels, name, dim=1.0):
         png = BUILD / f"slide{n}_{name}.png"
-        q = ",".join(f"{k}:{v:.3f}" for k, v in levels.items())
-        shot(f"file://{rec}?lv={q}#{n}", png)
+        q = ",".join(f"{k}:{v:.3f}" for k, v in levels.items()) or "0:0"
+        shot(f"file://{rec}?lv={q}&dim={dim:.3f}#{n}", png)
         return png
 
     if n not in STEPS:
@@ -124,12 +130,12 @@ def step_states(n, cues, dur, rec):
     starts = step_starts(n, cues)
     seq, t, prev = [], 0.0, 0
     for k, start in enumerate(starts, 1):
-        seq.append((capture({}, "0") if prev == 0 else seq[-1][0], start - t))
+        seq.append((capture({}, "0", dim=0) if prev == 0 else seq[-1][0], start - t))
         dt = STEP_ANIM / STEP_FRAMES
         for i in range(1, STEP_FRAMES + 1):
             p = i / STEP_FRAMES; p = p * p * (3 - 2 * p)  # ease in-out
             lv = {k: p} if prev == 0 else {prev: 1 - p, k: p}
-            seq.append((capture(lv, f"{k}_{i}"), dt))
+            seq.append((capture(lv, f"{k}_{i}", dim=p if prev == 0 else 1), dt))
         t, prev = start + STEP_ANIM, k
     seq.append((seq[-1][0], dur - t))
     return [(png, d) for png, d in seq if d > 0]
@@ -186,7 +192,11 @@ def build(slides, rec, sub_page):
             else:
                 pts = ""
                 inputs += ["-stream_loop", "-1", "-i", str(src)]
-            filters.append(f"[{idx}:v]{pts}fps={FPS},scale={sw}:{sh},setsar=1[v{idx}]")
+            alpha = ""
+            if step:  # 다른 카드가 강조되는 동안 어둡게 (CSS opacity 와 같은 식)
+                op = f"(1-{DIM}*{ramp(starts[0], 'T')}*(1-{lift_expr(starts, step[0], 'T')}))"
+                alpha = f",format=yuva420p,geq=lum='lum(X,Y)':cb='cb(X,Y)':cr='cr(X,Y)':a='255*{op}'"
+            filters.append(f"[{idx}:v]{pts}fps={FPS},scale={sw}:{sh},setsar=1{alpha}[v{idx}]")
             filters.append(f"[{last}][v{idx}]overlay={round(x * S)}:{ypos}:shortest=0:eof_action=repeat:eval=frame[o{idx}]")
             last, idx = f"o{idx}", idx + 1
         for k, (text, a, b) in enumerate(cues):
