@@ -21,7 +21,7 @@ LEAD, TAIL = 0.6, 1.0  # 슬라이드 시작 후 말 시작까지, 말 끝난 �
 # 슬라이드 안 영상 위치(덱 좌표 left, top, width, height). speed: 재생 배속
 # speed "fit": 원본 전체를 슬라이드 길이에 맞춰 배속 재생. None: 1배속(짧으면 반복).
 SLIDE_VIDEOS = {
-    4: [("assets/kintex-loop.mp4", 1178, 225, 342, 280, None)],
+    4: [("assets/kintex-loop.mp4", 1179.5, 226.5, 339, 278.5, None, 4)],
     5: [("assets/gameplay.mp4", 160, 108, 1280, 720, None)],
     6: [("assets/gameplay-fishing.mp4", 80, 230, 830, 467, None),
         ("assets/kintex-loop.mp4", 960, 230, 560, 467, None)],
@@ -29,7 +29,9 @@ SLIDE_VIDEOS = {
 MIN_DUR = {5: 25.0}  # 플레이 영상은 최소 25초 보여 줌
 
 # 단계 강조: 이 단어로 시작하는 자막 줄이 나올 때 덱의 data-step 카드가 차례로 떠오른다
-STEPS = {3: ["첫째", "둘째", "셋째"]}
+STEPS = {3: ["첫째", "둘째", "셋째"],
+         4: ["먼저", "동행자와", "이어지는", "마지막"]}
+LIFT = 10  # 강조 시 떠오르는 높이(덱 px) — index.html .feat 의 translateY 와 같게
 STEP_ANIM, STEP_FRAMES = 0.45, 9  # 강조 전환 길이(초), 전환 중간 프레임 수
 
 # 녹화용 사본에서 ?lv=1:0.5,2:1 처럼 카드별 강조 정도(0~1)를 고정한다
@@ -41,8 +43,7 @@ q.split(',').forEach(kv=>{const [k,v]=kv.split(':');
   els.forEach(e=>{if(e.dataset.step===k)e.style.setProperty('--lv',v);});});
 })();</script>"""
 
-HIDE_UI = ("<style>#controls,#help,#notesPanel{display:none!important}"
-           "video{visibility:hidden!important}</style>")
+HIDE_UI = "<style>#controls,#help,#notesPanel{display:none!important}</style>"
 
 SUB_HTML = """<!doctype html><meta charset="utf-8"><style>
 html,body{margin:0;width:1920px;height:1080px;background:transparent;overflow:hidden}
@@ -95,6 +96,19 @@ def cue_times(lines, start, total):
     return cues
 
 
+def step_starts(n, cues):
+    return [next(a for text, a, _ in cues if text.startswith(w)) for w in STEPS.get(n, [])]
+
+
+def lift_expr(starts, k):
+    """k단계 카드의 떠오름 정도(0~1)를 시간 t의 ffmpeg 식으로 (ease in-out)."""
+    def ramp(t0):
+        u = f"clip((t-{t0:.3f})/{STEP_ANIM},0,1)"
+        return f"({u}*{u}*(3-2*{u}))"
+    up = ramp(starts[k - 1])
+    return f"({up}-{ramp(starts[k])})" if k < len(starts) else up
+
+
 def step_states(n, cues, dur, rec):
     """배경 이미지 목록 [(png, 길이)] — 단계 강조가 있으면 전환 프레임까지 캡처."""
     def capture(levels, name):
@@ -107,7 +121,7 @@ def step_states(n, cues, dur, rec):
         png = BUILD / f"slide{n}.png"
         shot(f"file://{rec}#{n}", png)
         return [(png, dur)]
-    starts = [next(a for text, a, _ in cues if text.startswith(w)) for w in STEPS[n]]
+    starts = step_starts(n, cues)
     seq, t, prev = [], 0.0, 0
     for k, start in enumerate(starts, 1):
         seq.append((capture({}, "0") if prev == 0 else seq[-1][0], start - t))
@@ -132,8 +146,10 @@ def main():
 
     # 슬라이드 배경은 UI·영상을 숨긴 임시 사본으로 캡처
     rec = DECK / ".record.html"
-    rec.write_text((DECK / "index.html").read_text(encoding="utf-8")
-                   .replace("</head>", HIDE_UI + "</head>", 1)
+    page = (DECK / "index.html").read_text(encoding="utf-8")
+    # <video>는 내용만 비우고(테두리는 남김) 합성 단계에서 실제 영상을 덮어씌운다
+    page = re.sub(r"<video [^>]*>", lambda m: m.group(0).replace(" src=", " data-src=").replace(" poster=", " data-poster="), page)
+    rec.write_text(page.replace("</head>", HIDE_UI + "</head>", 1)
                    .replace("</body>", REC_JS + "</body>", 1), encoding="utf-8")
     sub_page = BUILD / "sub.html"
     sub_page.write_text(SUB_HTML, encoding="utf-8")
@@ -159,8 +175,10 @@ def build(slides, rec, sub_page):
                       + f"file '{seq[-1][0]}'\n", encoding="utf-8")
         inputs = ["-f", "concat", "-safe", "0", "-i", str(bg)]
         filters, last, idx = [f"[0:v]fps={FPS},scale={W}:{H},setsar=1[bg]"], "bg", 1
-        for src, x, y, w, h, speed in SLIDE_VIDEOS.get(n, []):
+        starts = step_starts(n, cues)
+        for src, x, y, w, h, speed, *step in SLIDE_VIDEOS.get(n, []):
             src = DECK / src
+            ypos = f"{round(y * S)}" if not step else f"'{y * S:.1f}-{LIFT * S}*{lift_expr(starts, step[0])}'"
             sw, sh = round(w * S) // 2 * 2, round(h * S) // 2 * 2
             if speed == "fit":
                 pts = f"setpts=PTS*{dur / duration(src):.4f},"
@@ -169,7 +187,7 @@ def build(slides, rec, sub_page):
                 pts = ""
                 inputs += ["-stream_loop", "-1", "-i", str(src)]
             filters.append(f"[{idx}:v]{pts}fps={FPS},scale={sw}:{sh},setsar=1[v{idx}]")
-            filters.append(f"[{last}][v{idx}]overlay={round(x * S)}:{round(y * S)}:shortest=0:eof_action=repeat[o{idx}]")
+            filters.append(f"[{last}][v{idx}]overlay={round(x * S)}:{ypos}:shortest=0:eof_action=repeat:eval=frame[o{idx}]")
             last, idx = f"o{idx}", idx + 1
         for k, (text, a, b) in enumerate(cues):
             png = BUILD / f"sub{n}_{k}.png"

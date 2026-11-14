@@ -370,8 +370,8 @@
     </div>
 
     <!-- 01 Card -->
-    <img class="element" style="left:80px;top:225px;width:342px;height:280px;border-radius:10px 10px 0 0;" src="assets/image-b4354cc8a962.jpg" alt="설화 속 호랑이">
-    <div class="element" style="left:80px;top:505px;width:342px;height:295px;background:#0d1520;border:1px solid rgba(221,183,106,0.25);border-top:0;border-radius:0 0 10px 10px;padding:24px 20px;">
+    <img class="element feat" data-step="1" style="left:80px;top:225px;width:342px;height:280px;border-radius:10px 10px 0 0;" src="assets/image-b4354cc8a962.jpg" alt="설화 속 호랑이">
+    <div class="element card feat" data-step="1" style="left:80px;top:505px;width:342px;height:295px;border-top:0;border-radius:0 0 10px 10px;padding:24px 20px;">
       <div style="font-size:18px;color:#DDB76A;font-weight:700;">01 · 탄생 설화</div>
       <div style="font-size:28px;color:#F4EFE5;font-weight:700;margin-top:8px;">설화 속 호랑이</div>
       <div style="font-size:18px;color:#B8C2CD;line-height:1.6;margin-top:14px;">
@@ -380,8 +380,8 @@
     </div>
 
     <!-- 02 Card -->
-    <img class="element" style="left:446px;top:225px;width:342px;height:280px;border-radius:10px 10px 0 0;" src="assets/image-b39ecb37a572.jpg" alt="성벽 위로 상승">
-    <div class="element" style="left:446px;top:505px;width:342px;height:295px;background:#0d1520;border:1px solid rgba(221,183,106,0.25);border-top:0;border-radius:0 0 10px 10px;padding:24px 20px;">
+    <img class="element feat" data-step="2" style="left:446px;top:225px;width:342px;height:280px;border-radius:10px 10px 0 0;" src="assets/image-b39ecb37a572.jpg" alt="성벽 위로 상승">
+    <div class="element card feat" data-step="2" style="left:446px;top:505px;width:342px;height:295px;border-top:0;border-radius:0 0 10px 10px;padding:24px 20px;">
       <div style="font-size:18px;color:#DDB76A;font-weight:700;">02 · 공간 이동</div>
       <div style="font-size:28px;color:#F4EFE5;font-weight:700;margin-top:8px;">성벽 위로 상승</div>
       <div style="font-size:18px;color:#B8C2CD;line-height:1.6;margin-top:14px;">
@@ -390,8 +390,8 @@
     </div>
 
     <!-- 03 Card -->
-    <img class="element" style="left:812px;top:225px;width:342px;height:280px;border-radius:10px 10px 0 0;" src="assets/image-8ce156b34dff.jpg" alt="견훤과 서라벌">
-    <div class="element" style="left:812px;top:505px;width:342px;height:295px;background:#0d1520;border:1px solid rgba(221,183,106,0.25);border-top:0;border-radius:0 0 10px 10px;padding:24px 20px;">
+    <img class="element feat" data-step="3" style="left:812px;top:225px;width:342px;height:280px;border-radius:10px 10px 0 0;" src="assets/image-8ce156b34dff.jpg" alt="견훤과 서라벌">
+    <div class="element card feat" data-step="3" style="left:812px;top:505px;width:342px;height:295px;border-top:0;border-radius:0 0 10px 10px;padding:24px 20px;">
       <div style="font-size:18px;color:#DDB76A;font-weight:700;">03 · 역사적 대면</div>
       <div style="font-size:28px;color:#F4EFE5;font-weight:700;margin-top:8px;">견훤과 서라벌</div>
       <div style="font-size:18px;color:#B8C2CD;line-height:1.6;margin-top:14px;">
@@ -400,8 +400,8 @@
     </div>
 
     <!-- 04 Card -->
-    <video class="element" style="left:1178px;top:225px;width:342px;height:280px;border-radius:10px 10px 0 0;" data-auto-loop muted loop playsinline preload="auto" poster="assets/image-324cabbbc926.jpg" src="assets/kintex-loop.mp4"></video>
-    <div class="element" style="left:1178px;top:505px;width:342px;height:295px;background:#0d1520;border:1.5px solid #DDB76A;border-top:0;border-radius:0 0 10px 10px;padding:24px 20px;">
+    <video class="element feat" data-step="4" style="left:1178px;top:225px;width:342px;height:280px;border-radius:10px 10px 0 0;" data-auto-loop muted loop playsinline preload="auto" poster="assets/image-324cabbbc926.jpg" src="assets/kintex-loop.mp4"></video>
+    <div class="element card feat" data-step="4" style="left:1178px;top:505px;width:342px;height:295px;border-top:0;border-radius:0 0 10px 10px;padding:24px 20px;">
       <div style="font-size:18px;color:#DDB76A;font-weight:700;">04 · 다인 협동</div>
       <div style="font-size:28px;color:#F4EFE5;font-weight:700;margin-top:8px;">함께 돕는 낚시</div>
       <div style="font-size:18px;color:#B8C2CD;line-height:1.6;margin-top:14px;">
@@ -615,7 +615,8 @@
     pages[index].querySelectorAll('[data-step]').forEach(el => el.classList.toggle('on', +el.dataset.step === k));
   }
   function next() {
-    if (step < pages[index].querySelectorAll('[data-step]').length) setStep(step + 1);
+    const steps = Math.max(0, ...[...pages[index].querySelectorAll('[data-step]')].map(el => +el.dataset.step));
+    if (step < steps) setStep(step + 1);
     else show(index + 1);
   }
   function prev() {
