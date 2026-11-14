@@ -50,9 +50,10 @@ HIDE_UI = "<style>#controls,#help,#notesPanel{display:none!important}</style>"
 
 SUB_HTML = """<!doctype html><meta charset="utf-8"><style>
 html,body{margin:0;width:1920px;height:1080px;background:transparent;overflow:hidden}
-div{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);max-width:1600px;
-padding:12px 30px;border-radius:10px;background:rgba(0,0,0,.72);color:#fff;
-font:600 42px/1.35 'Apple SD Gothic Neo',sans-serif;text-align:center;word-break:keep-all}
+div{position:absolute;left:50%;bottom:40px;transform:translateX(-50%);width:max-content;max-width:1840px;
+padding:10px 28px;border-radius:10px;background:rgba(0,0,0,.72);color:#fff;
+font:600 37px/1.45 'Apple SD Gothic Neo',sans-serif;text-align:center;word-break:keep-all;
+white-space:pre-line;text-wrap:balance}
 </style><div id=t></div><script>
 document.getElementById('t').textContent=decodeURIComponent(location.hash.slice(1));
 </script>"""
@@ -97,6 +98,55 @@ def cue_times(lines, start, total):
         d = total * w / sum(weights)
         cues.append((l, t, t + d)); t += d
     return cues
+
+
+def speech_segments(audio):
+    """음성에서 말이 멈춘 구간(0.25초 이상)을 찾아 말하는 구간 [(시작, 끝)] 반환."""
+    err = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(audio), "-af",
+                          "silencedetect=noise=-35dB:d=0.25", "-f", "null", "-"],
+                         capture_output=True, text=True).stderr
+    total = duration(audio)
+    starts = [float(x) for x in re.findall(r"silence_start: ([\d.]+)", err)]
+    ends = [float(x) for x in re.findall(r"silence_end: ([\d.]+)", err)]
+    segs, t = [], 0.0
+    for a, b in zip(starts, ends + [total]):
+        if a - t > 0.15:
+            segs.append([t, a])
+        t = b
+    if total - t > 0.15:
+        segs.append([t, total])
+    return segs
+
+
+def line_times(lines, audio, lead):
+    """대본 줄마다 실제 음성 구간을 맞춘다. 줄 수와 안 맞으면 글자 수 비율로 대신한다."""
+    segs = speech_segments(audio)
+    while len(segs) > len(lines):  # 쉼표 등으로 더 잘게 끊긴 곳은 가장 짧은 틈부터 합친다
+        i = min(range(len(segs) - 1), key=lambda i: segs[i + 1][0] - segs[i][1])
+        segs[i][1] = segs.pop(i + 1)[1]
+    if len(segs) != len(lines):
+        return cue_times(lines, lead, duration(audio))
+    return [(l, lead + a, lead + b) for l, (a, b) in zip(lines, segs)]
+
+
+def group_cues(line_cues, end):
+    """줄을 문장 단위(최대 2줄)로 묶고, 다음 자막이 나올 때까지 이어서 보여 준다."""
+    sents, cur = [], []
+    for c in line_cues:
+        cur.append(c)
+        if c[0].rstrip().endswith((".", "?", "!")):
+            sents.append(cur); cur = []
+    if cur:
+        sents.append(cur)
+    groups = []
+    for sent in sents:  # 한 화면 최대 2줄. 3줄 이상이면 뒤에서부터 2줄씩 묶어 끝 줄이 혼자 남지 않게
+        chunks = []
+        while len(sent) > 2:
+            chunks.insert(0, sent[-2:]); sent = sent[:-2]
+        groups += [sent] + chunks if sent else chunks
+    cues = [("\n".join(c[0] for c in g), g[0][1], g[-1][2]) for g in groups]
+    return [(t, a, cues[i + 1][1] if i + 1 < len(cues) else min(b + 0.6, end))
+            for i, (t, a, b) in enumerate(cues)]
 
 
 def step_starts(n, cues):
@@ -175,10 +225,11 @@ def build(slides, rec, sub_page):
         audio = HERE / "audio" / f"s{n}.m4a"
         adur = duration(audio)
         dur = max(LEAD + adur + TAIL, MIN_DUR.get(n, 0))
-        cues = cue_times(lines, LEAD, adur)
+        lcues = line_times(lines, audio, LEAD)  # 줄 단위 시간(단계 강조용)
+        cues = group_cues(lcues, dur)          # 화면 자막(문장 단위)
 
         bg = BUILD / f"bg{n}.txt"
-        seq = step_states(n, cues, dur, rec)
+        seq = step_states(n, lcues, dur, rec)
         bg.write_text("ffconcat version 1.0\n" + "".join(f"file '{p}'\nduration {d:.4f}\n" for p, d in seq)
                       + f"file '{seq[-1][0]}'\n", encoding="utf-8")
         inputs = ["-f", "concat", "-safe", "0", "-i", str(bg)]
@@ -189,7 +240,7 @@ def build(slides, rec, sub_page):
         else:
             bgf = f"[0:v]fps={FPS},scale={W}:{H},setsar=1[bg]"
         filters, last, idx = [bgf], "bg", 1
-        starts = step_starts(n, cues)
+        starts = step_starts(n, lcues)
         for src, x, y, w, h, speed, *step in SLIDE_VIDEOS.get(n, []):
             src = DECK / src
             ypos = f"{round(y * S)}" if not step else f"'{y * S:.1f}-{LIFT * S}*{lift_expr(starts, step[0])}'"
@@ -211,7 +262,10 @@ def build(slides, rec, sub_page):
             png = BUILD / f"sub{n}_{k}.png"
             shot(f"file://{sub_page}#{urllib.parse.quote(text)}", png, transparent=True)
             inputs += ["-loop", "1", "-framerate", str(FPS), "-t", f"{dur}", "-i", str(png)]
-            filters.append(f"[{last}][{idx}:v]overlay=0:0:enable='between(t,{a:.3f},{b:.3f})'[o{idx}]")
+            fade = (f"format=rgba,fade=t=in:st={a:.3f}:d=0.15:alpha=1,"
+                    f"fade=t=out:st={b - 0.15:.3f}:d=0.15:alpha=1")
+            filters.append(f"[{idx}:v]{fade}[s{idx}]")
+            filters.append(f"[{last}][s{idx}]overlay=0:0:enable='between(t,{a:.3f},{b:.3f})'[o{idx}]")
             last, idx = f"o{idx}", idx + 1
             srt.append((offset + a, offset + b, text))
         inputs += ["-i", str(audio)]
