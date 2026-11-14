@@ -27,6 +27,7 @@ SLIDE_VIDEOS = {
         ("assets/kintex-loop.mp4", 960, 230, 560, 467, None)],
 }
 MIN_DUR = {5: 25.0}  # 플레이 영상은 최소 25초 보여 줌
+CLIP_START = {5: 14.0}  # 5번 플레이 영상은 14초부터: 두루마리 문장이 두루마리 장면(26~32초)에 겹치게
 
 # 단계 강조: 이 단어로 시작하는 자막 줄이 나올 때 덱의 data-step 카드가 차례로 떠오른다
 STEPS = {3: ["첫째", "둘째", "셋째"],
@@ -191,7 +192,7 @@ def build(slides, rec, sub_page):
                 inputs += ["-i", str(src)]
             else:
                 pts = ""
-                inputs += ["-stream_loop", "-1", "-i", str(src)]
+                inputs += ["-ss", str(CLIP_START.get(n, 0)), "-stream_loop", "-1", "-i", str(src)]
             alpha = ""
             if step:  # 다른 카드가 강조되는 동안 어둡게 (CSS opacity 와 같은 식)
                 op = f"(1-{DIM}*{ramp(starts[0], 'T')}*(1-{lift_expr(starts, step[0], 'T')}))"
