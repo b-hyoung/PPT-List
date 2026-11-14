@@ -19,14 +19,14 @@ S = W / 1600  # 덱 스테이지(1600x900) → 1080p 배율
 LEAD, TAIL = 0.6, 1.0  # 슬라이드 시작 후 말 시작까지, 말 끝난 후 다음 장까지(초)
 
 # 슬라이드 안 영상 위치(덱 좌표 left, top, width, height). speed: 재생 배속
-# s5 플레이 영상은 74초 전체를 슬라이드 길이(min_dur)에 맞춰 빠르게 보여 준다.
+# speed "fit": 원본 전체를 슬라이드 길이에 맞춰 배속 재생. None: 1배속(짧으면 반복).
 SLIDE_VIDEOS = {
     4: [("assets/kintex-loop.mp4", 1178, 225, 342, 280, None)],
-    5: [("assets/gameplay.mp4", 160, 108, 1280, 720, "fit")],
+    5: [("assets/gameplay.mp4", 160, 108, 1280, 720, None)],
     6: [("assets/gameplay-fishing.mp4", 80, 230, 830, 467, None),
         ("assets/kintex-loop.mp4", 960, 230, 560, 467, None)],
 }
-MIN_DUR = {5: 46.0}
+MIN_DUR = {5: 25.0}  # 플레이 영상은 최소 25초 보여 줌
 
 HIDE_UI = ("<style>#controls,#help,#notesPanel{display:none!important}"
            "video{visibility:hidden!important}</style>")
