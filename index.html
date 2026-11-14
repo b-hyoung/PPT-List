@@ -139,6 +139,7 @@ const decks = [
   {
     title: "MAJUBOM · 글로벌 피우다 프로젝트 2026",
     href: "piuda/",
+    hidden: true,  // 전국대회용만 보이도록 잠시 숨김
     thumb: "piuda/thumbnail.png",
     desc: "치매환자 낙상 위험 사전 예측을 위한 비접촉 다중 센서 시스템 — 글로벌 피우다 프로젝트 발표본. 문제·기존 한계·차별점·근거·시스템·시연·로드맵을 엮은 통합 발표 덱.",
     tags: ["글로벌 피우다", "낙상 예측", "mmWave · ToF · CSI", "발표 자료"],
@@ -156,6 +157,7 @@ const decks = [
   {
     title: "마주봄 · 비접촉 낙상 예방",
     href: "majubom/",
+    hidden: true,  // 전국대회용만 보이도록 잠시 숨김
     thumb: "majubom/thumbnail.png",
     desc: "WiFi CSI · ToF · mmWave 3센서로 넘어지기 전 침대 이탈 전조를 잡는 비접촉 모니터링. 상용 대비 정직한 차별점(무카메라·융합·개인 위험도·저비용)과 실측 데이터·시연 시나리오까지.",
     tags: ["낙상 예방", "mmWave · ToF · CSI", "센서 융합", "캡스톤 발표"],
@@ -164,6 +166,7 @@ const decks = [
   {
     title: "낙상 연구 · 통합발표",
     href: "fall-research/",
+    hidden: true,  // 전국대회용만 보이도록 잠시 숨김
     thumb: "fall-research/thumbnail.png",
     desc: "치매환자 낙상 위험 조기 예측을 위한 비접촉 다중 센서(CSI·mmWave) 시스템 — 논문 서베이·참고문헌·경쟁제품 분석·예측모델·사용자 플로우까지 엮은 연구 발표.",
     tags: ["낙상 예측", "CSI · mmWave", "논문 리뷰", "발표 자료"],
@@ -188,7 +191,8 @@ const decks = [
 ];
 
 const grid = document.getElementById('grid');
-grid.innerHTML = decks.map(d => `
+const shown = decks.filter(d => !d.hidden);
+grid.innerHTML = shown.map(d => `
   <a class="card" href="${d.href}">
     <div class="thumb">
       <img src="${d.thumb}" alt="${d.title} 표지" loading="lazy" />
@@ -209,7 +213,7 @@ grid.innerHTML = decks.map(d => `
     </div>
   </a>
 `).join('');
-document.getElementById('cnt').textContent = decks.length;
+document.getElementById('cnt').textContent = shown.length;
 </script>
 </body>
 </html>
