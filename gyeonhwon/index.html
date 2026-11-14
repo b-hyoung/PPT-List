@@ -153,6 +153,18 @@
         margin: 0;
       }
     }
+
+    /* 내레이션 단계 강조: → 키로 data-step 카드가 하나씩 노란 테두리와 함께 떠오름 */
+    @property --lv { syntax: '<number>'; inherits: false; initial-value: 0; }
+    .feat {
+      --lv: 0;
+      background: linear-gradient(180deg, rgba(22,37,55,var(--lv)) 0%, #0d1520 100%), #0d1520;
+      border: 1.5px solid rgba(221,183,106, calc(0.25 + 0.75 * var(--lv)));
+      box-shadow: 0 calc(14px * var(--lv)) 36px rgba(221,183,106, calc(0.22 * var(--lv)));
+      transform: translateY(calc(-10px * var(--lv)));
+      transition: --lv 0.45s ease;
+    }
+    .feat.on { --lv: 1; }
   </style>
 </head>
 <body class="controls">
@@ -297,7 +309,7 @@
 
     <!-- Right Column: 3 Core Feature Cards (560px wide) -->
     <!-- Card 1 -->
-    <div class="element card" style="left:960px;top:220px;width:560px;height:180px;background:#0d1520;border:1px solid rgba(221,183,106,0.28);border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;justify-content:space-between;">
+    <div class="element card feat" data-step="1" style="left:960px;top:220px;width:560px;height:180px;border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;justify-content:space-between;">
       <div>
         <div style="font-size:14px;font-weight:700;color:#DDB76A;letter-spacing:1px;">01 · 이동의 자연스러움</div>
         <div style="font-size:22px;font-weight:700;color:#F4EFE5;margin-top:4px;">조작 없는 자유 보행 워크스루</div>
@@ -311,7 +323,7 @@
     </div>
 
     <!-- Card 2 -->
-    <div class="element card" style="left:960px;top:416px;width:560px;height:180px;background:linear-gradient(180deg,#162537 0%,#0e1724 100%);border:1.5px solid #DDB76A;border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 8px 24px rgba(0,0,0,0.35);">
+    <div class="element card feat" data-step="2" style="left:960px;top:416px;width:560px;height:180px;border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;justify-content:space-between;">
       <div>
         <div style="font-size:14px;font-weight:700;color:#DDB76A;letter-spacing:1px;">02 · 서사적 몰입</div>
         <div style="font-size:22px;font-weight:700;color:#F4EFE5;margin-top:4px;">역사 서사 속 직접 상호작용 개입</div>
@@ -325,7 +337,7 @@
     </div>
 
     <!-- Card 3 -->
-    <div class="element card" style="left:960px;top:612px;width:560px;height:180px;background:#0d1520;border:1px solid rgba(221,183,106,0.28);border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;justify-content:space-between;">
+    <div class="element card feat" data-step="3" style="left:960px;top:612px;width:560px;height:180px;border-radius:12px;padding:18px 22px;display:flex;flex-direction:column;justify-content:space-between;">
       <div>
         <div style="font-size:14px;font-weight:700;color:#DDB76A;letter-spacing:1px;">03 · 경험의 사회성</div>
         <div style="font-size:22px;font-weight:700;color:#F4EFE5;margin-top:4px;">동행자 기반 다인 협동 체험</div>
@@ -561,7 +573,7 @@
   const notesContent = document.querySelector('#notesContent');
   const notesPageLabel = document.querySelector('#notesPageLabel');
   const notesBtn = document.querySelector('#notesBtn');
-  let index = 0, timer;
+  let index = 0, step = 0, timer;
 
   function fit() {
     stage.style.transform = 'translate(-50%,-50%) scale(' + Math.min(innerWidth / 1600, innerHeight / 900) + ')';
@@ -587,6 +599,7 @@
     counter.textContent = (index + 1) + ' / ' + pages.length;
     location.hash = String(index + 1);
     updateNotes();
+    setStep(0);
 
     pages[index].querySelectorAll('video[data-auto-loop]').forEach(v => {
       v.currentTime = 0;
@@ -594,6 +607,20 @@
       v.muted = !v.hasAttribute('data-sound');
       v.play().catch(() => { v.muted = true; v.play().catch(() => {}); });
     });
+  }
+
+  // 슬라이드 안에 data-step 요소가 있으면 → 키가 먼저 단계를 하나씩 진행한다
+  function setStep(k) {
+    step = k;
+    pages[index].querySelectorAll('[data-step]').forEach(el => el.classList.toggle('on', +el.dataset.step === k));
+  }
+  function next() {
+    if (step < pages[index].querySelectorAll('[data-step]').length) setStep(step + 1);
+    else show(index + 1);
+  }
+  function prev() {
+    if (step > 0) setStep(step - 1);
+    else show(index - 1);
   }
 
   function toggleNotes() {
@@ -611,8 +638,8 @@
     else await document.documentElement.requestFullscreen();
   }
 
-  document.querySelector('#prev').onclick = () => show(index - 1);
-  document.querySelector('#next').onclick = () => show(index + 1);
+  document.querySelector('#prev').onclick = prev;
+  document.querySelector('#next').onclick = next;
   document.querySelector('#full').onclick = full;
   notesBtn.onclick = toggleNotes;
 
@@ -622,10 +649,10 @@
     if (e.target.tagName === 'VIDEO') return;
     if (['ArrowRight', 'PageDown', ' '].includes(e.key)) {
       e.preventDefault();
-      show(index + 1);
+      next();
     } else if (['ArrowLeft', 'PageUp'].includes(e.key)) {
       e.preventDefault();
-      show(index - 1);
+      prev();
     } else if (e.key === 'Home') {
       show(0);
     } else if (e.key === 'End') {

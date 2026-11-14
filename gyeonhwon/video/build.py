@@ -28,6 +28,19 @@ SLIDE_VIDEOS = {
 }
 MIN_DUR = {5: 25.0}  # 플레이 영상은 최소 25초 보여 줌
 
+# 단계 강조: 이 단어로 시작하는 자막 줄이 나올 때 덱의 data-step 카드가 차례로 떠오른다
+STEPS = {3: ["첫째", "둘째", "셋째"]}
+STEP_ANIM, STEP_FRAMES = 0.45, 9  # 강조 전환 길이(초), 전환 중간 프레임 수
+
+# 녹화용 사본에서 ?lv=1:0.5,2:1 처럼 카드별 강조 정도(0~1)를 고정한다
+REC_JS = """<script>(function(){
+const q=new URLSearchParams(location.search).get('lv'); if(!q) return;
+const els=document.querySelector('.slide.active').querySelectorAll('[data-step]');
+els.forEach(e=>{e.style.transition='none';e.style.setProperty('--lv','0');});
+q.split(',').forEach(kv=>{const [k,v]=kv.split(':');
+  els.forEach(e=>{if(e.dataset.step===k)e.style.setProperty('--lv',v);});});
+})();</script>"""
+
 HIDE_UI = ("<style>#controls,#help,#notesPanel{display:none!important}"
            "video{visibility:hidden!important}</style>")
 
@@ -82,6 +95,32 @@ def cue_times(lines, start, total):
     return cues
 
 
+def step_states(n, cues, dur, rec):
+    """배경 이미지 목록 [(png, 길이)] — 단계 강조가 있으면 전환 프레임까지 캡처."""
+    def capture(levels, name):
+        png = BUILD / f"slide{n}_{name}.png"
+        q = ",".join(f"{k}:{v:.3f}" for k, v in levels.items())
+        shot(f"file://{rec}?lv={q}#{n}", png)
+        return png
+
+    if n not in STEPS:
+        png = BUILD / f"slide{n}.png"
+        shot(f"file://{rec}#{n}", png)
+        return [(png, dur)]
+    starts = [next(a for text, a, _ in cues if text.startswith(w)) for w in STEPS[n]]
+    seq, t, prev = [], 0.0, 0
+    for k, start in enumerate(starts, 1):
+        seq.append((capture({}, "0") if prev == 0 else seq[-1][0], start - t))
+        dt = STEP_ANIM / STEP_FRAMES
+        for i in range(1, STEP_FRAMES + 1):
+            p = i / STEP_FRAMES; p = p * p * (3 - 2 * p)  # ease in-out
+            lv = {k: p} if prev == 0 else {prev: 1 - p, k: p}
+            seq.append((capture(lv, f"{k}_{i}"), dt))
+        t, prev = start + STEP_ANIM, k
+    seq.append((seq[-1][0], dur - t))
+    return [(png, d) for png, d in seq if d > 0]
+
+
 def srt_time(t):
     ms = int(round(t * 1000))
     return f"{ms // 3600000:02}:{ms // 60000 % 60:02}:{ms // 1000 % 60:02},{ms % 1000:03}"
@@ -91,17 +130,20 @@ def main():
     BUILD.mkdir(exist_ok=True)
     slides = parse_script()
 
-    # 1) 슬라이드 배경 캡처 (UI·영상 숨긴 임시 사본 사용)
+    # 슬라이드 배경은 UI·영상을 숨긴 임시 사본으로 캡처
     rec = DECK / ".record.html"
     rec.write_text((DECK / "index.html").read_text(encoding="utf-8")
-                   .replace("</head>", HIDE_UI + "</head>", 1), encoding="utf-8")
+                   .replace("</head>", HIDE_UI + "</head>", 1)
+                   .replace("</body>", REC_JS + "</body>", 1), encoding="utf-8")
     sub_page = BUILD / "sub.html"
     sub_page.write_text(SUB_HTML, encoding="utf-8")
     try:
-        for n in slides:
-            shot(f"file://{rec}#{n}", BUILD / f"slide{n}.png")
+        build(slides, rec, sub_page)
     finally:
         rec.unlink()
+
+
+def build(slides, rec, sub_page):
 
     # 2) 슬라이드별 구간 영상
     srt, offset, segs = [], 0.0, []
@@ -111,8 +153,12 @@ def main():
         dur = max(LEAD + adur + TAIL, MIN_DUR.get(n, 0))
         cues = cue_times(lines, LEAD, adur)
 
-        inputs = ["-loop", "1", "-framerate", str(FPS), "-t", f"{dur}", "-i", str(BUILD / f"slide{n}.png")]
-        filters, last, idx = [], "0:v", 1
+        bg = BUILD / f"bg{n}.txt"
+        seq = step_states(n, cues, dur, rec)
+        bg.write_text("ffconcat version 1.0\n" + "".join(f"file '{p}'\nduration {d:.4f}\n" for p, d in seq)
+                      + f"file '{seq[-1][0]}'\n", encoding="utf-8")
+        inputs = ["-f", "concat", "-safe", "0", "-i", str(bg)]
+        filters, last, idx = [f"[0:v]fps={FPS},scale={W}:{H},setsar=1[bg]"], "bg", 1
         for src, x, y, w, h, speed in SLIDE_VIDEOS.get(n, []):
             src = DECK / src
             sw, sh = round(w * S) // 2 * 2, round(h * S) // 2 * 2
