@@ -27,6 +27,7 @@ SLIDE_VIDEOS = {
         ("assets/kintex-loop.mp4", 960, 230, 560, 467, None)],
 }
 MIN_DUR = {5: 25.0}  # 플레이 영상은 최소 25초 보여 줌
+ZOOM = {8: 1.06}  # 슬라이드 전체를 천천히 확대(끝 배율) — 엔딩 마무리용
 CLIP_START = {5: 14.0}  # 5번 플레이 영상은 14초부터: 두루마리 문장이 두루마리 장면(26~32초)에 겹치게
 
 # 단계 강조: 이 단어로 시작하는 자막 줄이 나올 때 덱의 data-step 카드가 차례로 떠오른다
@@ -181,7 +182,13 @@ def build(slides, rec, sub_page):
         bg.write_text("ffconcat version 1.0\n" + "".join(f"file '{p}'\nduration {d:.4f}\n" for p, d in seq)
                       + f"file '{seq[-1][0]}'\n", encoding="utf-8")
         inputs = ["-f", "concat", "-safe", "0", "-i", str(bg)]
-        filters, last, idx = [f"[0:v]fps={FPS},scale={W}:{H},setsar=1[bg]"], "bg", 1
+        if n in ZOOM:  # 4K로 키운 뒤 확대해야 줌이 떨리지 않는다
+            z = f"1+{ZOOM[n] - 1}*in/{round(dur * FPS)}"
+            bgf = (f"[0:v]fps={FPS},scale={W * 2}:{H * 2},zoompan=z='{z}':x='iw/2-iw/zoom/2':"
+                   f"y='ih/2-ih/zoom/2':d=1:s={W}x{H}:fps={FPS},setsar=1[bg]")
+        else:
+            bgf = f"[0:v]fps={FPS},scale={W}:{H},setsar=1[bg]"
+        filters, last, idx = [bgf], "bg", 1
         starts = step_starts(n, cues)
         for src, x, y, w, h, speed, *step in SLIDE_VIDEOS.get(n, []):
             src = DECK / src
