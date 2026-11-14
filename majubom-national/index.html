@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마주봄 · 전국대회용 발표</title>
+<style>
+@font-face{font-family:'Pretendard Variable';font-weight:45 920;font-style:normal;font-display:swap;src:url('assets/PretendardVariable.woff2') format('woff2-variations')}
+/* 색 규칙: 파랑 = 제안 기술 · 회색 = 기존 방식 · 초록/노랑/주황/빨강 = 위험도 4단계에만 */
+:root{
+  --bg:#0f1117;--surface:#1a1d27;--surface-2:#22262f;--border:#2e3340;
+  --text-1:#f0f1f4;--text-2:#a0a4b0;--text-3:#6b7080;
+  --accent:#5b8af5;--accent-soft:rgba(91,138,245,.12);--accent-line:rgba(91,138,245,.45);
+  --ok:#34d399;--warn:#fbbf24;--orange:#fb923c;--danger:#fb7185;
+  --ease:cubic-bezier(.25,.1,.25,1);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{font-family:'Pretendard Variable','Pretendard',-apple-system,system-ui,'Malgun Gothic',sans-serif;color:var(--text-1);-webkit-font-smoothing:antialiased;word-break:keep-all}
+body.idle{cursor:none}
+
+/* 1440×810 고정 무대를 화면 크기에 맞춰 통째로 확대/축소 */
+#stage{position:absolute;left:50%;top:50%;width:1440px;height:810px;transform-origin:50% 50%;overflow:hidden;background:var(--bg)}
+
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px 76px;opacity:0;transform:translateX(40px);transition:opacity 700ms var(--ease),transform 700ms var(--ease);overflow:hidden}
+.slide.active{opacity:1;transform:translateX(0)}
+.slide.prev{opacity:0;transform:translateX(-40px)}
+.slide-inner{max-width:1180px;width:100%;transform-origin:50% 50%}
+.s-title{font-size:46px;font-weight:900;letter-spacing:-.025em;line-height:1.2;margin-bottom:26px}
+.s-title small{font-size:22px;font-weight:700;color:var(--text-3);margin-left:12px;letter-spacing:0}
+
+/* ── 타이틀 ── */
+.title-wrap{text-align:center;display:flex;flex-direction:column;align-items:center}
+.school{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:44px;font-size:22px;font-weight:800;color:var(--text-2)}
+.school img{height:64px;width:auto;display:block}
+.school:not(.nologo) .school-text{display:none}
+.title-main{font-size:68px;font-weight:900;letter-spacing:-.03em;line-height:1.28;margin-bottom:30px}
+.title-tags{display:flex;gap:12px;justify-content:center}
+.title-tags span{font-size:22px;font-weight:800;color:var(--text-2);background:var(--surface-2);border:1px solid var(--border);border-radius:100px;padding:9px 22px}
+.title-tags span.on{color:var(--accent);background:var(--accent-soft);border-color:var(--accent-line)}
+
+/* ── 기술개발 배경 ── */
+.bg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.bg-card{background:var(--surface-2);border:1px solid var(--border);border-radius:18px;padding:32px 30px 34px;min-height:300px;display:flex;flex-direction:column}
+.bg-num{font-size:15px;font-weight:800;color:var(--text-3)}
+/* 제목은 한 줄 · 위아래 auto 여백으로 번호와 구분선 사이 가운데 */
+.bg-big{font-size:38px;font-weight:900;line-height:1.25;letter-spacing:-.02em;white-space:nowrap;margin:auto 0;padding:18px 0}
+.bg-big em{font-style:normal;color:var(--accent)}
+.bg-small{padding-top:18px;border-top:1px solid var(--border);font-size:17px;color:var(--text-2);line-height:1.6}
+.src{margin-top:16px;font-size:12.5px;color:var(--text-3);text-align:right}
+
+/* ── 기존 방식과의 차이 ── */
+.cmp{display:grid;grid-template-columns:1fr 200px 1fr;gap:12px 14px;align-items:stretch}
+.cmp-head{font-size:16px;font-weight:800;padding:0 6px 2px}
+.cmp-head.old{color:var(--text-2)}
+.cmp-head.new{color:var(--accent)}
+.cmp-cell{border-radius:16px;padding:20px 24px;display:flex;flex-direction:column;justify-content:center;min-height:104px}
+.cmp-cell b{font-size:23px;font-weight:900;display:block;margin-bottom:6px}
+.cmp-cell span{font-size:16px;line-height:1.45}
+.cmp-cell.old{background:var(--surface);border:1px solid var(--border)}
+.cmp-cell.old b{color:var(--text-2)}
+.cmp-cell.old span{color:var(--text-3)}
+.cmp-cell.new{background:var(--accent-soft);border:1px solid var(--accent-line)}
+.cmp-cell.new span{color:var(--text-2)}
+.cmp-mid{display:flex;align-items:center;justify-content:center}
+.cmp-pill{font-size:19px;font-weight:900;color:var(--accent);background:var(--surface-2);border:1px solid var(--accent-line);border-radius:100px;padding:9px 18px;white-space:nowrap}
+.cmp-pill i{font-style:normal;color:var(--text-3);margin:0 6px}
+
+/* ── 시스템 구성 ── */
+.sysflow{display:flex;align-items:stretch;gap:8px}
+.sysflow-step{flex:1;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:14px 12px 18px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.sf-photo{width:100%;height:124px;object-fit:cover;border-radius:9px;border:1px solid var(--border);margin-bottom:14px}
+.sf-photo.layout{object-position:30% 62%;background:#fff}
+.sf-photo-pair{display:flex;gap:5px;width:100%;height:124px;margin-bottom:14px}
+.sf-photo-pair img{flex:1;width:50%;height:124px;object-fit:cover;border-radius:9px;border:1px solid var(--border)}
+.sf-step{font-size:13px;font-weight:800;color:var(--accent);margin-bottom:4px}
+.sf-title{font-size:24px;font-weight:900;margin-bottom:8px}
+.sf-desc{font-size:14.5px;color:var(--text-2);line-height:1.5}
+.sysflow-arrow{align-self:center;color:var(--text-3);font-size:20px;flex:0 0 auto}
+
+/* ── 센서 배치 ── */
+.layout-photo{display:block;margin:0 auto;max-width:100%;max-height:560px;border-radius:16px}
+.slide.active .kenburns{animation:kb 16s linear forwards}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.04)}}
+
+/* ── 상세 카드 ── */
+.spec-card{background:var(--surface-2);border:1px solid var(--border);border-radius:20px;display:flex;gap:30px;align-items:flex-start;padding:28px}
+.spec-photo{width:250px;height:340px;object-fit:cover;border-radius:14px;flex:0 0 auto;border:1px solid var(--border)}
+.spec-card.wide{align-items:center}
+.spec-photo.wide{width:580px;height:auto;object-fit:contain}
+.spec-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:18px}
+.sp-label{font-size:13px;font-weight:800;color:var(--text-3);letter-spacing:.04em;margin-bottom:7px}
+.sp-text{font-size:22px;font-weight:800;line-height:1.4}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 16px;font-size:18px;font-weight:900;color:var(--accent)}
+.spec-list{display:flex;flex-direction:column;gap:11px}
+.spec-item{display:flex;gap:12px;align-items:flex-start}
+.spec-dot{width:8px;height:8px;border-radius:50%;margin-top:9px;flex:0 0 auto;background:var(--accent)}
+.si-title{font-size:18px;font-weight:900}
+.si-sub{font-size:14px;color:var(--text-2);margin-top:2px;line-height:1.45}
+
+/* ── 개인 기준 보행 평가 ── */
+.gait-summary{width:250px;flex:0 0 auto;padding:24px 22px;background:var(--surface);border:1px solid var(--border);border-radius:14px}
+.gait-title{font-size:25px;font-weight:900;margin-bottom:20px}
+.gait-summary ul{list-style:none;display:grid;gap:13px;font-size:18px;font-weight:700;color:var(--text-2)}
+.gait-summary li::before{content:'·';color:var(--accent);font-weight:900;margin-right:10px}
+.risk-bar{display:flex;gap:5px;height:14px}
+.risk-seg{flex:1;border-radius:7px}
+.risk-labels{display:flex;gap:5px;margin-top:10px}
+.risk-label{flex:1;text-align:center}
+.rl-name{font-size:18px;font-weight:900}
+.rl-range{font-size:13px;color:var(--text-3);margin-top:3px;font-family:ui-monospace,Consolas,monospace}
+.algo-note{font-size:14px;line-height:1.5;color:var(--text-2);margin-top:14px}
+
+/* ── 실시간 시연 : 대시보드를 화면 가득 ── */
+.slide.live-slide{padding:0}
+/* 다른 장에 있을 때 투명한 대시보드가 클릭·키 입력을 가로채지 않게 (전환이 끝난 뒤 숨김) */
+.live-slide:not(.active){visibility:hidden;transition:opacity 700ms var(--ease),transform 700ms var(--ease),visibility 0s 700ms}
+.live-frame{position:absolute;left:0;top:0;width:1440px;height:810px;border:0;display:block;background:var(--bg);transform-origin:0 0}
+.live-msg{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;background:var(--bg)}
+.live-msg b{font-size:30px;font-weight:900}
+.live-msg span{font-size:17px;color:var(--text-2)}
+.live-msg code{font-family:ui-monospace,Consolas,monospace;color:var(--accent)}
+.live-slide.offline .live-msg{display:flex}
+.live-slide.offline .live-frame{visibility:hidden}
+#back{position:fixed;left:16px;bottom:16px;z-index:50;background:rgba(15,17,23,.9);border:1px solid var(--border);color:var(--text-2);font:inherit;font-size:13px;font-weight:700;padding:7px 14px;border-radius:100px;cursor:pointer;display:none;transition:opacity .4s}
+body.on-live #back{display:block}
+body.on-live.idle #back{opacity:0}
+
+/* ── 공통 오버레이 ── */
+.brand{position:absolute;top:20px;right:26px;z-index:20;display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--text-2);transition:opacity .5s}
+.brand img{height:26px;width:auto;display:block}
+.brand:not(.nologo) .school-text{display:none}
+.brand .sep{color:var(--text-3)}
+.brand.hide{opacity:0}
+.dots{position:absolute;right:26px;bottom:14px;z-index:21;display:flex;gap:6px}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--text-3);opacity:.45;transition:all .4s}
+body.on-live .dots{display:none}
+.pageno{position:absolute;left:30px;bottom:12px;z-index:21;font-size:15px;font-weight:800;color:var(--text-3);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.pageno b{color:var(--text-2)}
+body.on-live .pageno{display:none}
+.dots i.on{background:var(--accent);opacity:1;width:18px;border-radius:3px}
+
+
+/* ── v4 공통 ── */
+.lead{font-size:20px;color:var(--text-2);line-height:1.5;margin:-14px 0 24px}
+.lead b{color:var(--text-1)}
+.src.left{text-align:left}
+.tag-mini{display:inline-block;font-size:12.5px;font-weight:800;color:var(--text-3);background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:3px 10px;margin-left:8px;vertical-align:3px}
+.bg-top{display:flex;gap:10px;margin:-10px 0 20px}
+.bg-top span{font-size:16px;font-weight:800;color:var(--text-2);background:var(--surface-2);border:1px solid var(--border);border-radius:100px;padding:7px 16px}
+.bg-top span b{color:var(--accent)}
+
+/* ── 현장 사례 ── */
+.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.case{background:var(--surface-2);border:1px solid var(--border);border-radius:18px;padding:26px 28px}
+.case-where{font-size:14px;font-weight:800;color:var(--text-3)}
+.case-title{font-size:26px;font-weight:900;line-height:1.35;margin:10px 0 16px;letter-spacing:-.015em}
+.case-title em{font-style:normal;color:var(--accent)}
+.case-steps{list-style:none;display:grid;gap:9px}
+.case-steps li{font-size:17px;color:var(--text-2);line-height:1.5;padding-left:18px;position:relative}
+.case-steps li::before{content:'';position:absolute;left:0;top:10px;width:7px;height:7px;border-radius:50%;background:var(--text-3)}
+.case-steps li b{color:var(--text-1)}
+.case-strip{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.case-strip div{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px;font-size:16.5px;color:var(--text-2);line-height:1.5}
+.case-strip b{color:var(--text-1)}
+
+/* ── 이탈 단계 ── */
+.steps6{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.st{background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:18px 12px;text-align:center}
+.st .no{font-size:14px;font-weight:900;color:var(--text-3)}
+.st .nm{font-size:19px;font-weight:900;margin-top:6px;line-height:1.35}
+.st.ours{background:var(--accent-soft);border-color:var(--accent-line)}
+.st.ours .no{color:var(--accent)}
+.st-range{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px}
+.st-range div{font-size:14.5px;font-weight:800;border-radius:8px;padding:7px 10px;text-align:center}
+.st-range .r-ours{grid-column:1/5;background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line)}
+.st-range .r-wear{grid-column:3/7;background:var(--surface);color:var(--text-3);border:1px solid var(--border);margin-top:6px}
+.facts3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+.fact3{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px}
+.fact3 .k{font-size:13px;font-weight:800;color:var(--text-3)}
+.fact3 .v{font-size:18px;font-weight:800;line-height:1.45;margin-top:6px}
+
+/* ── 예측 데이터 ── */
+.pred{display:grid;grid-template-columns:1fr 210px 1.15fr;gap:14px;align-items:stretch}
+.pcol{background:var(--surface-2);border:1px solid var(--border);border-radius:18px;padding:22px 24px}
+.pcol.ours{background:var(--accent-soft);border-color:var(--accent-line)}
+.pcol h3{font-size:15px;font-weight:800;color:var(--text-3);margin-bottom:14px}
+.pcol.ours h3{color:var(--accent)}
+.prow{padding:12px 0;border-top:1px solid var(--border)}
+.prow:first-of-type{border-top:none;padding-top:0}
+.prow .big{font-size:30px;font-weight:900;letter-spacing:-.02em}
+.prow .big small{font-size:16px;font-weight:800;color:var(--text-2);margin-left:6px}
+.prow .lb{font-size:15px;color:var(--text-2);line-height:1.45;margin-top:2px}
+.pcol.ours .prow{border-color:var(--accent-line)}
+.pgap{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:var(--surface);border:1px dashed var(--accent-line);border-radius:18px;padding:18px}
+.pgap b{font-size:20px;font-weight:900;line-height:1.4}
+.pgap span{font-size:14px;color:var(--text-2);margin-top:10px;line-height:1.5}
+
+/* ── AI 모델 비교 ── */
+.mtable{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface-2);border:1px solid var(--border);border-radius:18px;overflow:hidden}
+.mtable th,.mtable td{text-align:left;padding:15px 20px;border-bottom:1px solid var(--border);vertical-align:middle}
+.mtable tr:last-child td{border-bottom:none}
+.mtable th{font-size:14px;font-weight:800;color:var(--text-3);background:var(--surface)}
+.mtable td{font-size:17px}
+.mtable .task{font-weight:900;font-size:18px}
+.mtable .task span{display:block;font-size:13.5px;font-weight:700;color:var(--text-3);margin-top:2px}
+.kind{display:inline-block;font-size:12.5px;font-weight:800;border-radius:6px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+.kind.dl{background:rgba(251,146,60,.14);color:var(--orange)}
+.kind.ml{background:var(--accent-soft);color:var(--accent)}
+.kind.st{background:var(--surface);color:var(--text-2);border:1px solid var(--border)}
+.score{font-weight:900;font-size:22px}
+.score.win{color:var(--accent)}
+.score.lose{color:var(--text-3)}
+.mnote{font-size:14px;color:var(--text-2)}
+
+/* ── 위험도 흐름 ── */
+.rflow{display:flex;gap:8px;align-items:stretch;margin-top:4px}
+.rflow div{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.45;color:var(--text-2)}
+.rflow div b{display:block;color:var(--text-1);font-size:16px;margin-bottom:2px}
+.rflow i{align-self:center;font-style:normal;color:var(--text-3)}
+
+/* ── 마무리 ── */
+.end{display:grid;grid-template-columns:1.05fr 1fr;gap:40px;align-items:center}
+.end-msg .q{font-size:40px;font-weight:900;line-height:1.35;letter-spacing:-.02em}
+.end-msg .q em{font-style:normal;color:var(--accent)}
+.end-msg .thanks{font-size:22px;font-weight:800;color:var(--text-2);margin-top:28px}
+.refs{background:var(--surface-2);border:1px solid var(--border);border-radius:18px;padding:22px 26px}
+.refs h3{font-size:14px;font-weight:800;color:var(--text-3);margin-bottom:10px}
+.refs ol{padding-left:20px;display:grid;gap:7px}
+.refs li{font-size:13.5px;color:var(--text-2);line-height:1.45}
+.refs li b{color:var(--text-1);font-weight:800}
+.layout-note{margin-top:12px;text-align:center;font-size:15px;color:var(--text-2)}
+.layout-note b{color:var(--accent)}
+
+#hint{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:50;background:rgba(15,17,23,.9);border:1px solid var(--border);color:var(--text-2);font-size:14px;padding:9px 18px;border-radius:100px;transition:opacity .6s}
+#hint.gone{opacity:0;pointer-events:none}
+.still *,.still *::before{transition:none!important;animation:none!important}
+</style>
+</head>
+<body>
+
+<div id="stage">
+
+<!-- 1 · 타이틀 -->
+<div class="slide">
+  <div class="slide-inner title-wrap">
+    <div class="school">
+      <img src="assets/logo-jvision.png" alt="전주비전대학교" onerror="this.parentNode.classList.add('nologo');this.remove()">
+      <span class="school-text">전주비전대학교</span>
+    </div>
+    <h1 class="title-main">비접촉 센서융합 기반<br>치매환자 낙상예측시스템</h1>
+    <div class="title-tags"><span class="on">비접촉식</span><span class="on">프라이버시 보호</span><span class="on">낙상 예측</span></div>
+  </div>
+</div>
+
+<!-- 2 · 기술개발 배경 : 빈도 → 문제 → 영향 -->
+<div class="slide">
+  <div class="slide-inner">
+    <h2 class="s-title">기술개발 배경</h2>
+    <div class="bg-top"><span>2024년 말 <b>초고령사회</b> 진입 · 65세 이상 20%</span><span>치매 노인 낙상 발생 · 일반 노인의 <b>약 8배</b></span></div>
+    <div class="bg-grid">
+      <div class="bg-card" id="bg1"><div class="bg-num">01 · 빈도</div><div class="bg-big">매년 10건 중 <em>4건</em></div><div class="bg-small">국내 요양병원 낙상사고 중<br>치매 환자 비율 (39.3%)</div></div>
+      <div class="bg-card" id="bg2"><div class="bg-num">02 · 문제</div><div class="bg-big">낙상으로 인한 사망</div><div class="bg-small">고관절이 골절된 고령자 3명 중 1명은<br>1년 안에 사망합니다</div></div>
+      <div class="bg-card" id="bg3"><div class="bg-num">03 · 영향</div><div class="bg-big">사회적 비용 증가</div><div class="bg-small">낙상 사망으로 인한 비용<br>연간 1조 2500억원</div></div>
+    </div>
+    <p class="src">출처: 국내 요양병원 최근 4년(2021–2024) 낙상사고 분석 — 치매군과 비치매군 비교 (KCI) · 8배: 홍선영·박희옥(2017) 메타분석의 재인용 수치</p>
+  </div>
+</div>
+
+<!-- 3 · 기존 방식과의 차이 : 대본 순서 카메라 → 웨어러블 → 사후 감지 -->
+<div class="slide">
+  <div class="slide-inner" style="max-width:1160px">
+    <h2 class="s-title">기존 방식과의 차이</h2>
+    <div class="cmp">
+      <div class="cmp-head old">기존 방식</div><div></div><div class="cmp-head new" id="nh">제안 기술</div>
+
+      <div class="cmp-cell old" id="o1"><b>카메라</b><span>사생활 침해 우려 · 조명 변화에 취약</span></div>
+      <div class="cmp-mid"><span class="cmp-pill" id="p1">영상<i>→</i>비영상</span></div>
+      <div class="cmp-cell new" id="n1"><b>비영상 센싱</b><span>거리·위치 데이터만 수집 · 어두워도 동작</span></div>
+
+      <div class="cmp-cell old" id="o2"><b>웨어러블</b><span>착용 거부 · 분실 · 주기적 충전 필요</span></div>
+      <div class="cmp-mid"><span class="cmp-pill" id="p2">접촉<i>→</i>비접촉</span></div>
+      <div class="cmp-cell new" id="n2"><b>비접촉 센싱</b><span>침상 주변 설치 · 착용 불필요</span></div>
+
+      <div class="cmp-cell old" id="o3"><b>사후 감지</b><span>낙상이 일어난 뒤에 알림</span></div>
+      <div class="cmp-mid"><span class="cmp-pill" id="p3">사후<i>→</i>사전</span></div>
+      <div class="cmp-cell new" id="n3"><b>사전 예측</b><span>앉기 · 돌아눕기 · 난간 잡기 단계에서 미리 알림 (ToF + mmWave)</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- 4 · 현장 사례 (Northcott 2026) -->
+<div class="slide">
+  <div class="slide-inner" style="max-width:1160px">
+    <h2 class="s-title">난간을 올려도, 어르신은 나오려 합니다</h2>
+    <p class="lead">영국 치매 병동 9곳을 225일 동안 관찰한 연구에 실제로 기록된 장면입니다</p>
+    <div class="case-grid">
+      <div class="case"><div class="case-where">관찰 기록 · 13일차 · 남성 4인실</div>
+        <div class="case-title">양쪽 난간을 올렸지만<br><em>난간 끝으로 빠져나와</em> 앉아 있었다</div>
+        <ul class="case-steps"><li>기록상 <b>낙상 위험군</b>, 1:1 관찰 대상</li><li>다리를 빼서 <b>침대 발치와 난간 끝 사이</b>에 걸터앉음</li><li>다시 눕혀 드려도 <b>곧 또 나오려 함</b></li></ul></div>
+      <div class="case"><div class="case-where">관찰 기록 · 29일차 · 노인 병동</div>
+        <div class="case-title">다리는 돌려 뺐지만 <em>난간에 막혔고</em><br>호출벨에는 아무도 오지 않았다</div>
+        <ul class="case-steps"><li>앉아서 <b>다리를 침대 밖으로</b> 돌려 뺌</li><li>몸은 난간에 걸려 있고, 발은 <b>바닥에 닿지 않음</b></li><li>호출벨을 눌렀지만 <b>응답 없음</b></li></ul></div>
+    </div>
+    <div class="case-strip">
+      <div>일부 환자는 <b>난간을 넘으려</b> 했고, 연구진은 이를 심각한 부상 위험으로 기록했습니다</div>
+      <div>난간을 넘다 떨어지면 <b>더 높은 곳에서 추락</b>해 부상이 심해집니다 (영국 의료기기 규제기관)</div>
+    </div>
+    <p class="src">출처: Northcott 외(2026) NIHR HSDR 14(7) · 영국 NHS 9개 병동 225일 관찰 · MHRA, Bed rails: management and safe use (2023 개정)</p>
+  </div>
+</div>
+
+<!-- 5 · 시스템 구성 : 설치 → 측정 → 처리 → 판정 → 확인 -->
+<div class="slide">
+  <div class="slide-inner" style="max-width:1260px">
+    <h2 class="s-title">시스템 구성</h2>
+    <div class="sysflow">
+      <div class="sysflow-step" id="s1"><img src="assets/sensor3d_booth.png" alt="침상 센서 배치" class="sf-photo layout"><div class="sf-step">01</div><div class="sf-title">설치</div><div class="sf-desc">요양병원 1인실<br>천장 · 머리맡 · 발치</div></div>
+      <div class="sysflow-arrow">→</div>
+      <div class="sysflow-step" id="s2"><div class="sf-photo-pair"><img src="assets/mmwave_photo.jpg" alt="mmWave 레이더"><img src="assets/tof_photo.jpg" alt="ToF 센서"></div><div class="sf-step">02</div><div class="sf-title">측정</div><div class="sf-desc">비접촉 센서 2종<br>mmWave · ToF</div></div>
+      <div class="sysflow-arrow">→</div>
+      <div class="sysflow-step" id="s3"><img src="assets/pi_photo.jpg" alt="Raspberry Pi 5" class="sf-photo"><div class="sf-step">03</div><div class="sf-title">처리</div><div class="sf-desc">Raspberry Pi 5<br>병실 내 수신 · 저장 · 분석</div></div>
+      <div class="sysflow-arrow">→</div>
+      <div class="sysflow-step" id="s4"><img src="assets/algo_photo.jpg" alt="위험도 판정 데이터" class="sf-photo"><div class="sf-step">04</div><div class="sf-title">AI 예측</div><div class="sf-desc">자세 분류 · 이탈 시도 판단<br>개인 기준 위험도</div></div>
+      <div class="sysflow-arrow">→</div>
+      <div class="sysflow-step" id="s5"><img src="assets/dashboard_v3.png" alt="간호사 대시보드" class="sf-photo"><div class="sf-step">05</div><div class="sf-title">확인</div><div class="sf-desc">간호사 대시보드<br>위치 · 자세 · 위험도</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 6 · 센서 배치 (이미지에 제목·범례 포함) -->
+<div class="slide">
+  <div class="slide-inner" style="max-width:800px">
+    <div style="overflow:hidden;border-radius:16px"><img src="assets/sensor3d_booth.png" alt="침상 센서 장비 배치도" class="layout-photo kenburns"></div>
+    <p class="layout-note">현재 설치: <b>mmWave는 천장 2.7m</b>에서 바닥 방향 · ToF는 머리맡과 발치 2개 (그림은 이전 지지대 설치)</p>
+  </div>
+</div>
+
+<!-- 7 · ToF : 머리맡 · 발치 -->
+<div class="slide">
+  <div class="slide-inner" style="max-width:1120px">
+    <h2 class="s-title">ToF 센서 <small>ST VL53L5CX · 머리맡 · 발치 2개</small></h2>
+    <div class="spec-card">
+      <img src="assets/tof_photo.jpg" alt="ToF 센서" class="spec-photo">
+      <div class="spec-body">
+        <div id="tf-how"><div class="sp-label">측정 원리</div>
+          <div class="sp-text">적외선이 반사되어 돌아오는 시간으로 거리 측정</div></div>
+        <div id="tf-spec"><div class="sp-label">측정 사양</div>
+          <div class="chips"><span class="chip">8×8 멀티존</span><span class="chip">FoV 65°</span><span class="chip">최대 4 m</span></div></div>
+        <div><div class="sp-label">판단 항목</div>
+          <div class="spec-list">
+            <div class="spec-item" id="tf1"><span class="spec-dot"></span><div><div class="si-title">거리 측정</div><div class="si-sub">센서와 치매 환자 사이의 거리를 측정</div></div></div>
+            <div class="spec-item" id="tf2"><span class="spec-dot"></span><div><div class="si-title">자세 분류</div><div class="si-sub">빈 침대 · 바로 누움 · 좌측 누움 · 우측 누움 · 앉음 · 걸터앉음<br>실측 정확도 88.5% (참여자 6명 · 학습에 쓰지 않은 사람으로 시험)</div></div></div>
+            <div class="spec-item" id="tf3"><span class="spec-dot"></span><div><div class="si-title">난간 쪽 움직임</div><div class="si-sub">팔을 난간에 올린 상태 구분 91.4% (11/13 실험, 참여자 1~2명)</div></div></div>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8 · mmWave : 천장 -->
+<div class="slide">
+  <div class="slide-inner" style="max-width:1120px">
+    <h2 class="s-title">mmWave 레이더 <small>TI IWR6843AOP · 천장</small></h2>
+    <div class="spec-card">
+      <img src="assets/mmwave_photo.jpg" alt="mmWave 레이더" class="spec-photo">
+      <div class="spec-body">
+        <div id="mw-how"><div class="sp-label">측정 원리</div>
+          <div class="sp-text">60–64 GHz 전파의 반사 신호로 사람의 위치·움직임 추적</div></div>
+        <div id="mw-spec"><div class="sp-label">측정 사양</div>
+          <div class="chips"><span class="chip">시야각 120° × 120°</span><span class="chip">천장 2.7 m</span><span class="chip">바닥 방향</span></div></div>
+        <div><div class="sp-label">판단 항목</div>
+          <div class="spec-list">
+            <div class="spec-item" id="mw1"><span class="spec-dot"></span><div><div class="si-title">위치 추적</div><div class="si-sub">x·y 좌표로 위치와 이동을 실시간 추적</div></div></div>
+            <div class="spec-item" id="mw2"><span class="spec-dot"></span><div><div class="si-title">보행 지표</div><div class="si-sub">보행 지표 6종 산출 → 보행 속도·속도 변동·좌우 흔들림·정지 비율·보폭 변동·추정 보폭</div></div></div>
+            <div class="spec-item" id="mw4"><span class="spec-dot"></span><div><div class="si-title">이탈 전조</div><div class="si-sub">몸 중심이 침대 가장자리로 이동 · 돌아눕는 방향</div></div></div>
+            <div class="spec-item" id="mw3"><span class="spec-dot"></span><div><div class="si-title">낙상 감지</div><div class="si-sub">신체 높이 1.2 m 이상 급강하 → 즉시 위험</div></div></div>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 9 · 침대 이탈은 단계로 일어난다 -->
+<div class="slide">
+  <div class="slide-inner" style="max-width:1180px">
+    <h2 class="s-title">침대 이탈은 단계를 거쳐 일어납니다</h2>
+    <p class="lead">노인 병동 침상 이탈 연구가 정리한 6단계 · <b>앞 단계에서 알수록 간호사가 올 시간이 생깁니다</b></p>
+    <div class="steps6">
+      <div class="st ours"><div class="no">1</div><div class="nm">상체<br>일으킴</div></div>
+      <div class="st ours"><div class="no">2</div><div class="nm">가장자리로<br>이동</div></div>
+      <div class="st ours"><div class="no">3</div><div class="nm">다리를<br>돌려 뺌</div></div>
+      <div class="st ours"><div class="no">4</div><div class="nm">엉덩이를<br>끝으로</div></div>
+      <div class="st"><div class="no">5</div><div class="nm">발을<br>바닥에</div></div>
+      <div class="st"><div class="no">6</div><div class="nm">일어섬</div></div>
+    </div>
+    <div class="st-range"><div class="r-ours">마주봄이 보는 구간 · 자세 · 몸 중심 · 돌아눕기</div><div class="r-wear">허벅지 착용 센서가 반응하는 구간</div></div>
+    <div class="facts3">
+      <div class="fact3"><div class="k">노인은 이렇게 일어납니다</div><div class="v">몸통을 돌리고 팔꿈치·엉덩이를 축으로 밀며 일어남</div></div>
+      <div class="fact3"><div class="k">위험한 어르신은</div><div class="v">동작이 끊기고 자세를 여러 번 고쳐 잡음 → 시간이 걸림</div></div>
+      <div class="fact3"><div class="k">난간이 올라가 있으면</div><div class="v">옆 대신 난간 끝으로 우회하거나 난간을 넘음</div></div>
+    </div>
+    <p class="src">출처: Jähne-Raden 외(2019) INBED, Sensors 19:1017 · Alexander 외(1992, 1995) J Am Geriatr Soc · Northcott 외(2026)</p>
+  </div>
+</div>
+
+<!-- 10 · 예측 데이터 -->
+<div class="slide">
+  <div class="slide-inner" style="max-width:1200px">
+    <h2 class="s-title">이탈은 미리 알 수 있습니다</h2>
+    <div class="pred">
+      <div class="pcol"><h3>선행 연구 · 카메라 방식</h3>
+        <div class="prow"><div class="big">28초<small>중앙값</small></div><div class="lb">알림 후 실제 이탈까지 · 깊이카메라<br>환자 64명, 이탈 318건 (Kramer 2020)</div></div>
+        <div class="prow"><div class="big">7초 전<small>정확도 86.5%</small></div><div class="lb">일반 카메라 + 딥러닝 예측 (Chwyl 2017)</div></div>
+        <div class="prow"><div class="big">넘는 순간<small>민감도 96.8%</small></div><div class="lb">난간 넘기 포함 · 머리가 안전 영역을 벗어나면 경보<br>특이도 62.8% · 간호사 역할극 (Mao 2023)</div></div>
+      </div>
+      <div class="pgap"><b>넘기 전 단계를<br>나눠 미리 예측한<br>연구는 찾지 못함</b><span>난간 넘기는<br>넘는 순간 감지까지</span></div>
+      <div class="pcol ours"><h3>마주봄 실측 · 비영상 mmWave</h3>
+        <div class="prow"><div class="big">11번 중 10번<small>90.9%</small></div><div class="lb">난간 잡고 앉아 밖으로 도는 <b>이탈 시도</b>인지 판단</div></div>
+        <div class="prow"><div class="big">7번 중 6번</div><div class="lb">몸을 <b>밖으로 / 안쪽으로</b> 돌리는지 구분</div></div>
+        <div class="prow"><div class="big">10번 중 10번</div><div class="lb">팔을 <b>난간으로 뻗는 순간</b> 감지</div></div>
+      </div>
+    </div>
+    <p class="src left">마주봄 실측: 2026-11-13·14 팀원 연기 실험, 참여자 1~2명, 시도 하나씩 빼고 시험 — 일반화 전 단계 · 선행 연구는 다른 시스템의 결과 (Kramer 2020은 개발사 저자)</p>
+  </div>
+</div>
+
+<!-- 11 · AI 모델 비교 -->
+<div class="slide">
+  <div class="slide-inner" style="max-width:1160px">
+    <h2 class="s-title">AI 모델 · 비교하고 고릅니다</h2>
+    <p class="lead">딥러닝과 머신러닝을 같은 조건에서 비교해 <b>더 정확한 쪽</b>을 씁니다</p>
+    <table class="mtable">
+      <thead><tr><th style="width:28%">판단</th><th>모델</th><th style="width:15%">결과</th><th style="width:30%">데이터</th></tr></thead>
+      <tbody>
+        <tr><td class="task" rowspan="2">자세 분류<span>ToF · 6가지 자세</span></td><td>Random Forest<span class="kind ml">머신러닝</span> · <b>채택</b></td><td><span class="score win">88.5%</span></td><td class="mnote" rowspan="2">참여자 6명 · 111회 녹화<br>학습에 쓰지 않은 사람으로 시험</td></tr>
+        <tr><td>CNN<span class="kind dl">딥러닝</span></td><td><span class="score lose">78.3%</span></td></tr>
+        <tr><td class="task">이탈 시도 판단<span>mmWave</span></td><td>로지스틱 회귀<span class="kind st">통계</span></td><td><span class="score win">90.9%</span></td><td class="mnote">참여자 1명 · 시도 11번<br>데이터가 적은 단계라 해석 쉬운 모델</td></tr>
+        <tr><td class="task">평소와 다른 움직임<span>ToF · 시계열</span></td><td>LSTM 오토인코더<span class="kind dl">딥러닝</span></td><td><span class="score lose">개발 중</span></td><td class="mnote">데이터가 쌓이면 시계열 딥러닝으로<br>이탈 예측 확장</td></tr>
+      </tbody>
+    </table>
+    <p class="src left">마주봄 실측 (2026-11-05 ToF 교차검증, 2026-11-14 mmWave 이탈 시도 실험)</p>
+  </div>
+</div>
+
+<!-- 12 · 개인 기준 위험도 -->
+<div class="slide">
+  <div class="slide-inner" style="max-width:1120px">
+    <h2 class="s-title">위험도 판단</h2>
+    <div class="spec-card">
+      <div class="gait-summary" id="al-metrics">
+        <div class="sp-label">mmWave 산출</div>
+        <div class="gait-title">보행 지표 6종</div>
+        <ul><li>보행 속도</li><li>속도 변동</li><li>좌우 동요</li><li>정지 비율</li><li>추정 보폭</li><li>보폭 변동</li></ul>
+      </div>
+      <div class="spec-body" style="align-self:center;gap:26px">
+        <div id="al-how"><div class="sp-label">Z-SCORE · 환자 개인 기준</div>
+          <div class="sp-text">Z = (현재 값 − 평소 평균) ÷ 평소 표준편차</div></div>
+        <div id="al-risk"><div class="sp-label">위험도 4단계 · S = Σ|Z|</div>
+          <div class="risk-bar">
+            <span class="risk-seg" style="background:var(--ok)"></span><span class="risk-seg" style="background:var(--warn)"></span>
+            <span class="risk-seg" style="background:var(--orange)"></span><span class="risk-seg" style="background:var(--danger)"></span>
+          </div>
+          <div class="risk-labels">
+            <div class="risk-label"><div class="rl-name" style="color:var(--ok)">정상</div><div class="rl-range">S &lt; 3</div></div>
+            <div class="risk-label"><div class="rl-name" style="color:var(--warn)">주의</div><div class="rl-range">3 ≤ S &lt; 6</div></div>
+            <div class="risk-label"><div class="rl-name" style="color:var(--orange)">경고</div><div class="rl-range">6 ≤ S &lt; 9</div></div>
+            <div class="risk-label"><div class="rl-name" style="color:var(--danger)">위험</div><div class="rl-range">S ≥ 9</div></div>
+          </div>
+        </div>
+        <div class="rflow" id="al-note"><div><b>입원 후 14일</b>평소 움직임으로 개인 기준선 구축</div><i>→</i><div><b>이후</b>상태 변화에 따라 이탈 예측 켜기</div><i>→</i><div><b>이탈 조짐이 보일 때만</b>간호사 대시보드에 경보</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 13 · 간호사 대시보드 -->
+<div class="slide">
+  <div class="slide-inner" style="max-width:1120px">
+    <h2 class="s-title">간호사 대시보드</h2>
+    <div class="spec-card wide">
+      <img src="assets/dashboard_v3.png" alt="간호사 대시보드 화면" class="spec-photo wide">
+      <div class="spec-body">
+        <div id="db-how"><div class="sp-label">화면 구성</div>
+          <div class="sp-text">위치 · 자세 · 위험도를 한 화면에 표시</div></div>
+        <div><div class="sp-label">주요 기능</div>
+          <div class="spec-list">
+            <div class="spec-item" id="db1"><span class="spec-dot"></span><div><div class="si-title">실시간 위치</div><div class="si-sub">병실 평면도 위 환자 위치</div></div></div>
+            <div class="spec-item" id="db2"><span class="spec-dot"></span><div><div class="si-title">위험 단계</div><div class="si-sub">위험 단계 표시</div></div></div>
+            <div class="spec-item" id="db3"><span class="spec-dot"></span><div><div class="si-title">기록 조회</div><div class="si-sub">환자 기록 · AI 종합 리포트</div></div></div>
+          </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 14 · 마무리 + 참고문헌 -->
+<div class="slide">
+  <div class="slide-inner" style="max-width:1200px">
+    <div class="end">
+      <div class="end-msg">
+        <div class="q">치매 환자에게는<br><em>24시간 안전한 보호막</em>을,<br>의료진에게는<br><em>효율적인 모니터링</em>을</div>
+        <div class="thanks">경청해 주셔서 감사합니다</div>
+      </div>
+      <div class="refs"><h3>참고문헌</h3><ol>
+        <li><b>Northcott A 외 (2026)</b> Restrictive practices in the everyday care of people living with dementia in hospital. NIHR HSDR 14(7)</li>
+        <li><b>MHRA (2020, 2023 개정)</b> Bed rails: management and safe use. GOV.UK</li>
+        <li><b>Jähne-Raden N 외 (2019)</b> INBED: bed-exit detection on a geriatric ward. Sensors 19(5):1017</li>
+        <li><b>Alexander NB 외 (1992, 1995)</b> Bed rise in young and elderly women. J Am Geriatr Soc 40:685, 43:338</li>
+        <li><b>Kramer JB 외 (2020)</b> Automated depth video monitoring for fall reduction. CVPR Workshops</li>
+        <li><b>Chwyl B 외 (2017)</b> DeepPredict: predictive intelligence for patient monitoring. IEEE EMBC</li>
+        <li><b>Mao YJ 외 (2023)</b> eNightTrack: depth-camera alarm for fall prevention. Algorithms 16(10):477</li>
+        <li><b>홍선영 · 박희옥 (2017)</b> 치매노인 낙상 관련 메타분석 (8배 재인용)</li>
+        <li><b>국내 요양병원 낙상사고 분석 (2021–2024)</b> 치매군 · 비치매군 비교, KCI</li>
+      </ol></div>
+    </div>
+  </div>
+</div>
+
+<!-- 15 · 실시간 시연 : 라이브 대시보드 (주소는 ?dash= 로 바꿀 수 있음) -->
+<div class="slide live-slide" id="live">
+  <iframe class="live-frame" id="liveFrame" title="간호사 대시보드 실시간 시연"></iframe>
+  <div class="live-msg"><b>대시보드에 연결할 수 없습니다</b><span><code id="liveUrl"></code> 서버를 확인한 뒤 <code>R</code> 키로 다시 연결</span></div>
+</div>
+
+<div class="brand" id="brand">
+  <img src="assets/logo-jvision.png" alt="전주비전대학교" onerror="this.parentNode.classList.add('nologo');this.remove()">
+  <span class="school-text">전주비전대학교</span><span class="sep">·</span><span>치매환자 낙상예측시스템</span>
+</div>
+<div class="dots" id="dots"></div>
+<div class="pageno" id="pageno"></div>
+
+</div><!-- /stage -->
+
+<button id="back" type="button">← 발표 화면으로</button>
+<div id="hint">클릭 또는 F — 전체화면 · ← → / Space 장 넘기기 · 숫자+Enter 또는 주소 #번호로 바로 이동</div>
+
+<script>
+(function(){
+  /* 발표자가 직접 넘기는 버전: 자동 넘김 없음 · 첫 장/마지막 장에서 멈춤 · 마지막 장은 실시간 대시보드 */
+  var stage=document.getElementById('stage');
+  var slides=[].slice.call(stage.querySelectorAll('.slide'));
+  var brand=document.getElementById('brand'), dotsEl=document.getElementById('dots');
+  var cur=-1;
+  var live=document.getElementById('live'), frame=document.getElementById('liveFrame');
+  var dm=location.search.match(/[?&]dash=([^&]+)/);
+  var DASH=dm?decodeURIComponent(dm[1]):'http://192.168.0.4:5001/dashboard';
+  document.getElementById('liveUrl').textContent=DASH;
+
+  /* 서버가 살아 있는지 먼저 확인하고 iframe을 띄움 — 꺼져 있으면 브라우저 오류 화면 대신 안내 문구 */
+  function connect(){
+    fetch(DASH,{mode:'no-cors',cache:'no-store'}).then(function(){
+      live.classList.remove('offline');
+      frame.src=DASH;
+    }).catch(function(){ live.classList.add('offline'); });
+  }
+  connect();   // 시작할 때 미리 불러 두어 마지막 장에서 바로 보이게
+
+  function fit(){
+    var s=Math.min(window.innerWidth/1440,window.innerHeight/810);
+    stage.style.transform='translate(-50%,-50%) scale('+s+')';
+    // 대시보드는 실제 화면 해상도로 그리고 무대 배율만큼 되돌려 선명하게
+    frame.style.width=1440*s+'px'; frame.style.height=810*s+'px';
+    frame.style.transform='scale('+1/s+')';
+  }
+  window.addEventListener('resize',fit); fit();
+
+  /* 장마다 내용 크기를 재서 여백 안에서 비율 그대로 키움 (최대 1.2배) — 레이아웃은 1440×810 기준 그대로 */
+  var ZOOM_MAX=1.2, PAD_X=48, PAD_Y=64;
+  function zoomSlides(){
+    slides.forEach(function(s){
+      var inner=s.querySelector('.slide-inner'); if(!inner) return;
+      inner.style.transform='';
+      var k=Math.min(ZOOM_MAX,(1440-2*PAD_X)/inner.offsetWidth,(810-2*PAD_Y)/inner.offsetHeight);
+      inner.style.transform=k>1?'scale('+k.toFixed(3)+')':'';
+    });
+  }
+  zoomSlides();
+  window.addEventListener('load',zoomSlides);   // 사진 크기가 정해진 뒤 다시 잼
+  if(document.fonts) document.fonts.ready.then(zoomSlides);
+
+  slides.forEach(function(){ dotsEl.appendChild(document.createElement('i')); });
+  var dots=[].slice.call(dotsEl.children);
+
+  function goSlide(n){
+    n=Math.max(0,Math.min(n,slides.length-1));
+    if(n===cur) return;
+    cur=n;
+    slides.forEach(function(s,i){
+      s.classList.remove('active','prev');
+      if(i===n){ void s.offsetWidth; s.classList.add('active'); }
+      else if(i<n) s.classList.add('prev');
+    });
+    dots.forEach(function(d,i){ d.classList.toggle('on',i===n); });
+    document.getElementById('pageno').innerHTML='<b>'+(n+1)+'</b> / '+slides.length;
+    if(location.hash!=='#'+(n+1)) history.replaceState(null,'','#'+(n+1));
+    brand.classList.toggle('hide',n===0||slides[n]===live);   // 타이틀 장에는 학교·과제명이 이미 크게 있음
+    document.body.classList.toggle('on-live',slides[n]===live);
+    if(slides[n]===live && live.classList.contains('offline')) connect();
+  }
+
+  function toggleFS(){
+    if(document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen().catch(function(){});
+  }
+
+  var typed='', typedT=null;
+  document.addEventListener('keydown',function(e){
+    var k=e.key;
+    if(k===' '||k==='ArrowRight'||k==='PageDown'){ e.preventDefault(); goSlide(cur+1); }
+    else if(k==='ArrowLeft'||k==='PageUp'){ e.preventDefault(); goSlide(cur-1); }
+    else if(k==='Home'){ goSlide(0); }
+    else if(k==='End'){ goSlide(slides.length-1); }
+    else if(/^[0-9]$/.test(k)){ typed=(typed+k).slice(-2); clearTimeout(typedT); typedT=setTimeout(function(){typed='';},2000); }
+    else if(k==='Enter'&&typed){ goSlide(parseInt(typed,10)-1); typed=''; }
+    else if(k==='f'||k==='F'){ toggleFS(); }
+    else if((k==='r'||k==='R')&&slides[cur]===live){ frame.removeAttribute('src'); connect(); }
+  });
+  document.addEventListener('click',toggleFS);
+  /* 대시보드를 클릭하면 키 입력이 대시보드로 가므로 되돌아오는 버튼을 둠 */
+  document.getElementById('back').addEventListener('click',function(e){ e.stopPropagation(); this.blur(); window.focus(); goSlide(cur-1); });
+
+  var hint=document.getElementById('hint'), idleT=null;
+  setTimeout(function(){ hint.classList.add('gone'); },6000);
+  function wake(){ document.body.classList.remove('idle'); clearTimeout(idleT); idleT=setTimeout(function(){ document.body.classList.add('idle'); },2500); }
+  document.addEventListener('mousemove',wake); wake();
+
+  /* 점검용: ?s=번호 로 특정 장면부터, &still 은 전환 효과 끔 */
+  if(/[?&]still/.test(location.search)) document.documentElement.classList.add('still');
+  function hashNo(){ var h=parseInt(location.hash.slice(1),10); return h>=1?h-1:null; }
+  var m=location.search.match(/[?&]s=(\d+)/);
+  var h0=hashNo();
+  goSlide(h0!==null?h0:(m?parseInt(m[1],10)-1:0));
+  window.addEventListener('hashchange',function(){ var h=hashNo(); if(h!==null) goSlide(h); });
+})();
+</script>
+</body>
+</html>

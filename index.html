@@ -145,6 +145,15 @@ const decks = [
     repo: "https://github.com/b-hyoung/PPT-List/tree/main/piuda",
   },
   {
+    title: "마주봄 · 전국대회용 발표",
+    href: "majubom-national/",
+    thumb: "majubom-national/thumbnail.png",
+    desc: "[전국대회용] 비접촉 센서융합 기반 치매환자 낙상예측시스템. 난간을 올려도 나오려는 현장 사례(Northcott)부터 이탈 단계·예측 선행연구·마주봄 실측(mmWave 11번 중 10번)·AI 모델 비교·14일 기준선 위험도까지 15장. 발표 대본 포함.",
+    tags: ["전국대회용", "낙상 예측", "ToF · mmWave", "발표 대본"],
+    script: "majubom-national/script.html",
+    repo: "https://github.com/b-hyoung/PPT-List/tree/main/majubom-national",
+  },
+  {
     title: "마주봄 · 비접촉 낙상 예방",
     href: "majubom/",
     thumb: "majubom/thumbnail.png",
@@ -191,6 +200,7 @@ grid.innerHTML = decks.map(d => `
       <div class="tags">${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
       <div class="meta">
         <span class="links">
+          ${d.script ? `<span class="repo" role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();window.open('${d.script}','_blank','noopener')">발표 대본 ↗</span>` : ``}
           ${d.pdf ? `<span class="repo" role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();window.open('${d.pdf}','_blank','noopener')">요약 PDF ↓</span>` : ``}
           ${d.repo ? `<span class="repo" role="link" tabindex="0" onclick="event.preventDefault();event.stopPropagation();window.open('${d.repo}','_blank','noopener')">소스 레포 ↗</span>` : ``}
         </span>
